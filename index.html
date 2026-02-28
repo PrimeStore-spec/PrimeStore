@@ -187,7 +187,7 @@ td{padding:8px 11px;white-space:nowrap;color:var(--text);}
 .tpv{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--blue);}
 .tpl{font-size:9px;color:var(--text3);text-transform:uppercase;}
 
-/* JIMIDAR */
+/* FARMER */
 .jgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:11px;}
 .jcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:15px;cursor:pointer;transition:all 0.2s;box-shadow:var(--sh);}
 .jcard:hover{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 4px 18px rgba(26,95,200,0.12);}
@@ -249,7 +249,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
   <div class="hdr-r">
     <div class="hdr-stat"><div class="v" id="h-bags">0</div><div class="l">Total Bags</div></div>
     <div class="hdr-stat"><div class="v" id="h-amt">₹0</div><div class="l">Raqam</div></div>
-    <div class="hdr-stat"><div class="v" id="h-f">0</div><div class="l">Jimidar</div></div>
+    <div class="hdr-stat"><div class="v" id="h-f">0</div><div class="l">FARMER</div></div>
     <div id="ss">⟳ Connect ho raha...</div>
     <button class="btn-w" onclick="loadSheet()">🔄 Refresh</button>
     <button class="btn-add" onclick="openM()">＋ Naya Khareed</button>
@@ -260,17 +260,17 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
   <div class="tabs">
     <button class="tab active" onclick="goTab('dash')" id="tab-dash">📊 Dashboard</button>
     <button class="tab" onclick="goTab('rec')" id="tab-rec">📋 Records</button>
-    <button class="tab" onclick="goTab('jim')" id="tab-jim">👨‍🌾 Jimidar</button>
+    <button class="tab" onclick="goTab('jim')" id="tab-jim">👨‍🌾 FARMER</button>
     <button class="tab" onclick="goTab('rep')" id="tab-rep">📈 Reports</button>
   </div>
 
   <!-- DASHBOARD -->
   <div id="p-dash">
     <div class="stats-grid">
-      <div class="sc" style="--cc:var(--blue)"><span class="si">📦</span><div class="sl">Aaj ki Khareed</div><div class="sv" id="sd-today">0</div><div class="ss2">Bags aaj</div></div>
-      <div class="sc" style="--cc:var(--green)"><span class="si">💰</span><div class="sl">Kul Raqam</div><div class="sv" id="sd-amt">₹0</div><div class="ss2">Sab entries</div></div>
-      <div class="sc" style="--cc:var(--yellow)"><span class="si">🧺</span><div class="sl">Kul Bags</div><div class="sv" id="sd-bags">0</div><div class="ss2">Saari classes</div></div>
-      <div class="sc" style="--cc:var(--orange)"><span class="si">👨‍🌾</span><div class="sl">Jimidar</div><div class="sv" id="sd-f">0</div><div class="ss2">Registered</div></div>
+      <div class="sc" style="--cc:var(--blue)"><span class="si">📦</span><div class="sl">TODAY PURCHASE</div><div class="sv" id="sd-today">0</div><div class="ss2">Bags aaj</div></div>
+      <div class="sc" style="--cc:var(--green)"><span class="si">💰</span><div class="sl">TOTAL AMOUNT</div><div class="sv" id="sd-amt">₹0</div><div class="ss2">Sab entries</div></div>
+      <div class="sc" style="--cc:var(--yellow)"><span class="si">🧺</span><div class="sl">TOTAL BAGS</div><div class="sv" id="sd-bags">0</div><div class="ss2">Saari classes</div></div>
+      <div class="sc" style="--cc:var(--orange)"><span class="si">👨‍🌾</span><div class="sl">FARMER</div><div class="sv" id="sd-f">0</div><div class="ss2">Registered</div></div>
       <div class="sc" style="--cc:var(--green)"><span class="si">🟢</span><div class="sl">Class A</div><div class="sv" id="sd-a">0</div><div class="ss2">Best quality</div></div>
       <div class="sc" style="--cc:var(--yellow)"><span class="si">🟡</span><div class="sl">Class B</div><div class="sv" id="sd-b">0</div><div class="ss2">Good quality</div></div>
       <div class="sc" style="--cc:var(--orange)"><span class="si">🟠</span><div class="sl">Class C</div><div class="sv" id="sd-c">0</div><div class="ss2">Average</div></div>
@@ -283,13 +283,13 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge D">CLASS D</span><span id="pct-d" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-d" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--red)">0 bags</div><div class="pb"><div class="pf" id="bar-d" style="background:var(--red);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-d" style="color:var(--red);font-weight:600">₹0</span></div></div>
     </div>
     <div class="charts">
-      <div class="cc"><div class="ct">📊 Jimidar wise Bags</div><div id="chart-bars"><div class="empty"><div class="ei">📊</div><p>Koi record nahi</p></div></div></div>
+      <div class="cc"><div class="ct">📊 FARMER wise Bags</div><div id="chart-bars"><div class="empty"><div class="ei">📊</div><p>Koi record nahi</p></div></div></div>
       <div class="cc"><div class="ct">🥧 Class Distribution</div><div class="donut-w">
         <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="42" fill="none" stroke="#eef0f4" stroke-width="20"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--green)" stroke-width="20" stroke-dasharray="0 264" id="d-a"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--yellow)" stroke-width="20" stroke-dasharray="0 264" id="d-b"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--orange)" stroke-width="20" stroke-dasharray="0 264" id="d-c"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--red)" stroke-width="20" stroke-dasharray="0 264" id="d-d"/></svg>
         <div class="legend"><div class="li"><div class="ld" style="background:var(--green)"></div><span id="lg-a">Class A: 0</span></div><div class="li"><div class="ld" style="background:var(--yellow)"></div><span id="lg-b">Class B: 0</span></div><div class="li"><div class="ld" style="background:var(--orange)"></div><span id="lg-c">Class C: 0</span></div><div class="li"><div class="ld" style="background:var(--red)"></div><span id="lg-d">Class D: 0</span></div></div>
       </div></div>
     </div>
-    <div class="tw"><div class="th2"><div class="ttl">🕐 Recent Entries <span class="bliv">LIVE</span></div><button class="btn btn-ghost" onclick="goTab('rec')">Sab →</button></div><div class="tsc"><table><thead><tr><th>Jimidar</th><th>Tarikh</th><th>Receipt</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Bags</th><th>Raqam</th></tr></thead><tbody id="rec-tbody"><tr><td colspan="9"><div class="empty"><div class="ei">📦</div><h3>Koi record nahi</h3></div></td></tr></tbody></table></div></div>
+    <div class="tw"><div class="th2"><div class="ttl">🕐 Recent Entries <span class="bliv">LIVE</span></div><button class="btn btn-ghost" onclick="goTab('rec')">Sab →</button></div><div class="tsc"><table><thead><tr><th>FARMER</th><th>Tarikh</th><th>Receipt</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Bags</th><th>Raqam</th></tr></thead><tbody id="rec-tbody"><tr><td colspan="9"><div class="empty"><div class="ei">📦</div><h3>Koi record nahi</h3></div></td></tr></tbody></table></div></div>
   </div>
 
   <!-- RECORDS -->
@@ -301,7 +301,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
         <div class="fgrp"><span class="fl">Shuru</span><input type="date" class="fi" id="f-from" onchange="applyF()"></div>
         <div class="fgrp"><span class="fl">Khatam</span><input type="date" class="fi" id="f-to" onchange="applyF()"></div>
         <div class="fgrp"><span class="fl">Class</span><select class="fs" id="f-cl" onchange="applyF()"><option value="">Saari</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
-        <div class="fgrp"><span class="fl">Jimidar</span><select class="fs" id="f-farm" onchange="applyF()"><option value="">Sab</option></select></div>
+        <div class="fgrp"><span class="fl">FARMER</span><select class="fs" id="f-farm" onchange="applyF()"><option value="">Sab</option></select></div>
         <div style="display:flex;gap:5px"><button class="btn btn-blue" onclick="applyF()">⚡</button><button class="btn btn-ghost" onclick="clrF()">✕</button></div>
       </div>
       <div class="sort-bar"><span style="font-size:9px;color:#8a95a8;text-transform:uppercase;letter-spacing:1px">Sort:</span>
@@ -316,7 +316,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="th2"><div class="ttl">📋 Khareed Records <span class="rcnt" id="r-cnt">0</span></div><div style="display:flex;gap:6px"><button class="btn btn-green" onclick="expCSV()">⬇ CSV</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
       <div class="tsc"><table>
         <thead><tr>
-          <th>Sr</th><th onclick="sSort('date')">Tarikh</th><th onclick="sSort('farmer')">Jimidar</th><th>Gaon</th><th>Receipt</th>
+          <th>Sr</th><th onclick="sSort('date')">Tarikh</th><th onclick="sSort('farmer')">FARMER</th><th>Gaon</th><th>Receipt</th>
           <th style="color:var(--green)">A Bags</th><th style="color:var(--green)">A Rate</th>
           <th style="color:var(--yellow)">B Bags</th><th style="color:var(--yellow)">B Rate</th>
           <th style="color:var(--orange)">C Bags</th><th style="color:var(--orange)">C Rate</th>
@@ -329,13 +329,13 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     </div>
   </div>
 
-  <!-- JIMIDAR -->
+  <!-- FARMER -->
   <div id="p-jim" class="hidden">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div class="stl">👨‍🌾 Jimidar <span>Directory</span></div>
+      <div class="stl">👨‍🌾 FARMER <span>Directory</span></div>
       <input class="fi" style="width:200px" placeholder="Search..." id="j-s" oninput="renderJ()">
     </div>
-    <div class="jgrid" id="j-grid"><div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>Koi jimidar nahi</h3></div></div>
+    <div class="jgrid" id="j-grid"><div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>Koi FARMER nahi</h3></div></div>
   </div>
 
   <!-- REPORTS -->
@@ -344,7 +344,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
       <button class="btn btn-blue" onclick="genR('monthly')">📅 Monthly</button>
       <button class="btn btn-ghost" onclick="genR('class')">🥔 Class-wise</button>
-      <button class="btn btn-ghost" onclick="genR('farmer')">👨‍🌾 Jimidar-wise</button>
+      <button class="btn btn-ghost" onclick="genR('farmer')">👨‍🌾 FARMER-wise</button>
       <button class="btn btn-green" onclick="expCSV()">⬇ CSV Export</button>
     </div>
     <div id="r-out"><div class="empty" style="padding:50px"><div class="ei">📊</div><h3>Report select karo</h3></div></div>
@@ -356,9 +356,9 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
   <div class="modal">
     <div class="mh"><div class="mt">🥔 <span id="m-title">Naya Khareed</span></div><button class="mx" onclick="closeM('modal')">✕</button></div>
     <div class="mb">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8a95a8;margin-bottom:9px">👤 Jimidar Info</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8a95a8;margin-bottom:9px">👤 FARMER Info</div>
       <div class="fgrid">
-        <div class="fg2"><label class="flbl">Jimidar Naam *</label><input class="finp" id="fi-f" placeholder="Jaise: Raam Singh" list="f-dl"><datalist id="f-dl"></datalist></div>
+        <div class="fg2"><label class="flbl">FARMER Naam *</label><input class="finp" id="fi-f" placeholder="Jaise: Raam Singh" list="f-dl"><datalist id="f-dl"></datalist></div>
         <div class="fg2"><label class="flbl">Tarikh *</label><input type="date" class="finp" id="fi-d"></div>
         <div class="fg2"><label class="flbl">Gaon</label><input class="finp" id="fi-v" placeholder="Ludhiana"></div>
         <div class="fg2"><label class="flbl">Receipt No.</label><input class="finp" id="fi-r" placeholder="Auto"></div>
@@ -374,7 +374,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       </div>
     </div>
     <div class="mf">
-      <div class="tp"><div class="tpi"><div class="tpv" id="tp-b">0</div><div class="tpl">Kul Bags</div></div><div style="width:1px;height:26px;background:var(--border)"></div><div class="tpi"><div class="tpv" id="tp-a">₹0</div><div class="tpl">Kul Raqam</div></div></div>
+      <div class="tp"><div class="tpi"><div class="tpv" id="tp-b">0</div><div class="tpl">TOTAL BAGS</div></div><div style="width:1px;height:26px;background:var(--border)"></div><div class="tpi"><div class="tpv" id="tp-a">₹0</div><div class="tpl">TOTAL AMOUNT</div></div></div>
       <div style="display:flex;gap:6px"><button class="btn btn-ghost" onclick="closeM('modal')">Cancel</button><button class="btn btn-green" onclick="saveR()">✓ Save Karo</button></div>
     </div>
   </div>
@@ -550,7 +550,7 @@ function calcP(){
 function saveR(){
   const farmer=document.getElementById('fi-f').value.trim();
   const date=document.getElementById('fi-d').value;
-  if(!farmer){toast('Jimidar naam zaroor daalo!','e');return;}
+  if(!farmer){toast('FARMER naam zaroor daalo!','e');return;}
   if(!date){toast('Tarikh zaroor daalo!','e');return;}
   const A={bags:parseFloat(document.getElementById('fa-b').value)||0,rate:parseFloat(document.getElementById('fa-r').value)||0};
   const B={bags:parseFloat(document.getElementById('fb-b').value)||0,rate:parseFloat(document.getElementById('fb-r').value)||0};
@@ -689,8 +689,8 @@ function viewD(id){
       ${['A','B','C','D'].map(cl=>{const x=r['class'+cl];return`<div class="dc ${cl}"><div class="cbadge ${cl}" style="margin:0 auto 5px;display:block;text-align:center">${cl}</div><div style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700">${x.bags}</div><div style="font-size:10px;color:#8a95a8">bags</div><div style="font-size:11px;margin-top:3px">@ ₹${x.rate}/bag</div><div style="font-size:12px;font-weight:700;margin-top:2px">₹${fmt(x.bags*x.rate)}</div></div>`;}).join('')}
     </div>
     <div style="text-align:right;margin-top:13px;padding:9px;background:#f7f8fa;border-radius:6px;border:1px solid #dde1e9">
-      <span style="font-size:11px;color:#8a95a8">Kul Bags: </span><strong style="font-family:'Rajdhani',sans-serif;font-size:16px">${r.totalBags}</strong>
-      <span style="margin-left:16px;font-size:11px;color:#8a95a8">Kul Raqam: </span><strong style="font-family:'Rajdhani',sans-serif;font-size:19px;color:var(--green)">₹${fmt(r.totalAmt)}</strong>
+      <span style="font-size:11px;color:#8a95a8">TOTAL BAGS: </span><strong style="font-family:'Rajdhani',sans-serif;font-size:16px">${r.totalBags}</strong>
+      <span style="margin-left:16px;font-size:11px;color:#8a95a8">TOTAL AMOUNT: </span><strong style="font-family:'Rajdhani',sans-serif;font-size:19px;color:var(--green)">₹${fmt(r.totalAmt)}</strong>
     </div>
     <div style="margin-top:11px;display:flex;gap:6px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button>
@@ -757,7 +757,7 @@ function updDash(){
   }).join('');
 }
 
-// ============ JIMIDAR ============
+// ============ FARMER ============
 function renderJ(){
   const s=document.getElementById('j-s').value.toLowerCase();
   const fm={};
@@ -772,14 +772,14 @@ function renderJ(){
   if(s)fs=fs.filter(f=>f.name.toLowerCase().includes(s));
   fs.sort((a,b)=>b.tb-a.tb);
   const grid=document.getElementById('j-grid');
-  if(!fs.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>${s?'Koi nahi mila':'Koi jimidar nahi'}</h3></div>`;return;}
+  if(!fs.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>${s?'Koi nahi mila':'Koi FARMER nahi'}</h3></div>`;return;}
   grid.innerHTML=fs.map(f=>{
     const c=gc(f.name);const mx=Math.max(f.A,f.B,f.C,f.D)||1;
     return`<div class="jcard" onclick="showJD('${f.name}')">
       <div class="jh"><div class="jav" style="background:${c}22;color:${c}">${ini(f.name)}</div><div><div class="jn" style="color:${c}">${f.name}</div><div class="jm">📍 ${f.village||'N/A'} • 🗓 ${f.last}</div></div></div>
       <div class="jstats">
-        <div class="jst"><div class="jsv" style="color:var(--blue)">${f.tb}</div><div class="jsl">Kul Bags</div></div>
-        <div class="jst"><div class="jsv" style="color:var(--green)">₹${fmtS(f.ta)}</div><div class="jsl">Kul Raqam</div></div>
+        <div class="jst"><div class="jsv" style="color:var(--blue)">${f.tb}</div><div class="jsl">TOTAL BAGS</div></div>
+        <div class="jst"><div class="jsv" style="color:var(--green)">₹${fmtS(f.ta)}</div><div class="jsl">TOTAL AMOUNT</div></div>
         <div class="jst"><div class="jsv">${f.entries}</div><div class="jsl">Entries</div></div>
         <div class="jst"><div class="jsv" style="color:var(--yellow)">₹${f.entries?Math.round(f.ta/f.entries):0}</div><div class="jsl">Avg/Entry</div></div>
       </div>
@@ -814,7 +814,7 @@ function genR(type){
     const m={};recs.forEach(r=>{const k=r.date.slice(0,7);if(!m[k])m[k]={bags:0,amt:0,n:0};m[k].bags+=r.totalBags;m[k].amt+=r.totalAmt;m[k].n++;});
     const rows=Object.entries(m).sort((a,b)=>b[0].localeCompare(a[0]));
     if(!rows.length){out.innerHTML='<div class="empty"><div class="ei">📅</div><h3>Koi data nahi</h3></div>';return;}
-    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📅 Monthly Report</div></div><div class="tsc"><table><thead><tr><th>Month</th><th>Entries</th><th>Kul Bags</th><th>Kul Raqam</th><th>Avg/Entry</th></tr></thead><tbody>${rows.map(([k,d])=>`<tr><td class="mono">${k}</td><td>${d.n}</td><td><strong style="font-family:'Rajdhani',sans-serif">${d.bags}</strong></td><td class="amt">₹${fmt(d.amt)}</td><td style="color:#4a5568">₹${fmt(Math.round(d.amt/d.n))}</td></tr>`).join('')}</tbody></table></div></div>`;
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📅 Monthly Report</div></div><div class="tsc"><table><thead><tr><th>Month</th><th>Entries</th><th>TOTAL BAGS</th><th>TOTAL AMOUNT</th><th>Avg/Entry</th></tr></thead><tbody>${rows.map(([k,d])=>`<tr><td class="mono">${k}</td><td>${d.n}</td><td><strong style="font-family:'Rajdhani',sans-serif">${d.bags}</strong></td><td class="amt">₹${fmt(d.amt)}</td><td style="color:#4a5568">₹${fmt(Math.round(d.amt/d.n))}</td></tr>`).join('')}</tbody></table></div></div>`;
   }
   if(type==='class'){
     out.innerHTML=`<div class="cbars">${['A','B','C','D'].map(cl=>{const bags=recs.reduce((s,r)=>s+r['class'+cl].bags,0);const amt=recs.reduce((s,r)=>s+r['class'+cl].bags*r['class'+cl].rate,0);const rs=recs.filter(r=>r['class'+cl].bags>0);const avg=rs.length?Math.round(rs.reduce((s,r)=>s+r['class'+cl].rate,0)/rs.length):0;return`<div class="cbc"><div style="margin-bottom:7px"><span class="cbadge ${cl}">CLASS ${cl}</span></div><div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700">${bags}</div><div style="font-size:11px;color:#8a95a8">bags</div><div style="margin-top:7px;font-size:12px">Avg Rate: <strong>₹${avg}</strong></div><div style="font-size:12px">Raqam: <strong>₹${fmt(amt)}</strong></div></div>`;}).join('')}</div>`;
@@ -823,14 +823,14 @@ function genR(type){
     const fm={};recs.forEach(r=>{if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,bags:0,amt:0,n:0};fm[r.farmer].bags+=r.totalBags;fm[r.farmer].amt+=r.totalAmt;fm[r.farmer].n++;});
     const sorted=Object.values(fm).sort((a,b)=>b.amt-a.amt);
     if(!sorted.length){out.innerHTML='<div class="empty"><div class="ei">👨‍🌾</div><h3>Koi data nahi</h3></div>';return;}
-    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">👨‍🌾 Jimidar Report</div></div><div class="tsc"><table><thead><tr><th>Rank</th><th>Jimidar</th><th>Entries</th><th>Kul Bags</th><th>Kul Raqam</th><th>Avg/Entry</th></tr></thead><tbody>${sorted.map((f,i)=>{const c=gc(f.name);return`<tr><td style="color:#8a95a8">#${i+1}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(f.name)}</div>${f.name}</div></td><td>${f.n}</td><td><strong style="font-family:'Rajdhani',sans-serif">${f.bags}</strong></td><td class="amt">₹${fmt(f.amt)}</td><td>₹${fmt(Math.round(f.amt/f.n))}</td></tr>`;}).join('')}</tbody></table></div></div>`;
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">👨‍🌾 FARMER Report</div></div><div class="tsc"><table><thead><tr><th>Rank</th><th>FARMER</th><th>Entries</th><th>TOTAL BAGS</th><th>TOTAL AMOUNT</th><th>Avg/Entry</th></tr></thead><tbody>${sorted.map((f,i)=>{const c=gc(f.name);return`<tr><td style="color:#8a95a8">#${i+1}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(f.name)}</div>${f.name}</div></td><td>${f.n}</td><td><strong style="font-family:'Rajdhani',sans-serif">${f.bags}</strong></td><td class="amt">₹${fmt(f.amt)}</td><td>₹${fmt(Math.round(f.amt/f.n))}</td></tr>`;}).join('')}</tbody></table></div></div>`;
   }
 }
 
 // ============ CSV EXPORT ============
 function expCSV(){
   if(!recs.length){toast('Koi record nahi','e');return;}
-  const h=['Sr','Tarikh','Jimidar','Gaon','Receipt','A Bags','A Rate','A Raqam','B Bags','B Rate','B Raqam','C Bags','C Rate','C Raqam','D Bags','D Rate','D Raqam','Total Bags','Total Raqam','Notes'];
+  const h=['Sr','Tarikh','FARMER','Gaon','Receipt','A Bags','A Rate','A Raqam','B Bags','B Rate','B Raqam','C Bags','C Rate','C Raqam','D Bags','D Rate','D Raqam','Total Bags','Total Raqam','Notes'];
   const rows=recs.map((r,i)=>[i+1,r.date,r.farmer,r.village||'',r.receipt,r.classA.bags,r.classA.rate,r.classA.bags*r.classA.rate,r.classB.bags,r.classB.rate,r.classB.bags*r.classB.rate,r.classC.bags,r.classC.rate,r.classC.bags*r.classC.rate,r.classD.bags,r.classD.rate,r.classD.bags*r.classD.rate,r.totalBags,r.totalAmt,r.notes||'']);
   const csv=[h,...rows].map(r=>r.join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='ColdStore_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
