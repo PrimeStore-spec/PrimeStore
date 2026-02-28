@@ -479,7 +479,7 @@ async function saveToSheet(rec,action='add'){
     await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)});
     setSt('ok');
     toast('✅ Google Sheet mein save ho gaya!','s');
-    setTimeout(loadSheet,8000); // 3 sec baad fresh data lao
+    setTimeout(loadSheet,15000); // 3 sec baad fresh data lao
   }catch(e){
     setSt('err');
     toast('⚠️ Sheet sync nahi hua — local save hai','e');
