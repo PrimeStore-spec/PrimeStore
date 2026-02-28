@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>❄️ ColdStore Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f2f5;--surface:#fff;--s2:#f7f8fa;--s3:#eef0f4;
+  --border:#dde1e9;--border2:#c5cad6;
+  --text:#1a2332;--text2:#4a5568;--text3:#8a95a8;
+  --blue:#1a5fc8;--blue2:#1450a8;--bluebg:#e8f0fd;
+  --green:#1a7a3c;--gbg:#e8f5ed;--gb:#c8ecd4;
+  --yellow:#b45309;--ybg:#fef3e2;--yb:#fde8b4;
+  --orange:#c2410c;--obg:#fff0eb;--ob:#fdd5c0;
+  --red:#b91c1c;--rbg:#fef0f0;--rb:#fcc8c8;
+  --ok:#16a34a;--danger:#dc2626;
+  --sh:0 2px 10px rgba(0,0,0,0.07);
+  --r:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;box-shadow:0 2px 12px rgba(26,63,140,0.3);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-text{font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:#fff;line-height:1;}
+.logo-sub{font-size:9px;color:rgba(255,255,255,0.6);letter-spacing:1.5px;text-transform:uppercase;}
+.hdr-r{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.hdr-stat{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;text-align:center;}
+.hdr-stat .v{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:#fff;}
+.hdr-stat .l{font-size:8px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:1px;}
+#ss{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:11px;min-width:160px;text-align:center;}
+.btn-w{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px;transition:all 0.2s;}
+.btn-w:hover{background:rgba(255,255,255,0.28);}
+.btn-add{background:#fff;color:var(--blue2);border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans',sans-serif;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+.btn-add:hover{background:#f0f4ff;transform:translateY(-1px);}
+
+/* MAIN */
+main{max-width:1600px;margin:0 auto;padding:16px 18px;}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:3px;width:fit-content;margin-bottom:16px;box-shadow:var(--sh);}
+.tab{padding:6px 15px;border:none;background:transparent;color:var(--text3);border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s;display:flex;align-items:center;gap:4px;}
+.tab:hover{color:var(--blue);background:var(--bluebg);}
+.tab.active{background:var(--blue);color:#fff;}
+
+/* BTN */
+.btn{padding:7px 13px;border:none;border-radius:6px;cursor:pointer;font-family:'Noto Sans',sans-serif;font-size:12px;font-weight:500;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{background:var(--blue2);transform:translateY(-1px);}
+.btn-green{background:#16a34a;color:#fff;}
+.btn-green:hover{background:#15803d;}
+.btn-ghost{background:var(--s2);color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--s3);}
+.btn-red{background:var(--rbg);color:var(--red);border:1px solid var(--rb);}
+.btn-red:hover{background:#fee2e2;}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:11px;margin-bottom:16px;}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;position:relative;overflow:hidden;transition:all 0.2s;box-shadow:var(--sh);}
+.sc:hover{transform:translateY(-2px);box-shadow:0 4px 18px rgba(0,0,0,0.1);}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cc,var(--blue));border-radius:8px 8px 0 0;}
+.si{font-size:19px;margin-bottom:5px;display:block;}
+.sl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;font-weight:600;}
+.sv{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;line-height:1;}
+.ss2{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* CLASS BARS */
+.cbars{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px;}
+.cbc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px;box-shadow:var(--sh);}
+.cbadge{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;padding:3px 9px;border-radius:5px;display:inline-block;}
+.cbadge.A{background:var(--gbg);color:var(--green);border:1px solid var(--gb);}
+.cbadge.B{background:var(--ybg);color:var(--yellow);border:1px solid var(--yb);}
+.cbadge.C{background:var(--obg);color:var(--orange);border:1px solid var(--ob);}
+.cbadge.D{background:var(--rbg);color:var(--red);border:1px solid var(--rb);}
+.pb{height:5px;background:var(--s3);border-radius:3px;overflow:hidden;margin:7px 0;}
+.pf{height:100%;border-radius:3px;transition:width 1s ease;}
+
+/* CHARTS */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px;}
+.cc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:15px;box-shadow:var(--sh);}
+.ct{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue2);margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.br{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.bl{width:100px;font-size:11px;color:var(--text2);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bt{flex:1;height:15px;background:var(--s3);border-radius:3px;overflow:hidden;}
+.bf{height:100%;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;transition:width 1s ease;}
+.bv{font-size:10px;color:#fff;font-weight:700;font-family:'JetBrains Mono',monospace;}
+.donut-w{display:flex;align-items:center;justify-content:center;gap:18px;}
+.donut-svg{transform:rotate(-90deg);}
+.legend{display:flex;flex-direction:column;gap:7px;}
+.li{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);}
+.ld{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+
+/* FILTER */
+.fbox{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 15px;margin-bottom:13px;box-shadow:var(--sh);}
+.ftitle{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:9px;}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:7px;align-items:end;}
+.fgrp{display:flex;flex-direction:column;gap:3px;}
+.fl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+.fi,.fs{background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:6px 9px;font-size:12px;font-family:'Noto Sans',sans-serif;outline:none;width:100%;transition:all 0.2s;}
+.fi:focus,.fs:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,95,200,0.1);background:#fff;}
+.fi::placeholder{color:var(--text3);}
+.sort-bar{display:flex;gap:5px;align-items:center;margin-top:8px;flex-wrap:wrap;}
+.sb{padding:3px 9px;background:var(--s2);border:1px solid var(--border);color:var(--text3);border-radius:4px;cursor:pointer;font-size:11px;transition:all 0.2s;}
+.sb:hover,.sb.on{background:var(--bluebg);color:var(--blue);border-color:var(--blue);}
+
+/* TABLE */
+.tw{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);}
+.th2{display:flex;justify-content:space-between;align-items:center;padding:11px 15px;border-bottom:2px solid var(--border);background:var(--s2);}
+.ttl{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.rcnt{font-size:11px;background:var(--bluebg);border:1px solid #c5d8f8;color:var(--blue);padding:2px 9px;border-radius:20px;font-weight:600;}
+.tsc{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead tr{background:#f0f4fc;}
+th{padding:8px 11px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue2);border-bottom:2px solid #dae4f8;white-space:nowrap;cursor:pointer;user-select:none;transition:all 0.2s;}
+th:hover{color:var(--blue);background:#e8f0fd;}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;}
+tbody tr:nth-child(even){background:#fafbfc;}
+tbody tr:hover{background:var(--bluebg)!important;}
+td{padding:8px 11px;white-space:nowrap;color:var(--text);}
+
+/* CLASS TAGS */
+.ct2{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;}
+.ct2.A{background:var(--gbg);color:var(--green);border:1px solid var(--gb);}
+.ct2.B{background:var(--ybg);color:var(--yellow);border:1px solid var(--yb);}
+.ct2.C{background:var(--obg);color:var(--orange);border:1px solid var(--ob);}
+.ct2.D{background:var(--rbg);color:var(--red);border:1px solid var(--rb);}
+
+.fc2{display:flex;align-items:center;gap:7px;}
+.fa{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;flex-shrink:0;}
+.amt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--green);}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px;}
+.rtag{background:var(--bluebg);color:var(--blue);border-radius:4px;padding:2px 6px;font-size:11px;font-family:'JetBrains Mono',monospace;}
+
+.ab{display:flex;gap:3px;}
+.ab2{width:24px;height:24px;border:1px solid var(--border);background:var(--s2);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all 0.2s;}
+.ab2.e:hover{background:var(--bluebg);border-color:var(--blue);}
+.ab2.d:hover{background:var(--rbg);border-color:var(--red);}
+.ab2.v:hover{background:var(--gbg);border-color:var(--green);}
+
+/* PAGINATION */
+.pag{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;border-top:1px solid var(--border);background:var(--s2);}
+.pi{font-size:11px;color:var(--text3);}
+.pbs{display:flex;gap:3px;}
+.pb2{width:25px;height:25px;border:1px solid var(--border);background:var(--surface);color:var(--text2);border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.pb2:hover{background:var(--bluebg);color:var(--blue);border-color:var(--blue);}
+.pb2.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(26,35,50,0.5);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;}
+.ov.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:10px;width:min(760px,96vw);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:su 0.25s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes su{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mh{background:linear-gradient(135deg,#1a3a6b,#1a5fc8);padding:13px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;border-radius:10px 10px 0 0;}
+.mt{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px;}
+.mx{width:27px;height:27px;border:1px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.8);border-radius:5px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.mx:hover{background:rgba(255,255,255,0.2);}
+.mb{padding:18px;background:#fff;}
+.mf{padding:11px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--s2);border-radius:0 0 10px 10px;position:sticky;bottom:0;}
+
+/* FORM */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px;}
+.full{grid-column:1/-1;}
+.fg2{display:flex;flex-direction:column;gap:4px;}
+.flbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+.finp{background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:8px 10px;font-size:13px;font-family:'Noto Sans',sans-serif;outline:none;transition:all 0.2s;width:100%;}
+.finp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,95,200,0.1);background:#fff;}
+.finp::placeholder{color:var(--text3);}
+
+.cfgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px;}
+.cfc{background:var(--s2);border:2px solid var(--border);border-radius:7px;padding:11px;transition:all 0.2s;}
+.cfc.A:focus-within{border-color:var(--green);background:var(--gbg);}
+.cfc.B:focus-within{border-color:var(--yellow);background:var(--ybg);}
+.cfc.C:focus-within{border-color:var(--orange);background:var(--obg);}
+.cfc.D:focus-within{border-color:var(--red);background:var(--rbg);}
+.cfh{display:flex;align-items:center;gap:6px;margin-bottom:9px;}
+.mfg{margin-bottom:7px;}
+.mfg label{display:block;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;font-weight:600;}
+.mfg input{background:#fff;border:1px solid var(--border);color:var(--text);border-radius:4px;padding:5px 8px;font-size:13px;font-family:'Noto Sans',sans-serif;outline:none;width:100%;transition:all 0.2s;}
+.mfg input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(26,95,200,0.1);}
+.cp{background:#fff;border:1px solid var(--border);border-radius:4px;padding:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--blue);text-align:center;font-weight:700;}
+.tp{display:flex;gap:14px;align-items:center;}
+.tpi{text-align:center;}
+.tpv{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--blue);}
+.tpl{font-size:9px;color:var(--text3);text-transform:uppercase;}
+
+/* JIMIDAR */
+.jgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:11px;}
+.jcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:15px;cursor:pointer;transition:all 0.2s;box-shadow:var(--sh);}
+.jcard:hover{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 4px 18px rgba(26,95,200,0.12);}
+.jh{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+.jav{width:40px;height:40px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;flex-shrink:0;}
+.jn{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;}
+.jm{font-size:10px;color:var(--text3);}
+.jstats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px;}
+.jst{background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:7px 9px;}
+.jsv{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;}
+.jsl{font-size:10px;color:var(--text3);}
+.mbars{display:flex;gap:3px;margin-top:7px;}
+.mbar{flex:1;height:4px;border-radius:2px;background:var(--s3);overflow:hidden;}
+.mbarf{height:100%;border-radius:2px;}
+
+/* DETAIL */
+.dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:11px 0;}
+.dc{border-radius:7px;padding:11px;text-align:center;}
+.dc.A{background:var(--gbg);border:1px solid var(--gb);}
+.dc.B{background:var(--ybg);border:1px solid var(--yb);}
+.dc.C{background:var(--obg);border:1px solid var(--ob);}
+.dc.D{background:var(--rbg);border:1px solid var(--rb);}
+
+/* TOAST */
+.tc{position:fixed;bottom:16px;right:16px;z-index:999;display:flex;flex-direction:column;gap:6px;}
+.toast{background:#fff;border:1px solid var(--border2);border-radius:7px;padding:9px 13px;display:flex;align-items:center;gap:8px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,0.1);animation:ti 0.3s cubic-bezier(0.34,1.56,0.64,1);max-width:280px;color:var(--text);}
+@keyframes ti{from{transform:translateX(50px);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.s{border-left:3px solid var(--ok);}
+.toast.e{border-left:3px solid var(--danger);}
+.toast.i{border-left:3px solid var(--blue);}
+
+/* MISC */
+.hidden{display:none!important;}
+mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding:0 2px;font-weight:600;}
+.div{height:1px;background:var(--border);margin:12px 0;}
+.stl{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
+.stl span{color:var(--blue);}
+.bliv{background:rgba(22,163,74,0.1);color:var(--ok);border:1px solid rgba(22,163,74,0.25);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.empty{text-align:center;padding:40px 20px;color:var(--text3);}
+.ei{font-size:36px;margin-bottom:9px;opacity:0.4;}
+.empty h3{font-family:'Rajdhani',sans-serif;font-size:16px;margin-bottom:6px;color:var(--text2);}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--s3);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+@media(max-width:900px){.fg{grid-template-columns:1fr 1fr;}.cfgrid{grid-template-columns:1fr 1fr;}.charts{grid-template-columns:1fr;}.cbars{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr;}.fg{grid-template-columns:1fr;}.hdr-stat{display:none;}.cbars{grid-template-columns:1fr 1fr;}.cfgrid{grid-template-columns:1fr 1fr;}main{padding:10px;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">❄️</div>
+    <div>
+      <div class="logo-text">ColdStore Pro</div>
+      <div class="logo-sub">Aloo Khareed System</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="hdr-stat"><div class="v" id="h-bags">0</div><div class="l">Total Bags</div></div>
+    <div class="hdr-stat"><div class="v" id="h-amt">₹0</div><div class="l">Raqam</div></div>
+    <div class="hdr-stat"><div class="v" id="h-f">0</div><div class="l">Jimidar</div></div>
+    <div id="ss">⟳ Connect ho raha...</div>
+    <button class="btn-w" onclick="loadSheet()">🔄 Refresh</button>
+    <button class="btn-add" onclick="openM()">＋ Naya Khareed</button>
+  </div>
+</header>
+
+<main>
+  <div class="tabs">
+    <button class="tab active" onclick="goTab('dash')" id="tab-dash">📊 Dashboard</button>
+    <button class="tab" onclick="goTab('rec')" id="tab-rec">📋 Records</button>
+    <button class="tab" onclick="goTab('jim')" id="tab-jim">👨‍🌾 Jimidar</button>
+    <button class="tab" onclick="goTab('rep')" id="tab-rep">📈 Reports</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="p-dash">
+    <div class="stats-grid">
+      <div class="sc" style="--cc:var(--blue)"><span class="si">📦</span><div class="sl">Aaj ki Khareed</div><div class="sv" id="sd-today">0</div><div class="ss2">Bags aaj</div></div>
+      <div class="sc" style="--cc:var(--green)"><span class="si">💰</span><div class="sl">Kul Raqam</div><div class="sv" id="sd-amt">₹0</div><div class="ss2">Sab entries</div></div>
+      <div class="sc" style="--cc:var(--yellow)"><span class="si">🧺</span><div class="sl">Kul Bags</div><div class="sv" id="sd-bags">0</div><div class="ss2">Saari classes</div></div>
+      <div class="sc" style="--cc:var(--orange)"><span class="si">👨‍🌾</span><div class="sl">Jimidar</div><div class="sv" id="sd-f">0</div><div class="ss2">Registered</div></div>
+      <div class="sc" style="--cc:var(--green)"><span class="si">🟢</span><div class="sl">Class A</div><div class="sv" id="sd-a">0</div><div class="ss2">Best quality</div></div>
+      <div class="sc" style="--cc:var(--yellow)"><span class="si">🟡</span><div class="sl">Class B</div><div class="sv" id="sd-b">0</div><div class="ss2">Good quality</div></div>
+      <div class="sc" style="--cc:var(--orange)"><span class="si">🟠</span><div class="sl">Class C</div><div class="sv" id="sd-c">0</div><div class="ss2">Average</div></div>
+      <div class="sc" style="--cc:var(--red)"><span class="si">🔴</span><div class="sl">Class D</div><div class="sv" id="sd-d">0</div><div class="ss2">Low quality</div></div>
+    </div>
+    <div class="cbars">
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge A">CLASS A</span><span id="pct-a" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-a" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--green)">0 bags</div><div class="pb"><div class="pf" id="bar-a" style="background:var(--green);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-a" style="color:var(--green);font-weight:600">₹0</span></div></div>
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge B">CLASS B</span><span id="pct-b" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-b" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--yellow)">0 bags</div><div class="pb"><div class="pf" id="bar-b" style="background:var(--yellow);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-b" style="color:var(--yellow);font-weight:600">₹0</span></div></div>
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge C">CLASS C</span><span id="pct-c" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-c" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--orange)">0 bags</div><div class="pb"><div class="pf" id="bar-c" style="background:var(--orange);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-c" style="color:var(--orange);font-weight:600">₹0</span></div></div>
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge D">CLASS D</span><span id="pct-d" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-d" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--red)">0 bags</div><div class="pb"><div class="pf" id="bar-d" style="background:var(--red);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-d" style="color:var(--red);font-weight:600">₹0</span></div></div>
+    </div>
+    <div class="charts">
+      <div class="cc"><div class="ct">📊 Jimidar wise Bags</div><div id="chart-bars"><div class="empty"><div class="ei">📊</div><p>Koi record nahi</p></div></div></div>
+      <div class="cc"><div class="ct">🥧 Class Distribution</div><div class="donut-w">
+        <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="42" fill="none" stroke="#eef0f4" stroke-width="20"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--green)" stroke-width="20" stroke-dasharray="0 264" id="d-a"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--yellow)" stroke-width="20" stroke-dasharray="0 264" id="d-b"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--orange)" stroke-width="20" stroke-dasharray="0 264" id="d-c"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--red)" stroke-width="20" stroke-dasharray="0 264" id="d-d"/></svg>
+        <div class="legend"><div class="li"><div class="ld" style="background:var(--green)"></div><span id="lg-a">Class A: 0</span></div><div class="li"><div class="ld" style="background:var(--yellow)"></div><span id="lg-b">Class B: 0</span></div><div class="li"><div class="ld" style="background:var(--orange)"></div><span id="lg-c">Class C: 0</span></div><div class="li"><div class="ld" style="background:var(--red)"></div><span id="lg-d">Class D: 0</span></div></div>
+      </div></div>
+    </div>
+    <div class="tw"><div class="th2"><div class="ttl">🕐 Recent Entries <span class="bliv">LIVE</span></div><button class="btn btn-ghost" onclick="goTab('rec')">Sab →</button></div><div class="tsc"><table><thead><tr><th>Jimidar</th><th>Tarikh</th><th>Receipt</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Bags</th><th>Raqam</th></tr></thead><tbody id="rec-tbody"><tr><td colspan="9"><div class="empty"><div class="ei">📦</div><h3>Koi record nahi</h3></div></td></tr></tbody></table></div></div>
+  </div>
+
+  <!-- RECORDS -->
+  <div id="p-rec" class="hidden">
+    <div class="fbox">
+      <div class="ftitle">🔍 Filter & Search</div>
+      <div class="fg">
+        <div class="fgrp"><span class="fl">Search</span><input class="fi" id="f-s" placeholder="Naam, Receipt, Gaon..." oninput="applyF()"></div>
+        <div class="fgrp"><span class="fl">Shuru</span><input type="date" class="fi" id="f-from" onchange="applyF()"></div>
+        <div class="fgrp"><span class="fl">Khatam</span><input type="date" class="fi" id="f-to" onchange="applyF()"></div>
+        <div class="fgrp"><span class="fl">Class</span><select class="fs" id="f-cl" onchange="applyF()"><option value="">Saari</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="fgrp"><span class="fl">Jimidar</span><select class="fs" id="f-farm" onchange="applyF()"><option value="">Sab</option></select></div>
+        <div style="display:flex;gap:5px"><button class="btn btn-blue" onclick="applyF()">⚡</button><button class="btn btn-ghost" onclick="clrF()">✕</button></div>
+      </div>
+      <div class="sort-bar"><span style="font-size:9px;color:#8a95a8;text-transform:uppercase;letter-spacing:1px">Sort:</span>
+        <button class="sb" onclick="sSort('date')">📅 Tarikh</button>
+        <button class="sb" onclick="sSort('farmer')">👨 Naam</button>
+        <button class="sb" onclick="sSort('totalBags')">📦 Bags</button>
+        <button class="sb" onclick="sSort('totalAmt')">💰 Raqam</button>
+        <button class="sb" onclick="togDir()" id="dir-b">↓ DESC</button>
+      </div>
+    </div>
+    <div class="tw">
+      <div class="th2"><div class="ttl">📋 Khareed Records <span class="rcnt" id="r-cnt">0</span></div><div style="display:flex;gap:6px"><button class="btn btn-green" onclick="expCSV()">⬇ CSV</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
+      <div class="tsc"><table>
+        <thead><tr>
+          <th>Sr</th><th onclick="sSort('date')">Tarikh</th><th onclick="sSort('farmer')">Jimidar</th><th>Gaon</th><th>Receipt</th>
+          <th style="color:var(--green)">A Bags</th><th style="color:var(--green)">A Rate</th>
+          <th style="color:var(--yellow)">B Bags</th><th style="color:var(--yellow)">B Rate</th>
+          <th style="color:var(--orange)">C Bags</th><th style="color:var(--orange)">C Rate</th>
+          <th style="color:var(--red)">D Bags</th><th style="color:var(--red)">D Rate</th>
+          <th>Bags</th><th>Raqam</th><th>Action</th>
+        </tr></thead>
+        <tbody id="main-tbody"><tr><td colspan="16"><div class="empty"><div class="ei">🥔</div><h3>Koi record nahi</h3><p style="margin:6px 0 12px">Naya entry karo</p><button class="btn btn-blue" onclick="openM()">＋ Add Karo</button></div></td></tr></tbody>
+      </table></div>
+      <div class="pag"><div class="pi" id="p-info">0 records</div><div class="pbs" id="p-btns"></div></div>
+    </div>
+  </div>
+
+  <!-- JIMIDAR -->
+  <div id="p-jim" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="stl">👨‍🌾 Jimidar <span>Directory</span></div>
+      <input class="fi" style="width:200px" placeholder="Search..." id="j-s" oninput="renderJ()">
+    </div>
+    <div class="jgrid" id="j-grid"><div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>Koi jimidar nahi</h3></div></div>
+  </div>
+
+  <!-- REPORTS -->
+  <div id="p-rep" class="hidden">
+    <div class="stl">📈 Reports & <span>Analytics</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-blue" onclick="genR('monthly')">📅 Monthly</button>
+      <button class="btn btn-ghost" onclick="genR('class')">🥔 Class-wise</button>
+      <button class="btn btn-ghost" onclick="genR('farmer')">👨‍🌾 Jimidar-wise</button>
+      <button class="btn btn-green" onclick="expCSV()">⬇ CSV Export</button>
+    </div>
+    <div id="r-out"><div class="empty" style="padding:50px"><div class="ei">📊</div><h3>Report select karo</h3></div></div>
+  </div>
+</main>
+
+<!-- ADD/EDIT MODAL -->
+<div class="ov" id="modal" onclick="closeOut(event,'modal')">
+  <div class="modal">
+    <div class="mh"><div class="mt">🥔 <span id="m-title">Naya Khareed</span></div><button class="mx" onclick="closeM('modal')">✕</button></div>
+    <div class="mb">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8a95a8;margin-bottom:9px">👤 Jimidar Info</div>
+      <div class="fgrid">
+        <div class="fg2"><label class="flbl">Jimidar Naam *</label><input class="finp" id="fi-f" placeholder="Jaise: Raam Singh" list="f-dl"><datalist id="f-dl"></datalist></div>
+        <div class="fg2"><label class="flbl">Tarikh *</label><input type="date" class="finp" id="fi-d"></div>
+        <div class="fg2"><label class="flbl">Gaon</label><input class="finp" id="fi-v" placeholder="Ludhiana"></div>
+        <div class="fg2"><label class="flbl">Receipt No.</label><input class="finp" id="fi-r" placeholder="Auto"></div>
+        <div class="fg2 full"><label class="flbl">Notes</label><input class="finp" id="fi-n" placeholder="Koi khaas baat..."></div>
+      </div>
+      <div class="div"></div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8a95a8;margin-bottom:9px">🥔 Class Wise Qty & Rate</div>
+      <div class="cfgrid">
+        <div class="cfc A"><div class="cfh"><span class="cbadge A">A</span><span style="font-size:10px;color:var(--green)">Best Quality</span></div><div class="mfg"><label>Bags</label><input type="number" id="fa-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fa-r" placeholder="850" min="0" oninput="calcP()"></div><div class="cp" id="pa">₹0</div></div>
+        <div class="cfc B"><div class="cfh"><span class="cbadge B">B</span><span style="font-size:10px;color:var(--yellow)">Good</span></div><div class="mfg"><label>Bags</label><input type="number" id="fb-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fb-r" placeholder="750" min="0" oninput="calcP()"></div><div class="cp" id="pb">₹0</div></div>
+        <div class="cfc C"><div class="cfh"><span class="cbadge C">C</span><span style="font-size:10px;color:var(--orange)">Average</span></div><div class="mfg"><label>Bags</label><input type="number" id="fc-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fc-r" placeholder="650" min="0" oninput="calcP()"></div><div class="cp" id="pc">₹0</div></div>
+        <div class="cfc D"><div class="cfh"><span class="cbadge D">D</span><span style="font-size:10px;color:var(--red)">Low</span></div><div class="mfg"><label>Bags</label><input type="number" id="fd-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fd-r" placeholder="550" min="0" oninput="calcP()"></div><div class="cp" id="pd">₹0</div></div>
+      </div>
+    </div>
+    <div class="mf">
+      <div class="tp"><div class="tpi"><div class="tpv" id="tp-b">0</div><div class="tpl">Kul Bags</div></div><div style="width:1px;height:26px;background:var(--border)"></div><div class="tpi"><div class="tpv" id="tp-a">₹0</div><div class="tpl">Kul Raqam</div></div></div>
+      <div style="display:flex;gap:6px"><button class="btn btn-ghost" onclick="closeM('modal')">Cancel</button><button class="btn btn-green" onclick="saveR()">✓ Save Karo</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="ov" id="d-modal" onclick="closeOut(event,'d-modal')">
+  <div class="modal" style="max-width:560px">
+    <div class="mh"><div class="mt">📋 <span id="d-title">Detail</span></div><button class="mx" onclick="closeM('d-modal')">✕</button></div>
+    <div class="mb" id="d-body"></div>
+  </div>
+</div>
+
+<div class="tc" id="toasts"></div>
+
+<script>
+// ============ CONFIG ============
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxUZz_ewOxzIpRNQqxg6Iof8aoB-SKb-QasCUJxmeXd368Fflhrx6a9M03bqV-TEMXj0w/exec';
+
+// ============ STATE ============
+let recs = [];
+let filtered = [];
+let editId = null;
+let pg = 1;
+const PP = 15;
+let sField = 'date', sDir = 'desc';
+let autoTimer = null;
+
+// ============ UTILS ============
+const FC = ['#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16','#ef4444','#a855f7'];
+const FCM = {}; let fci = 0;
+function gc(n){if(!FCM[n])FCM[n]=FC[fci++%FC.length];return FCM[n];}
+function ini(n){return(n||'').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';}
+function fmt(n){return(n||0).toLocaleString('en-IN');}
+function fmtS(n){n=n||0;if(n>=10000000)return(n/10000000).toFixed(1)+'Cr';if(n>=100000)return(n/100000).toFixed(1)+'L';if(n>=1000)return(n/1000).toFixed(1)+'K';return String(Math.round(n));}
+function hl(txt,s){if(!s||!txt)return txt||'';return String(txt).replace(new RegExp('('+s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
+
+// ============ STATUS ============
+function setSt(s){
+  const el=document.getElementById('ss');if(!el)return;
+  const m={ok:'<span style="color:#4ade80;font-weight:600">● Sheet Connected ✓</span>',sync:'<span style="color:#fbbf24">⟳ Sync ho raha...</span>',load:'<span style="color:#fbbf24">⟳ Data load ho raha...</span>',err:'<span style="color:#f87171">● Error — Retry...</span>',ch:'<span style="color:rgba(255,255,255,0.6)">⟳ Check ho raha...</span>'};
+  el.innerHTML=m[s]||m.ch;
+}
+
+// ============ LOAD FROM SHEET ============
+async function loadSheet(){
+  setSt('load');
+  const proxies=[
+    ()=>fetch(SHEET_URL,{method:'GET',redirect:'follow'}),
+    ()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL)),
+    ()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent(SHEET_URL)),
+  ];
+  for(let i=0;i<proxies.length;i++){
+    try{
+      const res=await proxies[i]();
+      let txt=await res.text();
+      try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
+      const data=JSON.parse(txt);
+      if(data.status==='success'&&Array.isArray(data.records)){
+        recs=data.records;
+        localStorage.setItem('cs_r',JSON.stringify(recs));
+        setSt('ok');
+        updAll();applyF();
+        toast('✅ Sheet se '+recs.length+' records load ho gaye!','s');
+        startAR();
+        return;
+      }
+    }catch(e){console.log('Proxy '+i+' fail:',e.message);}
+  }
+  // Sab fail — local
+  recs=JSON.parse(localStorage.getItem('cs_r')||'[]');
+  setSt('err');
+  updAll();applyF();
+  toast('⚠️ Sheet connect nahi — local data dikh raha hai. 15s mein retry...','e');
+  setTimeout(loadSheet,15000);
+}
+
+// ============ AUTO REFRESH (20 sec) ============
+function startAR(){
+  if(autoTimer)clearInterval(autoTimer);
+  autoTimer=setInterval(async()=>{
+    try{
+      const res=await fetch(SHEET_URL,{method:'GET',redirect:'follow'});
+      let txt=await res.text();
+      try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
+      const data=JSON.parse(txt);
+      if(data.status==='success'&&Array.isArray(data.records)){
+        recs=data.records;
+        localStorage.setItem('cs_r',JSON.stringify(recs));
+        setSt('ok');
+        updAll();applyF();
+      }
+    }catch(e){}
+  },20000);
+}
+
+// ============ SAVE TO SHEET ============
+async function saveToSheet(rec,action='add'){
+  setSt('sync');
+  const p={action,id:rec.id,date:rec.date,farmer:rec.farmer,village:rec.village||'',receipt:rec.receipt||'',classA_bags:rec.classA.bags||0,classA_rate:rec.classA.rate||0,classB_bags:rec.classB.bags||0,classB_rate:rec.classB.rate||0,classC_bags:rec.classC.bags||0,classC_rate:rec.classC.rate||0,classD_bags:rec.classD.bags||0,classD_rate:rec.classD.rate||0,totalBags:rec.totalBags||0,totalAmt:rec.totalAmt||0,notes:rec.notes||''};
+  try{
+    await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)});
+    setSt('ok');
+    toast('✅ Google Sheet mein save ho gaya!','s');
+    setTimeout(loadSheet,3000); // 3 sec baad fresh data lao
+  }catch(e){
+    setSt('err');
+    toast('⚠️ Sheet sync nahi hua — local save hai','e');
+  }
+}
+
+// ============ LOCAL SAVE ============
+function saveL(){localStorage.setItem('cs_r',JSON.stringify(recs));}
+
+// ============ TABS ============
+function goTab(t){
+  ['dash','rec','jim','rep'].forEach(x=>{
+    document.getElementById('p-'+x).classList.toggle('hidden',x!==t);
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='rec')applyF();
+  if(t==='jim')renderJ();
+  if(t==='dash')updDash();
+}
+
+// ============ MODAL ============
+function openM(id=null){
+  editId=id;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('m-title').textContent=id?'Record Edit':'Naya Khareed';
+  if(id){
+    const r=recs.find(x=>x.id===id);
+    if(r){
+      document.getElementById('fi-f').value=r.farmer;
+      document.getElementById('fi-d').value=r.date;
+      document.getElementById('fi-v').value=r.village||'';
+      document.getElementById('fi-r').value=r.receipt||'';
+      document.getElementById('fi-n').value=r.notes||'';
+      document.getElementById('fa-b').value=r.classA.bags||'';
+      document.getElementById('fa-r').value=r.classA.rate||'';
+      document.getElementById('fb-b').value=r.classB.bags||'';
+      document.getElementById('fb-r').value=r.classB.rate||'';
+      document.getElementById('fc-b').value=r.classC.bags||'';
+      document.getElementById('fc-r').value=r.classC.rate||'';
+      document.getElementById('fd-b').value=r.classD.bags||'';
+      document.getElementById('fd-r').value=r.classD.rate||'';
+    }
+  }else{
+    ['fi-f','fi-v','fi-r','fi-n','fa-b','fa-r','fb-b','fb-r','fc-b','fc-r','fd-b','fd-r'].forEach(x=>document.getElementById(x).value='');
+    document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
+    document.getElementById('fi-r').value='RC-'+String(recs.length+1).padStart(3,'0');
+  }
+  const dl=document.getElementById('f-dl');
+  dl.innerHTML=[...new Set(recs.map(r=>r.farmer))].map(f=>`<option value="${f}">`).join('');
+  calcP();
+}
+function closeM(id){document.getElementById(id).classList.remove('open');if(id==='modal')editId=null;}
+function closeOut(e,id){if(e.target===document.getElementById(id))closeM(id);}
+
+function calcP(){
+  let tb=0,ta=0;
+  [['a','pa'],['b','pb'],['c','pc'],['d','pd']].forEach(([c,pid])=>{
+    const bags=parseFloat(document.getElementById('f'+c+'-b').value)||0;
+    const rate=parseFloat(document.getElementById('f'+c+'-r').value)||0;
+    const amt=bags*rate;
+    document.getElementById(pid).textContent=amt>0?'₹'+fmt(amt):'₹0';
+    tb+=bags;ta+=amt;
+  });
+  document.getElementById('tp-b').textContent=tb;
+  document.getElementById('tp-a').textContent='₹'+fmt(ta);
+}
+
+function saveR(){
+  const farmer=document.getElementById('fi-f').value.trim();
+  const date=document.getElementById('fi-d').value;
+  if(!farmer){toast('Jimidar naam zaroor daalo!','e');return;}
+  if(!date){toast('Tarikh zaroor daalo!','e');return;}
+  const A={bags:parseFloat(document.getElementById('fa-b').value)||0,rate:parseFloat(document.getElementById('fa-r').value)||0};
+  const B={bags:parseFloat(document.getElementById('fb-b').value)||0,rate:parseFloat(document.getElementById('fb-r').value)||0};
+  const C={bags:parseFloat(document.getElementById('fc-b').value)||0,rate:parseFloat(document.getElementById('fc-r').value)||0};
+  const D={bags:parseFloat(document.getElementById('fd-b').value)||0,rate:parseFloat(document.getElementById('fd-r').value)||0};
+  if(!A.bags&&!B.bags&&!C.bags&&!D.bags){toast('Kam se kam ek class ki bags daalo!','e');return;}
+  const tB=A.bags+B.bags+C.bags+D.bags;
+  const tA=A.bags*A.rate+B.bags*B.rate+C.bags*C.rate+D.bags*D.rate;
+  const rec={id:editId||Date.now().toString(),farmer,date,village:document.getElementById('fi-v').value.trim(),receipt:document.getElementById('fi-r').value.trim()||'RC-'+String(recs.length+1).padStart(3,'0'),notes:document.getElementById('fi-n').value.trim(),classA:A,classB:B,classC:C,classD:D,totalBags:tB,totalAmt:tA,createdAt:editId?recs.find(x=>x.id===editId)?.createdAt:new Date().toISOString()};
+  if(editId){recs=recs.map(x=>x.id===editId?rec:x);toast(farmer+' ka record update ho gaya!','s');}
+  else{recs.unshift(rec);toast(farmer+' ka record save ho gaya! 🥔','s');}
+  saveL();closeM('modal');updAll();applyF();
+  saveToSheet(rec,editId?'edit':'add');
+}
+
+function delR(id){
+  if(!confirm('Kya delete karna chahte hain?'))return;
+  const rec=recs.find(x=>x.id===id);
+  recs=recs.filter(x=>x.id!==id);
+  saveL();updAll();applyF();
+  if(rec)saveToSheet(rec,'delete');
+  toast('Record delete ho gaya','i');
+  closeM('d-modal');
+}
+
+// ============ FILTERS ============
+function applyF(){
+  const s=document.getElementById('f-s').value.toLowerCase();
+  const from=document.getElementById('f-from').value;
+  const to=document.getElementById('f-to').value;
+  const cls=document.getElementById('f-cl').value;
+  const farm=document.getElementById('f-farm').value;
+  filtered=recs.filter(r=>{
+    if(s&&!r.farmer.toLowerCase().includes(s)&&!r.receipt.toLowerCase().includes(s)&&!r.village.toLowerCase().includes(s)&&!(r.notes||'').toLowerCase().includes(s))return false;
+    if(from&&r.date<from)return false;
+    if(to&&r.date>to)return false;
+    if(farm&&r.farmer!==farm)return false;
+    if(cls){const cm={A:'classA',B:'classB',C:'classC',D:'classD'};if(!r[cm[cls]]||r[cm[cls]].bags<=0)return false;}
+    return true;
+  });
+  filtered.sort((a,b)=>{
+    let av=a[sField],bv=b[sField];
+    if(sField==='farmer'){av=a.farmer.toLowerCase();bv=b.farmer.toLowerCase();}
+    if(typeof av==='string')return sDir==='asc'?av.localeCompare(bv):bv.localeCompare(av);
+    return sDir==='asc'?av-bv:bv-av;
+  });
+  pg=1;renderT();updFarm();
+}
+
+function clrF(){
+  ['f-s','f-from','f-to'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-cl').value='';
+  document.getElementById('f-farm').value='';
+  applyF();
+}
+
+function sSort(f){
+  if(sField===f)sDir=sDir==='asc'?'desc':'asc';
+  else{sField=f;sDir='desc';}
+  document.getElementById('dir-b').textContent=sDir==='asc'?'↑ ASC':'↓ DESC';
+  applyF();
+}
+function togDir(){sDir=sDir==='asc'?'desc':'asc';document.getElementById('dir-b').textContent=sDir==='asc'?'↑ ASC':'↓ DESC';applyF();}
+
+function updFarm(){
+  const sel=document.getElementById('f-farm');
+  const cur=sel.value;
+  const fs=[...new Set(recs.map(r=>r.farmer))].sort();
+  sel.innerHTML=`<option value="">Sab</option>`+fs.map(f=>`<option value="${f}"${f===cur?' selected':''}>${f}</option>`).join('');
+}
+
+// ============ RENDER TABLE ============
+function renderT(){
+  const s=document.getElementById('f-s').value.toLowerCase();
+  const tot=filtered.length;
+  const pages=Math.max(1,Math.ceil(tot/PP));
+  pg=Math.min(pg,pages);
+  const st=(pg-1)*PP,en=Math.min(st+PP,tot);
+  const slice=filtered.slice(st,en);
+  document.getElementById('r-cnt').textContent=tot+' records';
+  document.getElementById('p-info').textContent=tot?`${st+1}-${en} / ${tot}`:'0 records';
+  if(!tot){
+    document.getElementById('main-tbody').innerHTML=`<tr><td colspan="16"><div class="empty"><div class="ei">🔍</div><h3>Koi record nahi mila</h3><p>Filter change karo ya naya add karo</p></div></td></tr>`;
+    document.getElementById('p-btns').innerHTML='';return;
+  }
+  document.getElementById('main-tbody').innerHTML=slice.map((r,i)=>{
+    const c=gc(r.farmer);
+    return `<tr>
+      <td style="color:#8a95a8;font-size:11px">${st+i+1}</td>
+      <td class="mono">${r.date}</td>
+      <td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div><span>${hl(r.farmer,s)}</span></div></td>
+      <td style="color:#4a5568">${hl(r.village||'—',s)}</td>
+      <td><span class="rtag">${hl(r.receipt,s)}</span></td>
+      <td>${r.classA.bags?`<span class="ct2 A">${r.classA.bags}</span>`:'<span style="color:#8a95a8">—</span>'}</td>
+      <td style="font-size:11px;color:var(--green)">${r.classA.rate?'₹'+r.classA.rate:''}</td>
+      <td>${r.classB.bags?`<span class="ct2 B">${r.classB.bags}</span>`:'<span style="color:#8a95a8">—</span>'}</td>
+      <td style="font-size:11px;color:var(--yellow)">${r.classB.rate?'₹'+r.classB.rate:''}</td>
+      <td>${r.classC.bags?`<span class="ct2 C">${r.classC.bags}</span>`:'<span style="color:#8a95a8">—</span>'}</td>
+      <td style="font-size:11px;color:var(--orange)">${r.classC.rate?'₹'+r.classC.rate:''}</td>
+      <td>${r.classD.bags?`<span class="ct2 D">${r.classD.bags}</span>`:'<span style="color:#8a95a8">—</span>'}</td>
+      <td style="font-size:11px;color:var(--red)">${r.classD.rate?'₹'+r.classD.rate:''}</td>
+      <td><strong style="font-family:'Rajdhani',sans-serif;font-size:13px">${r.totalBags}</strong></td>
+      <td class="amt">₹${fmt(r.totalAmt)}</td>
+      <td><div class="ab">
+        <button class="ab2 v" onclick="viewD('${r.id}')" title="View">👁</button>
+        <button class="ab2 e" onclick="openM('${r.id}')" title="Edit">✏</button>
+        <button class="ab2 d" onclick="delR('${r.id}')" title="Delete">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  // Pagination
+  const pages2=Math.ceil(tot/PP);
+  if(pages2<=1){document.getElementById('p-btns').innerHTML='';return;}
+  let h='';
+  if(pg>1)h+=`<button class="pb2" onclick="goPg(${pg-1})">‹</button>`;
+  const s2=Math.max(1,pg-2),e2=Math.min(pages2,pg+2);
+  if(s2>1)h+=`<button class="pb2" onclick="goPg(1)">1</button>${s2>2?'<span style="padding:0 3px;color:#8a95a8">...</span>':''}`;
+  for(let i=s2;i<=e2;i++)h+=`<button class="pb2${i===pg?' on':''}" onclick="goPg(${i})">${i}</button>`;
+  if(e2<pages2)h+=`${e2<pages2-1?'<span style="padding:0 3px;color:#8a95a8">...</span>':''}<button class="pb2" onclick="goPg(${pages2})">${pages2}</button>`;
+  if(pg<pages2)h+=`<button class="pb2" onclick="goPg(${pg+1})">›</button>`;
+  document.getElementById('p-btns').innerHTML=h;
+}
+function goPg(p){pg=p;renderT();}
+
+// ============ VIEW DETAIL ============
+function viewD(id){
+  const r=recs.find(x=>x.id===id);if(!r)return;
+  const c=gc(r.farmer);
+  document.getElementById('d-title').textContent=r.farmer+' — '+r.date;
+  document.getElementById('d-body').innerHTML=`
+    <div style="display:flex;gap:11px;align-items:center;margin-bottom:14px">
+      <div class="jav" style="width:44px;height:44px;font-size:16px;border-radius:8px;background:${c}22;color:${c}">${ini(r.farmer)}</div>
+      <div><div style="font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700">${r.farmer}</div><div style="font-size:11px;color:#8a95a8">📍 ${r.village||'N/A'} • 📋 ${r.receipt} • 🗓 ${r.date}</div>${r.notes?`<div style="font-size:11px;color:#4a5568;margin-top:2px">📝 ${r.notes}</div>`:''}</div>
+    </div>
+    <div class="dgrid">
+      ${['A','B','C','D'].map(cl=>{const x=r['class'+cl];return`<div class="dc ${cl}"><div class="cbadge ${cl}" style="margin:0 auto 5px;display:block;text-align:center">${cl}</div><div style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700">${x.bags}</div><div style="font-size:10px;color:#8a95a8">bags</div><div style="font-size:11px;margin-top:3px">@ ₹${x.rate}/bag</div><div style="font-size:12px;font-weight:700;margin-top:2px">₹${fmt(x.bags*x.rate)}</div></div>`;}).join('')}
+    </div>
+    <div style="text-align:right;margin-top:13px;padding:9px;background:#f7f8fa;border-radius:6px;border:1px solid #dde1e9">
+      <span style="font-size:11px;color:#8a95a8">Kul Bags: </span><strong style="font-family:'Rajdhani',sans-serif;font-size:16px">${r.totalBags}</strong>
+      <span style="margin-left:16px;font-size:11px;color:#8a95a8">Kul Raqam: </span><strong style="font-family:'Rajdhani',sans-serif;font-size:19px;color:var(--green)">₹${fmt(r.totalAmt)}</strong>
+    </div>
+    <div style="margin-top:11px;display:flex;gap:6px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button>
+      <button class="btn btn-red" onclick="delR('${r.id}')">🗑 Delete</button>
+    </div>`;
+  document.getElementById('d-modal').classList.add('open');
+}
+
+// ============ DASHBOARD ============
+function updDash(){
+  const today=new Date().toISOString().split('T')[0];
+  const tB=recs.reduce((s,r)=>s+r.totalBags,0);
+  const tA=recs.reduce((s,r)=>s+r.totalAmt,0);
+  const todB=recs.filter(r=>r.date===today).reduce((s,r)=>s+r.totalBags,0);
+  const fms=new Set(recs.map(r=>r.farmer)).size;
+  const cs={A:recs.reduce((s,r)=>s+r.classA.bags,0),B:recs.reduce((s,r)=>s+r.classB.bags,0),C:recs.reduce((s,r)=>s+r.classC.bags,0),D:recs.reduce((s,r)=>s+r.classD.bags,0)};
+  document.getElementById('h-bags').textContent=tB;
+  document.getElementById('h-amt').textContent='₹'+fmtS(tA);
+  document.getElementById('h-f').textContent=fms;
+  document.getElementById('sd-today').textContent=todB;
+  document.getElementById('sd-amt').textContent='₹'+fmtS(tA);
+  document.getElementById('sd-bags').textContent=tB;
+  document.getElementById('sd-f').textContent=fms;
+  document.getElementById('sd-a').textContent=cs.A;
+  document.getElementById('sd-b').textContent=cs.B;
+  document.getElementById('sd-c').textContent=cs.C;
+  document.getElementById('sd-d').textContent=cs.D;
+  const tot=tB||1;
+  [['A','a'],['B','b'],['C','c'],['D','d']].forEach(([cl,x])=>{
+    const bags=cs[cl];const pct=Math.round(bags/tot*100);
+    document.getElementById('bar-'+x).style.width=pct+'%';
+    document.getElementById('pct-'+x).textContent=pct+'%';
+    document.getElementById('bags-'+x).textContent=bags+' bags';
+    const rs=recs.filter(r=>r['class'+cl].bags>0);
+    const avg=rs.length?Math.round(rs.reduce((s,r)=>s+r['class'+cl].rate,0)/rs.length):0;
+    document.getElementById('avg-'+x).textContent='₹'+avg;
+  });
+  // Donut
+  const circ=2*Math.PI*42;let off=0;
+  [['A','d-a'],['B','d-b'],['C','d-c'],['D','d-d']].forEach(([cl,id])=>{
+    const bags=cs[cl];const len=tB?(bags/tB)*circ:0;
+    const el=document.getElementById(id);
+    el.setAttribute('stroke-dasharray',`${len} ${circ-len}`);
+    el.setAttribute('stroke-dashoffset',-off);off+=len;
+  });
+  document.getElementById('lg-a').textContent=`Class A: ${cs.A}`;
+  document.getElementById('lg-b').textContent=`Class B: ${cs.B}`;
+  document.getElementById('lg-c').textContent=`Class C: ${cs.C}`;
+  document.getElementById('lg-d').textContent=`Class D: ${cs.D}`;
+  // Farmer bar chart
+  const fb={};recs.forEach(r=>fb[r.farmer]=(fb[r.farmer]||0)+r.totalBags);
+  const sorted=Object.entries(fb).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const mx=sorted[0]?.[1]||1;
+  document.getElementById('chart-bars').innerHTML=sorted.length?sorted.map(([name,bags])=>{
+    const c=gc(name);
+    return`<div class="br"><div class="bl" title="${name}">${name}</div><div class="bt"><div class="bf" style="background:${c};width:${bags/mx*100}%"><span class="bv">${bags}</span></div></div></div>`;
+  }).join(''):'<div class="empty" style="padding:20px"><div class="ei">📊</div><p>Koi record nahi</p></div>';
+  // Recent 5
+  const recent=recs.slice(0,5);
+  if(!recent.length){document.getElementById('rec-tbody').innerHTML=`<tr><td colspan="9"><div class="empty"><div class="ei">📦</div><h3>Koi record nahi</h3><p>Naya khareed add karo</p></div></td></tr>`;return;}
+  document.getElementById('rec-tbody').innerHTML=recent.map(r=>{
+    const c=gc(r.farmer);
+    return`<tr><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td><td class="mono" style="font-size:11px">${r.date}</td><td><span class="rtag">${r.receipt}</span></td><td>${r.classA.bags||'—'}</td><td>${r.classB.bags||'—'}</td><td>${r.classC.bags||'—'}</td><td>${r.classD.bags||'—'}</td><td><strong style="font-family:'Rajdhani',sans-serif">${r.totalBags}</strong></td><td class="amt">₹${fmt(r.totalAmt)}</td></tr>`;
+  }).join('');
+}
+
+// ============ JIMIDAR ============
+function renderJ(){
+  const s=document.getElementById('j-s').value.toLowerCase();
+  const fm={};
+  recs.forEach(r=>{
+    if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,village:r.village||'',tb:0,ta:0,entries:0,A:0,B:0,C:0,D:0,last:r.date};
+    const f=fm[r.farmer];
+    f.tb+=r.totalBags;f.ta+=r.totalAmt;f.entries++;
+    f.A+=r.classA.bags;f.B+=r.classB.bags;f.C+=r.classC.bags;f.D+=r.classD.bags;
+    if(r.date>f.last)f.last=r.date;
+  });
+  let fs=Object.values(fm);
+  if(s)fs=fs.filter(f=>f.name.toLowerCase().includes(s));
+  fs.sort((a,b)=>b.tb-a.tb);
+  const grid=document.getElementById('j-grid');
+  if(!fs.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>${s?'Koi nahi mila':'Koi jimidar nahi'}</h3></div>`;return;}
+  grid.innerHTML=fs.map(f=>{
+    const c=gc(f.name);const mx=Math.max(f.A,f.B,f.C,f.D)||1;
+    return`<div class="jcard" onclick="showJD('${f.name}')">
+      <div class="jh"><div class="jav" style="background:${c}22;color:${c}">${ini(f.name)}</div><div><div class="jn" style="color:${c}">${f.name}</div><div class="jm">📍 ${f.village||'N/A'} • 🗓 ${f.last}</div></div></div>
+      <div class="jstats">
+        <div class="jst"><div class="jsv" style="color:var(--blue)">${f.tb}</div><div class="jsl">Kul Bags</div></div>
+        <div class="jst"><div class="jsv" style="color:var(--green)">₹${fmtS(f.ta)}</div><div class="jsl">Kul Raqam</div></div>
+        <div class="jst"><div class="jsv">${f.entries}</div><div class="jsl">Entries</div></div>
+        <div class="jst"><div class="jsv" style="color:var(--yellow)">₹${f.entries?Math.round(f.ta/f.entries):0}</div><div class="jsl">Avg/Entry</div></div>
+      </div>
+      <div class="mbars">${[['A','var(--green)'],['B','var(--yellow)'],['C','var(--orange)'],['D','var(--red)']].map(([cl,col])=>`<div class="mbar" title="Class ${cl}: ${f[cl]} bags"><div class="mbarf" style="width:${f[cl]/mx*100}%;background:${col}"></div></div>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function showJD(name){
+  const rs=recs.filter(r=>r.farmer===name).sort((a,b)=>b.date.localeCompare(a.date));
+  const tB=rs.reduce((s,r)=>s+r.totalBags,0);const tA=rs.reduce((s,r)=>s+r.totalAmt,0);
+  const c=gc(name);
+  document.getElementById('d-title').textContent=name;
+  document.getElementById('d-body').innerHTML=`
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
+      <div class="jav" style="width:44px;height:44px;font-size:16px;border-radius:8px;background:${c}22;color:${c}">${ini(name)}</div>
+      <div><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:${c}">${name}</div><div style="font-size:11px;color:#8a95a8">${rs.length} entries • Kul ₹${fmt(tA)}</div></div>
+    </div>
+    <div class="dgrid">${['A','B','C','D'].map(cl=>{const bags=rs.reduce((s,r)=>s+r['class'+cl].bags,0);const amt=rs.reduce((s,r)=>s+r['class'+cl].bags*r['class'+cl].rate,0);return`<div class="dc ${cl}"><div class="cbadge ${cl}" style="margin:0 auto 5px;display:block;text-align:center">${cl}</div><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700">${bags}</div><div style="font-size:10px;color:#8a95a8">bags</div><div style="font-size:12px;margin-top:3px">₹${fmt(amt)}</div></div>`;}).join('')}</div>
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#8a95a8;margin:11px 0 7px">Saari Entries</div>
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:#f0f4fc">${['Tarikh','Receipt','A','B','C','D','Raqam',''].map(h=>`<th style="padding:6px 9px;text-align:left;color:var(--blue2);border-bottom:2px solid #dae4f8;font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
+      <tbody>${rs.map(r=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">${r.date}</td><td style="padding:6px 9px"><span class="rtag">${r.receipt}</span></td><td style="padding:6px 9px;text-align:center">${r.classA.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classB.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classC.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classD.bags||'—'}</td><td style="padding:6px 9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--green)">₹${fmt(r.totalAmt)}</td><td style="padding:6px 9px"><button class="ab2 d" onclick="delR('${r.id}')">🗑</button></td></tr>`).join('')}</tbody>
+    </table></div>`;
+  document.getElementById('d-modal').classList.add('open');
+}
+
+// ============ REPORTS ============
+function genR(type){
+  const out=document.getElementById('r-out');
+  if(type==='monthly'){
+    const m={};recs.forEach(r=>{const k=r.date.slice(0,7);if(!m[k])m[k]={bags:0,amt:0,n:0};m[k].bags+=r.totalBags;m[k].amt+=r.totalAmt;m[k].n++;});
+    const rows=Object.entries(m).sort((a,b)=>b[0].localeCompare(a[0]));
+    if(!rows.length){out.innerHTML='<div class="empty"><div class="ei">📅</div><h3>Koi data nahi</h3></div>';return;}
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📅 Monthly Report</div></div><div class="tsc"><table><thead><tr><th>Month</th><th>Entries</th><th>Kul Bags</th><th>Kul Raqam</th><th>Avg/Entry</th></tr></thead><tbody>${rows.map(([k,d])=>`<tr><td class="mono">${k}</td><td>${d.n}</td><td><strong style="font-family:'Rajdhani',sans-serif">${d.bags}</strong></td><td class="amt">₹${fmt(d.amt)}</td><td style="color:#4a5568">₹${fmt(Math.round(d.amt/d.n))}</td></tr>`).join('')}</tbody></table></div></div>`;
+  }
+  if(type==='class'){
+    out.innerHTML=`<div class="cbars">${['A','B','C','D'].map(cl=>{const bags=recs.reduce((s,r)=>s+r['class'+cl].bags,0);const amt=recs.reduce((s,r)=>s+r['class'+cl].bags*r['class'+cl].rate,0);const rs=recs.filter(r=>r['class'+cl].bags>0);const avg=rs.length?Math.round(rs.reduce((s,r)=>s+r['class'+cl].rate,0)/rs.length):0;return`<div class="cbc"><div style="margin-bottom:7px"><span class="cbadge ${cl}">CLASS ${cl}</span></div><div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700">${bags}</div><div style="font-size:11px;color:#8a95a8">bags</div><div style="margin-top:7px;font-size:12px">Avg Rate: <strong>₹${avg}</strong></div><div style="font-size:12px">Raqam: <strong>₹${fmt(amt)}</strong></div></div>`;}).join('')}</div>`;
+  }
+  if(type==='farmer'){
+    const fm={};recs.forEach(r=>{if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,bags:0,amt:0,n:0};fm[r.farmer].bags+=r.totalBags;fm[r.farmer].amt+=r.totalAmt;fm[r.farmer].n++;});
+    const sorted=Object.values(fm).sort((a,b)=>b.amt-a.amt);
+    if(!sorted.length){out.innerHTML='<div class="empty"><div class="ei">👨‍🌾</div><h3>Koi data nahi</h3></div>';return;}
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">👨‍🌾 Jimidar Report</div></div><div class="tsc"><table><thead><tr><th>Rank</th><th>Jimidar</th><th>Entries</th><th>Kul Bags</th><th>Kul Raqam</th><th>Avg/Entry</th></tr></thead><tbody>${sorted.map((f,i)=>{const c=gc(f.name);return`<tr><td style="color:#8a95a8">#${i+1}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(f.name)}</div>${f.name}</div></td><td>${f.n}</td><td><strong style="font-family:'Rajdhani',sans-serif">${f.bags}</strong></td><td class="amt">₹${fmt(f.amt)}</td><td>₹${fmt(Math.round(f.amt/f.n))}</td></tr>`;}).join('')}</tbody></table></div></div>`;
+  }
+}
+
+// ============ CSV EXPORT ============
+function expCSV(){
+  if(!recs.length){toast('Koi record nahi','e');return;}
+  const h=['Sr','Tarikh','Jimidar','Gaon','Receipt','A Bags','A Rate','A Raqam','B Bags','B Rate','B Raqam','C Bags','C Rate','C Raqam','D Bags','D Rate','D Raqam','Total Bags','Total Raqam','Notes'];
+  const rows=recs.map((r,i)=>[i+1,r.date,r.farmer,r.village||'',r.receipt,r.classA.bags,r.classA.rate,r.classA.bags*r.classA.rate,r.classB.bags,r.classB.rate,r.classB.bags*r.classB.rate,r.classC.bags,r.classC.rate,r.classC.bags*r.classC.rate,r.classD.bags,r.classD.rate,r.classD.bags*r.classD.rate,r.totalBags,r.totalAmt,r.notes||'']);
+  const csv=[h,...rows].map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='ColdStore_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+  toast('CSV export ho gaya! ⬇','s');
+}
+
+// ============ TOAST ============
+function toast(msg,type='i'){
+  const c=document.getElementById('toasts');
+  const t=document.createElement('div');t.className=`toast ${type}`;
+  const icons={s:'✅',e:'❌',i:'ℹ️'};
+  t.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(50px)';t.style.transition='all 0.3s';setTimeout(()=>t.remove(),300);},3500);
+}
+
+// ============ UPDATE ALL ============
+function updAll(){updDash();updFarm();}
+
+// ============ INIT ============
+setSt('ch');
+loadSheet();
+</script>
+</body>
+</html>
