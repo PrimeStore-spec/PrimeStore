@@ -267,14 +267,14 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
   <!-- DASHBOARD -->
   <div id="p-dash">
     <div class="stats-grid">
-      <div class="sc" style="--cc:var(--blue)"><span class="si">📦</span><div class="sl">TODAY PURCHASE</div><div class="sv" id="sd-today">0</div><div class="ss2">Bags aaj</div></div>
-      <div class="sc" style="--cc:var(--green)"><span class="si">💰</span><div class="sl">TOTAL AMOUNT</div><div class="sv" id="sd-amt">₹0</div><div class="ss2">Sab entries</div></div>
-      <div class="sc" style="--cc:var(--yellow)"><span class="si">🧺</span><div class="sl">TOTAL BAGS</div><div class="sv" id="sd-bags">0</div><div class="ss2">Saari classes</div></div>
+      <div class="sc" style="--cc:var(--blue)"><span class="si">📦</span><div class="sl">TODAY PURCHASE</div><div class="sv" id="sd-today">0</div><div class="ss2">Total Purchase</div></div>
+      <div class="sc" style="--cc:var(--green)"><span class="si">💰</span><div class="sl">TOTAL AMOUNT</div><div class="sv" id="sd-amt">₹0</div><div class="ss2">Total Amount</div></div>
+      <div class="sc" style="--cc:var(--yellow)"><span class="si">🧺</span><div class="sl">TOTAL BAGS</div><div class="sv" id="sd-bags">0</div><div class="ss2">All Class</div></div>
       <div class="sc" style="--cc:var(--orange)"><span class="si">👨‍🌾</span><div class="sl">FARMER</div><div class="sv" id="sd-f">0</div><div class="ss2">Registered</div></div>
-      <div class="sc" style="--cc:var(--green)"><span class="si">🟢</span><div class="sl">Class A</div><div class="sv" id="sd-a">0</div><div class="ss2">Best quality</div></div>
-      <div class="sc" style="--cc:var(--yellow)"><span class="si">🟡</span><div class="sl">Class B</div><div class="sv" id="sd-b">0</div><div class="ss2">Good quality</div></div>
-      <div class="sc" style="--cc:var(--orange)"><span class="si">🟠</span><div class="sl">Class C</div><div class="sv" id="sd-c">0</div><div class="ss2">Average</div></div>
-      <div class="sc" style="--cc:var(--red)"><span class="si">🔴</span><div class="sl">Class D</div><div class="sv" id="sd-d">0</div><div class="ss2">Low quality</div></div>
+      <div class="sc" style="--cc:var(--green)"><span class="si">🟢</span><div class="sl">Class A</div><div class="sv" id="sd-a">0</div><div class="ss2">CLASS A</div></div>
+      <div class="sc" style="--cc:var(--yellow)"><span class="si">🟡</span><div class="sl">Class B</div><div class="sv" id="sd-b">0</div><div class="ss2">CLASS B</div></div>
+      <div class="sc" style="--cc:var(--orange)"><span class="si">🟠</span><div class="sl">Class C</div><div class="sv" id="sd-c">0</div><div class="ss2">CLASS C</div></div>
+      <div class="sc" style="--cc:var(--red)"><span class="si">🔴</span><div class="sl">Class D</div><div class="sv" id="sd-d">0</div><div class="ss2">CLASS D</div></div>
     </div>
     <div class="cbars">
       <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge A">CLASS A</span><span id="pct-a" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-a" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--green)">0 bags</div><div class="pb"><div class="pf" id="bar-a" style="background:var(--green);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-a" style="color:var(--green);font-weight:600">₹0</span></div></div>
@@ -367,9 +367,9 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="div"></div>
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8a95a8;margin-bottom:9px">🥔 Class Wise Qty & Rate</div>
       <div class="cfgrid">
-        <div class="cfc A"><div class="cfh"><span class="cbadge A">A</span><span style="font-size:10px;color:var(--green)">Best Quality</span></div><div class="mfg"><label>Bags</label><input type="number" id="fa-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fa-r" placeholder="850" min="0" oninput="calcP()"></div><div class="cp" id="pa">₹0</div></div>
+        <div class="cfc A"><div class="cfh"><span class="cbadge A">A</span><span style="font-size:10px;color:var(--green)">CLASS A</span></div><div class="mfg"><label>Bags</label><input type="number" id="fa-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fa-r" placeholder="850" min="0" oninput="calcP()"></div><div class="cp" id="pa">₹0</div></div>
         <div class="cfc B"><div class="cfh"><span class="cbadge B">B</span><span style="font-size:10px;color:var(--yellow)">Good</span></div><div class="mfg"><label>Bags</label><input type="number" id="fb-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fb-r" placeholder="750" min="0" oninput="calcP()"></div><div class="cp" id="pb">₹0</div></div>
-        <div class="cfc C"><div class="cfh"><span class="cbadge C">C</span><span style="font-size:10px;color:var(--orange)">Average</span></div><div class="mfg"><label>Bags</label><input type="number" id="fc-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fc-r" placeholder="650" min="0" oninput="calcP()"></div><div class="cp" id="pc">₹0</div></div>
+        <div class="cfc C"><div class="cfh"><span class="cbadge C">C</span><span style="font-size:10px;color:var(--orange)">CLASS C</span></div><div class="mfg"><label>Bags</label><input type="number" id="fc-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fc-r" placeholder="650" min="0" oninput="calcP()"></div><div class="cp" id="pc">₹0</div></div>
         <div class="cfc D"><div class="cfh"><span class="cbadge D">D</span><span style="font-size:10px;color:var(--red)">Low</span></div><div class="mfg"><label>Bags</label><input type="number" id="fd-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fd-r" placeholder="550" min="0" oninput="calcP()"></div><div class="cp" id="pd">₹0</div></div>
       </div>
     </div>
