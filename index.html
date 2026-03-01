@@ -358,7 +358,14 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <div class="mb">
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8a95a8;margin-bottom:9px">👤 FARMER Info</div>
       <div class="fgrid">
-        <div class="fg2"><label class="flbl">FARMER Naam *</label><input class="finp" id="fi-f" placeholder="Jaise: Raam Singh" list="f-dl"><datalist id="f-dl"></datalist></div>
+        <div class="fg2"><label class="flbl">FARMER Naam *</label><div style="position:relative">
+  <input class="finp" id="fi-f" placeholder="Type karo ya select karo..." 
+    oninput="showFarmerDrop(this.value)" 
+    onfocus="showFarmerDrop(this.value)"
+    onblur="setTimeout(()=>hideFarmerDrop(),200)"
+    autocomplete="off">
+  <div id="farmer-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #dde1e9;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:999;max-height:180px;overflow-y:auto;"></div>
+</div></div>
         <div class="fg2"><label class="flbl">Tarikh *</label><input type="date" class="finp" id="fi-d"></div>
         <div class="fg2"><label class="flbl">Gaon</label><input class="finp" id="fi-v" placeholder="Ludhiana"></div>
         <div class="fg2"><label class="flbl">Receipt No.</label><input class="finp" id="fi-r" placeholder="Auto"></div>
@@ -847,6 +854,29 @@ function toast(msg,type='i'){
 }
 
 // ============ UPDATE ALL ============
+function showFarmerDrop(val){
+  const drop = document.getElementById('farmer-drop');
+  const farmers = [...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort();
+  const filtered = val ? farmers.filter(f=>f.toLowerCase().includes(val.toLowerCase())) : farmers;
+  if(!filtered.length){drop.style.display='none';return;}
+  drop.innerHTML = filtered.map(f=>
+    `<div onclick="selectFarmer('${f}')" style="padding:9px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid #f0f2f5;transition:background 0.15s" 
+     onmouseover="this.style.background='#e8f0fd'" 
+     onmouseout="this.style.background=''">${f}</div>`
+  ).join('');
+  drop.style.display='block';
+}
+
+function hideFarmerDrop(){
+  const drop = document.getElementById('farmer-drop');
+  if(drop) drop.style.display='none';
+}
+
+function selectFarmer(name){
+  document.getElementById('fi-f').value = name;
+  hideFarmerDrop();
+}
+
 function updFarmerDL(){
   // Dropdown mein sab farmers dikhao
   const dl = document.getElementById('f-dl');
