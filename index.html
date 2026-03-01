@@ -752,8 +752,9 @@ function renderT(){
       <td class="amt">₹${fmt(r.totalAmt)}</td>
       <td><div class="ab">
         <button class="ab2 v" onclick="viewD('${r.id}')" title="View">👁</button>
+        ${currentUser&&currentUser.role==='admin'?`
         <button class="ab2 e" onclick="openM('${r.id}')" title="Edit">✏</button>
-        <button class="ab2 d" onclick="delR('${r.id}')" title="Delete">🗑</button>
+        <button class="ab2 d" onclick="delR('${r.id}')" title="Delete">🗑</button>`:''}
       </div></td>
     </tr>`;
   }).join('');
@@ -789,8 +790,7 @@ function viewD(id){
       <span style="margin-left:16px;font-size:11px;color:#8a95a8">TOTAL AMOUNT: </span><strong style="font-family:'Rajdhani',sans-serif;font-size:19px;color:var(--green)">₹${fmt(r.totalAmt)}</strong>
     </div>
     <div style="margin-top:11px;display:flex;gap:6px;justify-content:flex-end">
-      <button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button>
-      <button class="btn btn-red" onclick="delR('${r.id}')">🗑 Delete</button>
+      ${currentUser&&currentUser.role==='admin'?`<button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button><button class="btn btn-red" onclick="delR('${r.id}')">🗑 Delete</button>`:''}
     </div>`;
   document.getElementById('d-modal').classList.add('open');
 }
@@ -898,7 +898,7 @@ function showJD(name){
     <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#8a95a8;margin:11px 0 7px">Saari Entries</div>
     <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
       <thead><tr style="background:#f0f4fc">${['Tarikh','Receipt','A','B','C','D','Raqam',''].map(h=>`<th style="padding:6px 9px;text-align:left;color:var(--blue2);border-bottom:2px solid #dae4f8;font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
-      <tbody>${rs.map(r=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">${r.date}</td><td style="padding:6px 9px"><span class="rtag">${r.receipt}</span></td><td style="padding:6px 9px;text-align:center">${r.classA.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classB.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classC.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classD.bags||'—'}</td><td style="padding:6px 9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--green)">₹${fmt(r.totalAmt)}</td><td style="padding:6px 9px"><button class="ab2 d" onclick="delR('${r.id}')">🗑</button></td></tr>`).join('')}</tbody>
+      <tbody>${rs.map(r=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">${r.date}</td><td style="padding:6px 9px"><span class="rtag">${r.receipt}</span></td><td style="padding:6px 9px;text-align:center">${r.classA.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classB.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classC.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classD.bags||'—'}</td><td style="padding:6px 9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--green)">₹${fmt(r.totalAmt)}</td><td style="padding:6px 9px">${currentUser&&currentUser.role==='admin'?`<button class="ab2 d" onclick="delR('${r.id}')">🗑</button>`:''}</td></tr>`).join('')}</tbody>
     </table></div>`;
   document.getElementById('d-modal').classList.add('open');
 }
@@ -996,7 +996,7 @@ let editUserId = null;
 
 // Default admin — pehli baar
 const DEFAULT_USERS = [
-  {id:'1',name:'Admin',username:'admin',password:'admin8855',role:'admin'}
+  {id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}
 ];
 
 function loadUsers(){
@@ -1122,6 +1122,10 @@ function applyPermissions(){
   const addBtn = document.querySelector('.btn-add');
   if(addBtn) addBtn.style.display = (role==='admin'||role==='manager') ? '' : 'none';
   
+  // Refresh button - sab dekh sakte hain
+  const refBtn = document.querySelector('.btn-w');
+  if(refBtn) refBtn.style.display = '';
+  
   // Users tab - sirf admin
   const usersTab = document.getElementById('tab-users');
   if(usersTab) usersTab.style.display = role==='admin' ? '' : 'none';
@@ -1129,6 +1133,13 @@ function applyPermissions(){
   // Edit/Delete buttons - sirf admin
   document.querySelectorAll('.ab2.e, .ab2.d').forEach(btn=>{
     btn.style.display = role==='admin' ? '' : 'none';
+  });
+  
+  // Records page + Naya button
+  document.querySelectorAll('.btn-blue').forEach(btn=>{
+    if(btn.textContent.includes('＋ Naya')){
+      btn.style.display = (role==='admin'||role==='manager') ? '' : 'none';
+    }
   });
 }
 
