@@ -234,9 +234,57 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 @media(max-width:900px){.fg{grid-template-columns:1fr 1fr;}.cfgrid{grid-template-columns:1fr 1fr;}.charts{grid-template-columns:1fr;}.cbars{grid-template-columns:1fr 1fr;}}
 @media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr;}.fg{grid-template-columns:1fr;}.hdr-stat{display:none;}.cbars{grid-template-columns:1fr 1fr;}.cfgrid{grid-template-columns:1fr 1fr;}main{padding:10px;}}
+
+/* ===== LOGIN ===== */
+.login-wrap{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#fff;border-radius:12px;padding:36px 32px;width:min(380px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.login-logo{text-align:center;margin-bottom:24px;}
+.login-logo .icon{font-size:40px;display:block;margin-bottom:8px;}
+.login-logo h2{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#1a3a6b;}
+.login-logo p{font-size:12px;color:#8a95a8;margin-top:3px;}
+.login-field{margin-bottom:14px;}
+.login-field label{display:block;font-size:11px;font-weight:600;color:#8a95a8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.login-field input{width:100%;background:#f7f8fa;border:1px solid #dde1e9;color:#1a2332;border-radius:7px;padding:10px 13px;font-size:14px;font-family:'Noto Sans',sans-serif;outline:none;transition:all 0.2s;}
+.login-field input:focus{border-color:#1a5fc8;box-shadow:0 0 0 3px rgba(26,95,200,0.1);background:#fff;}
+.login-btn{width:100%;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);color:#fff;border:none;border-radius:7px;padding:11px;font-size:15px;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;transition:all 0.2s;margin-top:4px;}
+.login-btn:hover{opacity:0.9;transform:translateY(-1px);}
+.login-err{background:#fef0f0;border:1px solid #fcc8c8;color:#b91c1c;border-radius:6px;padding:9px 12px;font-size:12px;margin-bottom:12px;display:none;}
+.login-err.show{display:block;}
+.role-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+.role-badge.admin{background:#e8f0fd;color:#1a5fc8;border:1px solid #c5d8f8;}
+.role-badge.manager{background:#e8f5ed;color:#1a7a3c;border:1px solid #c8ecd4;}
+.role-badge.viewer{background:#fef3e2;color:#b45309;border:1px solid #fde8b4;}
+
+/* ===== USERS PANEL ===== */
+.users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.user-card{background:#fff;border:1px solid #dde1e9;border-radius:8px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.user-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.user-av{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;}
+
 </style>
 </head>
 <body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="icon">❄️</span>
+      <h2>ColdStore Pro</h2>
+      <p>Apna username aur password daalo</p>
+    </div>
+    <div class="login-err" id="login-err">❌ Username ya password galat hai!</div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="l-user" placeholder="Jaise: admin" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="l-pass" placeholder="Password daalo" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔓 Login Karo</button>
+  </div>
+</div>
 
 <header>
   <div class="logo">
@@ -262,6 +310,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <button class="tab" onclick="goTab('rec')" id="tab-rec">📋 Records</button>
     <button class="tab" onclick="goTab('jim')" id="tab-jim">👨‍🌾 FARMER</button>
     <button class="tab" onclick="goTab('rep')" id="tab-rep">📈 Reports</button>
+    <button class="tab" onclick="goTab('users')" id="tab-users" style="display:none">👥 Users</button>
   </div>
 
   <!-- DASHBOARD -->
@@ -349,6 +398,18 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     </div>
     <div id="r-out"><div class="empty" style="padding:50px"><div class="ei">📊</div><h3>Report select karo</h3></div></div>
   </div>
+
+  <!-- USERS PAGE -->
+  <div id="p-users" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="stl">👥 Users <span>Management</span></div>
+      <button class="btn btn-blue" onclick="openUserModal()">＋ Naya User</button>
+    </div>
+    <div class="users-grid" id="users-grid">
+      <div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>
+    </div>
+  </div>
+
 </main>
 
 <!-- ADD/EDIT MODAL -->
@@ -392,6 +453,34 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
   <div class="modal" style="max-width:560px">
     <div class="mh"><div class="mt">📋 <span id="d-title">Detail</span></div><button class="mx" onclick="closeM('d-modal')">✕</button></div>
     <div class="mb" id="d-body"></div>
+  </div>
+</div>
+
+<!-- USER ADD/EDIT MODAL -->
+<div class="ov" id="user-modal" onclick="closeOut(event,'user-modal')">
+  <div class="modal" style="max-width:420px">
+    <div class="mh"><div class="mt">👤 <span id="um-title">Naya User</span></div><button class="mx" onclick="closeM('user-modal')">✕</button></div>
+    <div class="mb">
+      <div class="fgrid">
+        <div class="fg2 full"><label class="flbl">Full Name *</label><input class="finp" id="u-name" placeholder="Jaise: Raam Singh"></div>
+        <div class="fg2 full"><label class="flbl">Username *</label><input class="finp" id="u-user" placeholder="Jaise: raam123"></div>
+        <div class="fg2 full"><label class="flbl">Password *</label><input type="password" class="finp" id="u-pass" placeholder="Strong password daalo"></div>
+        <div class="fg2 full"><label class="flbl">Role *</label>
+          <select class="finp" id="u-role">
+            <option value="admin">👑 Admin — Sab kuch kar sakta hai</option>
+            <option value="manager">🔧 Manager — Add + Dekh sakta hai</option>
+            <option value="viewer">👁 Viewer — Sirf dekh sakta hai</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <div></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-ghost" onclick="closeM('user-modal')">Cancel</button>
+        <button class="btn btn-green" onclick="saveUser()">✓ Save Karo</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -498,13 +587,14 @@ function saveL(){localStorage.setItem('cs_r',JSON.stringify(recs));}
 
 // ============ TABS ============
 function goTab(t){
-  ['dash','rec','jim','rep'].forEach(x=>{
+  ['dash','rec','jim','rep','users'].forEach(x=>{
     document.getElementById('p-'+x).classList.toggle('hidden',x!==t);
     document.getElementById('tab-'+x).classList.toggle('active',x===t);
   });
   if(t==='rec')applyF();
   if(t==='jim')renderJ();
   if(t==='dash')updDash();
+  if(t==='users')renderUsers();
 }
 
 // ============ MODAL ============
@@ -603,7 +693,7 @@ function applyF(){
     if(typeof av==='string')return sDir==='asc'?av.localeCompare(bv):bv.localeCompare(av);
     return sDir==='asc'?av-bv:bv-av;
   });
-  pg=1;renderT();updFarm();
+  pg=1;renderT();updFarm();setTimeout(applyPermissions,50);
 }
 
 function clrF(){
@@ -895,9 +985,248 @@ function updFarmerDL(){
   dl.innerHTML = farmers.map(f=>`<option value="${f}">`).join('');
 }
 
-function updAll(){updDash();updFarm();updFarmerDL();}
+function updAll(){updDash();updFarm();updFarmerDL();setTimeout(applyPermissions,100);}
+
+
+// ============ AUTH SYSTEM ============
+const USERS_SHEET = 'Users'; // Google Sheet tab name
+let currentUser = null;
+let users = [];
+let editUserId = null;
+
+// Default admin — pehli baar
+const DEFAULT_USERS = [
+  {id:'1',name:'Admin',username:'admin',password:'admin8855',role:'admin'}
+];
+
+function loadUsers(){
+  users = JSON.parse(localStorage.getItem('cs_users') || JSON.stringify(DEFAULT_USERS));
+}
+
+function saveUsers(){
+  localStorage.setItem('cs_users', JSON.stringify(users));
+  // Google Sheet mein bhi save karo
+  saveUsersToSheet();
+}
+
+async function saveUsersToSheet(){
+  const p = {action:'saveUsers', users: users};
+  try{
+    const img = new Image();
+    img.src = SHEET_URL + '?data=' + encodeURIComponent(JSON.stringify(p));
+  }catch(e){}
+}
+
+async function loadUsersFromSheet(){
+  try{
+    const proxies = [
+      ()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET'}),
+      ()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1')),
+    ];
+    for(let i=0;i<proxies.length;i++){
+      try{
+        const res = await proxies[i]();
+        let txt = await res.text();
+        try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
+        const data = JSON.parse(txt);
+        if(data.users && Array.isArray(data.users)){
+          users = data.users;
+          localStorage.setItem('cs_users', JSON.stringify(users));
+          return;
+        }
+      }catch(e){}
+    }
+  }catch(e){}
+  // Local fallback
+  loadUsers();
+}
+
+// ===== LOGIN =====
+function doLogin(){
+  const username = document.getElementById('l-user').value.trim().toLowerCase();
+  const password = document.getElementById('l-pass').value.trim();
+  const err = document.getElementById('login-err');
+  
+  loadUsers();
+  const user = users.find(u => u.username.toLowerCase()===username && u.password===password);
+  
+  if(!user){
+    err.classList.add('show');
+    document.getElementById('l-pass').value='';
+    return;
+  }
+  
+  err.classList.remove('show');
+  currentUser = user;
+  localStorage.setItem('cs_session', JSON.stringify(user));
+  document.getElementById('login-wrap').style.display='none';
+  applyPermissions();
+  addUserBadge();
+  toast('Welcome '+user.name+'! 👋','s');
+}
+
+function checkSession(){
+  const session = localStorage.getItem('cs_session');
+  if(session){
+    try{
+      currentUser = JSON.parse(session);
+      loadUsers();
+      // Verify user still exists
+      const exists = users.find(u=>u.id===currentUser.id && u.password===currentUser.password);
+      if(exists){
+        currentUser = exists;
+        document.getElementById('login-wrap').style.display='none';
+        applyPermissions();
+        addUserBadge();
+        return;
+      }
+    }catch(e){}
+  }
+  // Show login
+  document.getElementById('login-wrap').style.display='flex';
+}
+
+function logout(){
+  localStorage.removeItem('cs_session');
+  currentUser = null;
+  document.getElementById('login-wrap').style.display='flex';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+  toast('Logout ho gaye! 👋','i');
+}
+
+function addUserBadge(){
+  const hdr = document.querySelector('.hdr-r');
+  // Remove existing badge
+  const existing = document.getElementById('user-badge');
+  if(existing) existing.remove();
+  
+  const roleColors = {admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};
+  const roleNames = {admin:'Admin',manager:'Manager',viewer:'Viewer'};
+  const color = roleColors[currentUser.role] || '#1a5fc8';
+  
+  const badge = document.createElement('div');
+  badge.id = 'user-badge';
+  badge.style.cssText = `display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;`;
+  badge.innerHTML = `<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${roleNames[currentUser.role]}</span>`;
+  badge.onclick = () => {
+    if(confirm('Logout karna chahte hain?')) logout();
+  };
+  hdr.insertBefore(badge, hdr.firstChild);
+}
+
+function applyPermissions(){
+  const role = currentUser ? currentUser.role : 'viewer';
+  
+  // Add button - admin aur manager dekh sakte hain
+  const addBtn = document.querySelector('.btn-add');
+  if(addBtn) addBtn.style.display = (role==='admin'||role==='manager') ? '' : 'none';
+  
+  // Users tab - sirf admin
+  const usersTab = document.getElementById('tab-users');
+  if(usersTab) usersTab.style.display = role==='admin' ? '' : 'none';
+  
+  // Edit/Delete buttons - sirf admin
+  document.querySelectorAll('.ab2.e, .ab2.d').forEach(btn=>{
+    btn.style.display = role==='admin' ? '' : 'none';
+  });
+}
+
+// ===== USER MANAGEMENT =====
+function openUserModal(id=null){
+  editUserId = id;
+  document.getElementById('um-title').textContent = id ? 'User Edit' : 'Naya User';
+  if(id){
+    const u = users.find(x=>x.id===id);
+    if(u){
+      document.getElementById('u-name').value = u.name;
+      document.getElementById('u-user').value = u.username;
+      document.getElementById('u-pass').value = u.password;
+      document.getElementById('u-role').value = u.role;
+    }
+  } else {
+    ['u-name','u-user','u-pass'].forEach(x=>document.getElementById(x).value='');
+    document.getElementById('u-role').value='viewer';
+  }
+  document.getElementById('user-modal').classList.add('open');
+}
+
+function saveUser(){
+  const name = document.getElementById('u-name').value.trim();
+  const username = document.getElementById('u-user').value.trim().toLowerCase();
+  const password = document.getElementById('u-pass').value.trim();
+  const role = document.getElementById('u-role').value;
+  
+  if(!name){toast('Naam zaroor daalo!','e');return;}
+  if(!username){toast('Username zaroor daalo!','e');return;}
+  if(!password){toast('Password zaroor daalo!','e');return;}
+  
+  // Duplicate username check
+  const dup = users.find(u=>u.username===username && u.id!==editUserId);
+  if(dup){toast('Yeh username pehle se exists karta hai!','e');return;}
+  
+  if(editUserId){
+    users = users.map(u=>u.id===editUserId ? {id:editUserId,name,username,password,role} : u);
+    toast(name+' update ho gaya! ✓','s');
+  } else {
+    users.push({id:Date.now().toString(),name,username,password,role});
+    toast(name+' add ho gaya! 👤','s');
+  }
+  
+  saveUsers();
+  closeM('user-modal');
+  renderUsers();
+}
+
+function deleteUser(id){
+  if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}
+  if(!confirm('Kya delete karna chahte hain?'))return;
+  users = users.filter(u=>u.id!==id);
+  saveUsers();
+  renderUsers();
+  toast('User delete ho gaya','i');
+}
+
+function renderUsers(){
+  const grid = document.getElementById('users-grid');
+  if(!grid) return;
+  
+  if(!users.length){
+    grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';
+    return;
+  }
+  
+  const roleColors = {admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};
+  const roleBg = {admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};
+  const roleNames = {admin:'👑 Admin',manager:'🔧 Manager',viewer:'👁 Viewer'};
+  
+  grid.innerHTML = users.map(u=>{
+    const color = roleColors[u.role]||'#1a5fc8';
+    const bg = roleBg[u.role]||'#e8f0fd';
+    const isMe = u.id===currentUser.id;
+    return `<div class="user-card">
+      <div class="user-card-hdr">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="user-av" style="background:${bg};color:${color}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div>
+          <div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700">${u.name} ${isMe?'<span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div>
+            <div style="font-size:11px;color:#8a95a8">@${u.username}</div>
+          </div>
+        </div>
+        <span class="role-badge ${u.role}">${roleNames[u.role]}</span>
+      </div>
+      <div style="display:flex;gap:6px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>
+        ${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑 Delete</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
 
 // ============ INIT ============
+loadUsers();
+checkSession();
 setSt('ch');
 loadSheet();
 </script>
