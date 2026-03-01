@@ -875,6 +875,16 @@ function hideFarmerDrop(){
 function selectFarmer(name){
   document.getElementById('fi-f').value = name;
   hideFarmerDrop();
+  
+  // Gaon auto fill karo — us farmer ki last entry se
+  const farmerRecs = recs.filter(r=>r.farmer === name);
+  if(farmerRecs.length > 0){
+    // Last entry ka gaon le lo
+    const lastRec = farmerRecs.sort((a,b)=>b.date.localeCompare(a.date))[0];
+    if(lastRec.village){
+      document.getElementById('fi-v').value = lastRec.village;
+    }
+  }
 }
 
 function updFarmerDL(){
