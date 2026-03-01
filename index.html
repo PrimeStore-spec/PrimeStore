@@ -1039,7 +1039,9 @@ const DEFAULT_USERS = [
 ];
 
 function loadUsers(){
-  users = JSON.parse(localStorage.getItem('cs_users') || JSON.stringify(DEFAULT_USERS));
+  // LocalStorage se load karo (Sheet se aane tak)
+  const stored = localStorage.getItem('cs_users');
+  users = stored ? JSON.parse(stored) : [...DEFAULT_USERS];
 }
 
 function saveUsers(){
@@ -1052,15 +1054,21 @@ async function saveUsersToSheet(){
   const p = {action:'saveUsers', users: users};
   try{
     const img = new Image();
+    img.onload = img.onerror = function(){
+      console.log('Users saved to sheet');
+    };
     img.src = SHEET_URL + '?data=' + encodeURIComponent(JSON.stringify(p));
-  }catch(e){}
+  }catch(e){
+    console.log('Sheet save error:', e);
+  }
 }
 
 async function loadUsersFromSheet(){
   try{
     const proxies = [
-      ()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET'}),
+      ()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),
       ()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1')),
+      ()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent(SHEET_URL+'?getUsers=1')),
     ];
     for(let i=0;i<proxies.length;i++){
       try{
@@ -1068,12 +1076,13 @@ async function loadUsersFromSheet(){
         let txt = await res.text();
         try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
         const data = JSON.parse(txt);
-        if(data.users && Array.isArray(data.users)){
+        if(data.users && Array.isArray(data.users) && data.users.length>0){
           users = data.users;
           localStorage.setItem('cs_users', JSON.stringify(users));
+          console.log('Users loaded from sheet:', users.length);
           return;
         }
-      }catch(e){}
+      }catch(e){console.log('Proxy '+i+' fail:',e.message);}
     }
   }catch(e){}
   // Local fallback
@@ -1102,15 +1111,19 @@ function doLogin(){
   applyPermissions();
   addUserBadge();
   toast('Welcome '+user.name+'! 👋','s');
+  // Background mein sheet se fresh users load karo
+  loadUsersFromSheet();
 }
 
-function checkSession(){
+async function checkSession(){
+  // Pehle Sheet se users load karo
+  await loadUsersFromSheet();
+  
   const session = localStorage.getItem('cs_session');
   if(session){
     try{
       currentUser = JSON.parse(session);
-      loadUsers();
-      // Verify user still exists
+      // Verify user still exists in sheet
       const exists = users.find(u=>u.id===currentUser.id && u.password===currentUser.password);
       if(exists){
         currentUser = exists;
