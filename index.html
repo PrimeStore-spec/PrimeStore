@@ -475,19 +475,15 @@ function startAR(){
 async function saveToSheet(rec,action='add'){
   setSt('sync');
   const p={action,id:rec.id,date:rec.date,farmer:rec.farmer,village:rec.village||'',receipt:rec.receipt||'',classA_bags:rec.classA.bags||0,classA_rate:rec.classA.rate||0,classB_bags:rec.classB.bags||0,classB_rate:rec.classB.rate||0,classC_bags:rec.classC.bags||0,classC_rate:rec.classC.rate||0,classD_bags:rec.classD.bags||0,classD_rate:rec.classD.rate||0,totalBags:rec.totalBags||0,totalAmt:rec.totalAmt||0,notes:rec.notes||''};
-  
-  // Image trick - CORS bypass without no-cors (no duplicate problem)
-  return new Promise((resolve)=>{
-    const img = new Image();
-    const url = SHEET_URL + '?data=' + encodeURIComponent(JSON.stringify(p));
-    img.onload = img.onerror = function(){
-      setSt('ok');
-      toast('✅ Google Sheet mein save ho gaya!','s');
-      setTimeout(loadSheet, 6000);
-      resolve();
-    };
-    img.src = url;
-  });
+  try{
+    await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)});
+    setSt('ok');
+    toast('✅ Google Sheet mein save ho gaya!','s');
+    setTimeout(loadSheet,3000); // 3 sec baad fresh data lao
+  }catch(e){
+    setSt('err');
+    toast('⚠️ Sheet sync nahi hua — local save hai','e');
+  }
 }
 
 // ============ LOCAL SAVE ============
@@ -531,8 +527,7 @@ function openM(id=null){
     document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
     document.getElementById('fi-r').value='RC-'+String(recs.length+1).padStart(3,'0');
   }
-  const dl=document.getElementById('f-dl');
-  dl.innerHTML=[...new Set(recs.map(r=>r.farmer))].map(f=>`<option value="${f}">`).join('');
+  updFarmerDL();
   calcP();
 }
 function closeM(id){document.getElementById(id).classList.remove('open');if(id==='modal')editId=null;}
@@ -852,7 +847,15 @@ function toast(msg,type='i'){
 }
 
 // ============ UPDATE ALL ============
-function updAll(){updDash();updFarm();}
+function updFarmerDL(){
+  // Dropdown mein sab farmers dikhao
+  const dl = document.getElementById('f-dl');
+  if(!dl) return;
+  const farmers = [...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort();
+  dl.innerHTML = farmers.map(f=>`<option value="${f}">`).join('');
+}
+
+function updAll(){updDash();updFarm();updFarmerDL();}
 
 // ============ INIT ============
 setSt('ch');
