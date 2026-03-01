@@ -23,12 +23,12 @@
 body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;}
 
 /* HEADER */
-header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;box-shadow:0 2px 12px rgba(26,63,140,0.3);}
+header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);min-height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;box-shadow:0 2px 12px rgba(26,63,140,0.3);flex-wrap:wrap;gap:6px;}
 .logo{display:flex;align-items:center;gap:10px;}
 .logo-icon{width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;}
 .logo-text{font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:#fff;line-height:1;}
 .logo-sub{font-size:9px;color:rgba(255,255,255,0.6);letter-spacing:1.5px;text-transform:uppercase;}
-.hdr-r{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.hdr-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;justify-content:flex-end;}
 .hdr-stat{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;text-align:center;}
 .hdr-stat .v{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:#fff;}
 .hdr-stat .l{font-size:8px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:1px;}
@@ -42,8 +42,8 @@ header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a3a
 main{max-width:1600px;margin:0 auto;padding:16px 18px;}
 
 /* TABS */
-.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:3px;width:fit-content;margin-bottom:16px;box-shadow:var(--sh);}
-.tab{padding:6px 15px;border:none;background:transparent;color:var(--text3);border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s;display:flex;align-items:center;gap:4px;}
+.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:3px;width:100%;margin-bottom:16px;box-shadow:var(--sh);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tab{white-space:nowrap;flex-shrink:0;padding:6px 15px;border:none;background:transparent;color:var(--text3);border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s;display:flex;align-items:center;gap:4px;}
 .tab:hover{color:var(--blue);background:var(--bluebg);}
 .tab.active{background:var(--blue);color:#fff;}
 
@@ -233,7 +233,34 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 ::-webkit-scrollbar-track{background:var(--s3);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 @media(max-width:900px){.fg{grid-template-columns:1fr 1fr;}.cfgrid{grid-template-columns:1fr 1fr;}.charts{grid-template-columns:1fr;}.cbars{grid-template-columns:1fr 1fr;}}
-@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr;}.fg{grid-template-columns:1fr;}.hdr-stat{display:none;}.cbars{grid-template-columns:1fr 1fr;}.cfgrid{grid-template-columns:1fr 1fr;}main{padding:10px;}}
+@media(max-width:768px){
+  header{padding:8px 12px;min-height:50px;}
+  .logo-sub{display:none;}
+  .hdr-stat{display:none;}
+  #ss{min-width:unset;font-size:10px;padding:3px 8px;}
+  .btn-w{font-size:11px;padding:4px 8px;}
+  .btn-add{font-size:12px;padding:5px 10px;}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .fg{grid-template-columns:1fr;}
+  .hdr-stat{display:none;}
+  .cbars{grid-template-columns:1fr 1fr;}
+  .cfgrid{grid-template-columns:1fr 1fr;}
+  main{padding:10px;}
+  header{padding:6px 10px;}
+  .logo-text{font-size:15px;}
+  .logo-icon{width:28px;height:28px;font-size:14px;}
+  .btn-add{font-size:11px;padding:5px 9px;}
+  .btn-w{font-size:10px;padding:3px 7px;}
+  #ss{font-size:10px;padding:3px 6px;min-width:unset;}
+  #user-badge span:last-child{display:none;}
+}
+@media(max-width:400px){
+  .btn-w{display:none;}
+  #ss{display:none;}
+  .logo-sub{display:none;}
+}
 
 /* ===== LOGIN ===== */
 .login-wrap{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);display:flex;align-items:center;justify-content:center;z-index:9999;}
@@ -996,7 +1023,7 @@ let editUserId = null;
 
 // Default admin — pehli baar
 const DEFAULT_USERS = [
-  {id:'1',name:'Admin',username:'admin',password:'admin8855',role:'admin'}
+  {id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}
 ];
 
 function loadUsers(){
