@@ -32,7 +32,7 @@ header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a3a
 .hdr-stat{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;text-align:center;}
 .hdr-stat .v{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:#fff;}
 .hdr-stat .l{font-size:8px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:1px;}
-#ss{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:11px;min-width:160px;text-align:center;}
+#ss{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:11px;min-width:160px;text-align:center;white-space:nowrap;}
 .btn-w{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px;transition:all 0.2s;}
 .btn-w:hover{background:rgba(255,255,255,0.28);}
 .btn-add{background:#fff;color:var(--blue2);border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans',sans-serif;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
@@ -259,6 +259,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 @media(max-width:400px){
   .btn-w{display:none;}
   #ss{display:none;}
+  #ss-mobile{display:block!important;}
   .logo-sub{display:none;}
 }
 
@@ -326,6 +327,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <div class="hdr-stat"><div class="v" id="h-amt">₹0</div><div class="l">Raqam</div></div>
     <div class="hdr-stat"><div class="v" id="h-f">0</div><div class="l">FARMER</div></div>
     <div id="ss">⟳ Connect ho raha...</div>
+  <div id="ss-mobile" style="display:none;width:100%;text-align:center;font-size:10px;padding:2px 0;color:rgba(255,255,255,0.8)"></div>
     <button class="btn-w" onclick="loadSheet()">🔄 Refresh</button>
     <button class="btn-add" onclick="openM()">＋ Naya Khareed</button>
   </div>
@@ -538,8 +540,18 @@ function hl(txt,s){if(!s||!txt)return txt||'';return String(txt).replace(new Reg
 // ============ STATUS ============
 function setSt(s){
   const el=document.getElementById('ss');if(!el)return;
-  const m={ok:'<span style="color:#4ade80;font-weight:600">● Sheet Connected ✓</span>',sync:'<span style="color:#fbbf24">⟳ Sync ho raha...</span>',load:'<span style="color:#fbbf24">⟳ Data load ho raha...</span>',err:'<span style="color:#f87171">● Error — Retry...</span>',ch:'<span style="color:rgba(255,255,255,0.6)">⟳ Check ho raha...</span>'};
-  el.innerHTML=m[s]||m.ch;
+  const m={
+    ok:'<span style="color:#4ade80;font-weight:600">● Sheet Connected ✓</span>',
+    sync:'<span style="color:#fbbf24">⟳ Sync ho raha...</span>',
+    load:'<span style="color:#fbbf24">⟳ Data load ho raha...</span>',
+    err:'<span style="color:#f87171">● Error — Retry...</span>',
+    ch:'<span style="color:rgba(255,255,255,0.6)">⟳ Check ho raha...</span>'
+  };
+  const txt = m[s]||m.ch;
+  el.innerHTML = txt;
+  // Mobile status bar bhi update karo
+  const mob = document.getElementById('ss-mobile');
+  if(mob) mob.innerHTML = txt;
 }
 
 // ============ LOAD FROM SHEET ============
