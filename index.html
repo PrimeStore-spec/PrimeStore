@@ -15,14 +15,13 @@
   --yellow:#b45309;--ybg:#fef3e2;--yb:#fde8b4;
   --orange:#c2410c;--obg:#fff0eb;--ob:#fdd5c0;
   --red:#b91c1c;--rbg:#fef0f0;--rb:#fcc8c8;
+  --purple:#7c3aed;--pbg:#f3e8ff;--pb:#ddd6fe;
+  --teal:#0f766e;--tbg:#f0fdfa;--tb:#99f6e4;
   --ok:#16a34a;--danger:#dc2626;
-  --sh:0 2px 10px rgba(0,0,0,0.07);
-  --r:8px;
+  --sh:0 2px 10px rgba(0,0,0,0.07);--r:8px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;}
-
-/* HEADER */
 header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);min-height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;box-shadow:0 2px 12px rgba(26,63,140,0.3);flex-wrap:wrap;gap:6px;}
 .logo{display:flex;align-items:center;gap:10px;}
 .logo-icon{width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;}
@@ -32,33 +31,28 @@ header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a3a
 .hdr-stat{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;text-align:center;}
 .hdr-stat .v{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:#fff;}
 .hdr-stat .l{font-size:8px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:1px;}
-#ss{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:11px;min-width:160px;text-align:center;white-space:nowrap;}
+#ss{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:11px;min-width:140px;text-align:center;white-space:nowrap;}
 .btn-w{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px;transition:all 0.2s;}
 .btn-w:hover{background:rgba(255,255,255,0.28);}
-.btn-add{background:#fff;color:var(--blue2);border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans',sans-serif;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+.btn-add{background:#fff;color:var(--blue2);border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
 .btn-add:hover{background:#f0f4ff;transform:translateY(-1px);}
-
-/* MAIN */
 main{max-width:1600px;margin:0 auto;padding:16px 18px;}
-
-/* TABS */
 .tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:3px;width:100%;margin-bottom:16px;box-shadow:var(--sh);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .tab{white-space:nowrap;flex-shrink:0;padding:6px 15px;border:none;background:transparent;color:var(--text3);border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s;display:flex;align-items:center;gap:4px;}
 .tab:hover{color:var(--blue);background:var(--bluebg);}
 .tab.active{background:var(--blue);color:#fff;}
-
-/* BTN */
+.tab.store-tab.active{background:var(--teal);}
+.tab.own-tab.active{background:var(--purple);}
 .btn{padding:7px 13px;border:none;border-radius:6px;cursor:pointer;font-family:'Noto Sans',sans-serif;font-size:12px;font-weight:500;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
 .btn-blue{background:var(--blue);color:#fff;}
-.btn-blue:hover{background:var(--blue2);transform:translateY(-1px);}
+.btn-blue:hover{background:var(--blue2);}
 .btn-green{background:#16a34a;color:#fff;}
 .btn-green:hover{background:#15803d;}
 .btn-ghost{background:var(--s2);color:var(--text2);border:1px solid var(--border);}
 .btn-ghost:hover{background:var(--s3);}
 .btn-red{background:var(--rbg);color:var(--red);border:1px solid var(--rb);}
-.btn-red:hover{background:#fee2e2;}
-
-/* STAT CARDS */
+.btn-teal{background:var(--teal);color:#fff;}
+.btn-purple{background:var(--purple);color:#fff;}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:11px;margin-bottom:16px;}
 .sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;position:relative;overflow:hidden;transition:all 0.2s;box-shadow:var(--sh);}
 .sc:hover{transform:translateY(-2px);box-shadow:0 4px 18px rgba(0,0,0,0.1);}
@@ -67,8 +61,6 @@ main{max-width:1600px;margin:0 auto;padding:16px 18px;}
 .sl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;font-weight:600;}
 .sv{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;line-height:1;}
 .ss2{font-size:11px;color:var(--text3);margin-top:2px;}
-
-/* CLASS BARS */
 .cbars{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px;}
 .cbc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px;box-shadow:var(--sh);}
 .cbadge{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;padding:3px 9px;border-radius:5px;display:inline-block;}
@@ -76,10 +68,10 @@ main{max-width:1600px;margin:0 auto;padding:16px 18px;}
 .cbadge.B{background:var(--ybg);color:var(--yellow);border:1px solid var(--yb);}
 .cbadge.C{background:var(--obg);color:var(--orange);border:1px solid var(--ob);}
 .cbadge.D{background:var(--rbg);color:var(--red);border:1px solid var(--rb);}
+.cbadge.Z{background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;}
+.cbadge.K{background:#fdf2f8;color:#9d174d;border:1px solid #fbcfe8;}
 .pb{height:5px;background:var(--s3);border-radius:3px;overflow:hidden;margin:7px 0;}
 .pf{height:100%;border-radius:3px;transition:width 1s ease;}
-
-/* CHARTS */
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px;}
 .cc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:15px;box-shadow:var(--sh);}
 .ct{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue2);margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--border);}
@@ -93,8 +85,6 @@ main{max-width:1600px;margin:0 auto;padding:16px 18px;}
 .legend{display:flex;flex-direction:column;gap:7px;}
 .li{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);}
 .ld{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
-
-/* FILTER */
 .fbox{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 15px;margin-bottom:13px;box-shadow:var(--sh);}
 .ftitle{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:9px;}
 .fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:7px;align-items:end;}
@@ -102,12 +92,9 @@ main{max-width:1600px;margin:0 auto;padding:16px 18px;}
 .fl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
 .fi,.fs{background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:6px 9px;font-size:12px;font-family:'Noto Sans',sans-serif;outline:none;width:100%;transition:all 0.2s;}
 .fi:focus,.fs:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,95,200,0.1);background:#fff;}
-.fi::placeholder{color:var(--text3);}
 .sort-bar{display:flex;gap:5px;align-items:center;margin-top:8px;flex-wrap:wrap;}
 .sb{padding:3px 9px;background:var(--s2);border:1px solid var(--border);color:var(--text3);border-radius:4px;cursor:pointer;font-size:11px;transition:all 0.2s;}
 .sb:hover,.sb.on{background:var(--bluebg);color:var(--blue);border-color:var(--blue);}
-
-/* TABLE */
 .tw{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);}
 .th2{display:flex;justify-content:space-between;align-items:center;padding:11px 15px;border-bottom:2px solid var(--border);background:var(--s2);}
 .ttl{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;}
@@ -115,79 +102,94 @@ main{max-width:1600px;margin:0 auto;padding:16px 18px;}
 .tsc{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:12px;}
 thead tr{background:#f0f4fc;}
-th{padding:8px 11px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue2);border-bottom:2px solid #dae4f8;white-space:nowrap;cursor:pointer;user-select:none;transition:all 0.2s;}
-th:hover{color:var(--blue);background:#e8f0fd;}
+th{padding:8px 11px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue2);border-bottom:2px solid #dae4f8;white-space:nowrap;}
 tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;}
 tbody tr:nth-child(even){background:#fafbfc;}
 tbody tr:hover{background:var(--bluebg)!important;}
 td{padding:8px 11px;white-space:nowrap;color:var(--text);}
-
-/* CLASS TAGS */
 .ct2{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;}
 .ct2.A{background:var(--gbg);color:var(--green);border:1px solid var(--gb);}
 .ct2.B{background:var(--ybg);color:var(--yellow);border:1px solid var(--yb);}
 .ct2.C{background:var(--obg);color:var(--orange);border:1px solid var(--ob);}
 .ct2.D{background:var(--rbg);color:var(--red);border:1px solid var(--rb);}
-
 .fc2{display:flex;align-items:center;gap:7px;}
 .fa{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;flex-shrink:0;}
 .amt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--green);}
 .mono{font-family:'JetBrains Mono',monospace;font-size:11px;}
 .rtag{background:var(--bluebg);color:var(--blue);border-radius:4px;padding:2px 6px;font-size:11px;font-family:'JetBrains Mono',monospace;}
-
 .ab{display:flex;gap:3px;}
 .ab2{width:24px;height:24px;border:1px solid var(--border);background:var(--s2);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all 0.2s;}
 .ab2.e:hover{background:var(--bluebg);border-color:var(--blue);}
 .ab2.d:hover{background:var(--rbg);border-color:var(--red);}
 .ab2.v:hover{background:var(--gbg);border-color:var(--green);}
-
-/* PAGINATION */
 .pag{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;border-top:1px solid var(--border);background:var(--s2);}
 .pi{font-size:11px;color:var(--text3);}
 .pbs{display:flex;gap:3px;}
 .pb2{width:25px;height:25px;border:1px solid var(--border);background:var(--surface);color:var(--text2);border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .pb2:hover{background:var(--bluebg);color:var(--blue);border-color:var(--blue);}
 .pb2.on{background:var(--blue);color:#fff;border-color:var(--blue);}
-
-/* MODAL */
-.ov{display:none;position:fixed;inset:0;background:rgba(26,35,50,0.5);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;}
+.ov{display:none;position:fixed;inset:0;background:rgba(26,35,50,0.55);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;}
 .ov.open{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:10px;width:min(760px,96vw);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:su 0.25s cubic-bezier(0.34,1.56,0.64,1);}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:10px;width:min(900px,96vw);max-height:93vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:su 0.25s cubic-bezier(0.34,1.56,0.64,1);}
 @keyframes su{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-.mh{background:linear-gradient(135deg,#1a3a6b,#1a5fc8);padding:13px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;border-radius:10px 10px 0 0;}
+.mh{background:linear-gradient(135deg,#1a3a6b,#1a5fc8);padding:13px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;border-radius:10px 10px 0 0;z-index:10;}
 .mt{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px;}
 .mx{width:27px;height:27px;border:1px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.8);border-radius:5px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
 .mx:hover{background:rgba(255,255,255,0.2);}
 .mb{padding:18px;background:#fff;}
 .mf{padding:11px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--s2);border-radius:0 0 10px 10px;position:sticky;bottom:0;}
-
-/* FORM */
+.sec-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--blue);margin-bottom:9px;padding-bottom:6px;border-bottom:2px solid var(--bluebg);display:flex;align-items:center;gap:6px;}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px;}
+.fgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:14px;}
+.fgrid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:11px;margin-bottom:14px;}
 .full{grid-column:1/-1;}
 .fg2{display:flex;flex-direction:column;gap:4px;}
 .flbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
 .finp{background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:8px 10px;font-size:13px;font-family:'Noto Sans',sans-serif;outline:none;transition:all 0.2s;width:100%;}
 .finp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,95,200,0.1);background:#fff;}
 .finp::placeholder{color:var(--text3);}
-
-.cfgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px;}
-.cfc{background:var(--s2);border:2px solid var(--border);border-radius:7px;padding:11px;transition:all 0.2s;}
-.cfc.A:focus-within{border-color:var(--green);background:var(--gbg);}
-.cfc.B:focus-within{border-color:var(--yellow);background:var(--ybg);}
-.cfc.C:focus-within{border-color:var(--orange);background:var(--obg);}
-.cfc.D:focus-within{border-color:var(--red);background:var(--rbg);}
-.cfh{display:flex;align-items:center;gap:6px;margin-bottom:9px;}
-.mfg{margin-bottom:7px;}
-.mfg label{display:block;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;font-weight:600;}
-.mfg input{background:#fff;border:1px solid var(--border);color:var(--text);border-radius:4px;padding:5px 8px;font-size:13px;font-family:'Noto Sans',sans-serif;outline:none;width:100%;transition:all 0.2s;}
-.mfg input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(26,95,200,0.1);}
-.cp{background:#fff;border:1px solid var(--border);border-radius:4px;padding:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--blue);text-align:center;font-weight:700;}
-.tp{display:flex;gap:14px;align-items:center;}
-.tpi{text-align:center;}
-.tpv{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--blue);}
-.tpl{font-size:9px;color:var(--text3);text-transform:uppercase;}
-
-/* FARMER */
+.finp:read-only{background:#f0f4fc;color:var(--blue);font-weight:700;}
+.div{height:1px;background:var(--border);margin:14px 0;}
+/* Class grading rows */
+.grade-table{width:100%;border-collapse:collapse;margin-bottom:14px;}
+.grade-table th{background:#f0f4fc;padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue2);border-bottom:2px solid #dae4f8;text-align:left;}
+.grade-table td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.grade-table tr:hover td{background:var(--bluebg);}
+.grade-inp{background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:6px 8px;font-size:12px;font-family:'Noto Sans',sans-serif;outline:none;width:80px;transition:all 0.2s;}
+.grade-inp:focus{border-color:var(--blue);background:#fff;}
+.dest-btn{padding:4px 10px;border:2px solid var(--border);background:var(--s2);color:var(--text3);border-radius:5px;cursor:pointer;font-size:11px;font-weight:600;transition:all 0.2s;white-space:nowrap;}
+.dest-btn:hover{border-color:var(--blue);color:var(--blue);}
+.dest-btn.store{border-color:var(--teal);background:var(--tbg);color:var(--teal);}
+.dest-btn.own{border-color:var(--purple);background:var(--pbg);color:var(--purple);}
+.dest-btn.ghar{border-color:var(--yellow);background:var(--ybg);color:var(--yellow);}
+.rate-inp{background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:6px 8px;font-size:12px;font-family:'Noto Sans',sans-serif;outline:none;width:90px;transition:all 0.2s;}
+.rate-inp:focus{border-color:var(--purple);background:#fff;}
+/* Charges section */
+.charge-box{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:13px;margin-bottom:14px;}
+.charge-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.charge-lbl{font-size:12px;color:var(--text2);width:160px;flex-shrink:0;}
+.charge-inp{background:#fff;border:1px solid var(--border);border-radius:5px;padding:6px 9px;font-size:12px;font-family:'JetBrains Mono',monospace;outline:none;width:100px;transition:all 0.2s;}
+.charge-inp:focus{border-color:var(--blue);}
+.charge-calc{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--red);font-weight:700;width:100px;}
+/* Summary */
+.summary-box{background:linear-gradient(135deg,#1a3a6b,#1a5fc8);border-radius:10px;padding:16px 18px;margin-top:4px;}
+.sum-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.sum-item{text-align:center;}
+.sum-v{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;}
+.sum-l{font-size:9px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.sum-divider{width:1px;background:rgba(255,255,255,0.2);}
+.net-pay{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);border-radius:8px;padding:10px 16px;text-align:center;margin-top:12px;}
+.net-pay-v{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;}
+.net-pay-l{font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;}
+/* Location */
+.loc-box{background:var(--bluebg);border:1px solid #c5d8f8;border-radius:8px;padding:12px;margin-bottom:8px;}
+.loc-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:8px;}
+/* Store dashboard */
+.store-header{background:linear-gradient(135deg,#0f766e,#14b8a6);border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.own-header{background:linear-gradient(135deg,#6d28d9,#8b5cf6);border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.dash-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;}
+.dash-sub{font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px;}
+/* Farmer cards */
 .jgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:11px;}
 .jcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:15px;cursor:pointer;transition:all 0.2s;box-shadow:var(--sh);}
 .jcard:hover{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 4px 18px rgba(26,95,200,0.12);}
@@ -202,27 +204,20 @@ td{padding:8px 11px;white-space:nowrap;color:var(--text);}
 .mbars{display:flex;gap:3px;margin-top:7px;}
 .mbar{flex:1;height:4px;border-radius:2px;background:var(--s3);overflow:hidden;}
 .mbarf{height:100%;border-radius:2px;}
-
-/* DETAIL */
 .dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:11px 0;}
 .dc{border-radius:7px;padding:11px;text-align:center;}
 .dc.A{background:var(--gbg);border:1px solid var(--gb);}
 .dc.B{background:var(--ybg);border:1px solid var(--yb);}
 .dc.C{background:var(--obg);border:1px solid var(--ob);}
 .dc.D{background:var(--rbg);border:1px solid var(--rb);}
-
-/* TOAST */
 .tc{position:fixed;bottom:16px;right:16px;z-index:999;display:flex;flex-direction:column;gap:6px;}
 .toast{background:#fff;border:1px solid var(--border2);border-radius:7px;padding:9px 13px;display:flex;align-items:center;gap:8px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,0.1);animation:ti 0.3s cubic-bezier(0.34,1.56,0.64,1);max-width:280px;color:var(--text);}
 @keyframes ti{from{transform:translateX(50px);opacity:0}to{transform:translateX(0);opacity:1}}
 .toast.s{border-left:3px solid var(--ok);}
 .toast.e{border-left:3px solid var(--danger);}
 .toast.i{border-left:3px solid var(--blue);}
-
-/* MISC */
 .hidden{display:none!important;}
 mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding:0 2px;font-weight:600;}
-.div{height:1px;background:var(--border);margin:12px 0;}
 .stl{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
 .stl span{color:var(--blue);}
 .bliv{background:rgba(22,163,74,0.1);color:var(--ok);border:1px solid rgba(22,163,74,0.25);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;}
@@ -232,38 +227,6 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--s3);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
-@media(max-width:900px){.fg{grid-template-columns:1fr 1fr;}.cfgrid{grid-template-columns:1fr 1fr;}.charts{grid-template-columns:1fr;}.cbars{grid-template-columns:1fr 1fr;}}
-@media(max-width:768px){
-  header{padding:8px 12px;min-height:50px;}
-  .logo-sub{display:none;}
-  .hdr-stat{display:none;}
-  #ss{min-width:unset;font-size:10px;padding:3px 8px;}
-  .btn-w{font-size:11px;padding:4px 8px;}
-  .btn-add{font-size:12px;padding:5px 10px;}
-}
-@media(max-width:600px){
-  .stats-grid{grid-template-columns:1fr 1fr;}
-  .fg{grid-template-columns:1fr;}
-  .hdr-stat{display:none;}
-  .cbars{grid-template-columns:1fr 1fr;}
-  .cfgrid{grid-template-columns:1fr 1fr;}
-  main{padding:10px;}
-  header{padding:6px 10px;}
-  .logo-text{font-size:15px;}
-  .logo-icon{width:28px;height:28px;font-size:14px;}
-  .btn-add{font-size:11px;padding:5px 9px;}
-  .btn-w{font-size:10px;padding:3px 7px;}
-  #ss{font-size:10px;padding:3px 6px;min-width:unset;}
-  #user-badge span:last-child{display:none;}
-}
-@media(max-width:400px){
-  .btn-w{display:none;}
-  #ss{display:none;}
-  #ss-mobile{display:block!important;}
-  .logo-sub{display:none;}
-}
-
-/* ===== LOGIN ===== */
 .login-wrap{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);display:flex;align-items:center;justify-content:center;z-index:9999;}
 .login-box{background:#fff;border-radius:12px;padding:36px 32px;width:min(380px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.3);}
 .login-logo{text-align:center;margin-bottom:24px;}
@@ -282,54 +245,40 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 .role-badge.admin{background:#e8f0fd;color:#1a5fc8;border:1px solid #c5d8f8;}
 .role-badge.manager{background:#e8f5ed;color:#1a7a3c;border:1px solid #c8ecd4;}
 .role-badge.viewer{background:#fef3e2;color:#b45309;border:1px solid #fde8b4;}
-
-/* ===== USERS PANEL ===== */
 .users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
 .user-card{background:#fff;border:1px solid #dde1e9;border-radius:8px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
 .user-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .user-av{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;}
-
+.tp{display:flex;gap:14px;align-items:center;}
+.tpi{text-align:center;}
+.tpv{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--blue);}
+.tpl{font-size:9px;color:var(--text3);text-transform:uppercase;}
+@media(max-width:900px){.fg{grid-template-columns:1fr 1fr;}.cbars{grid-template-columns:1fr 1fr;}.charts{grid-template-columns:1fr;}.fgrid3,.fgrid4{grid-template-columns:1fr 1fr;}.sum-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr;}.fgrid,.fgrid3,.fgrid4{grid-template-columns:1fr;}.cbars{grid-template-columns:1fr 1fr;}main{padding:10px;}header{padding:6px 10px;}.hdr-stat{display:none;}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-box">
-    <div class="login-logo">
-      <span class="icon">❄️</span>
-      <h2>Prime ColdStore Pro</h2>
-      <p>Apna username aur password daalo</p>
-    </div>
+    <div class="login-logo"><span class="icon">❄️</span><h2>Prime ColdStore Pro</h2><p>Apna username aur password daalo</p></div>
     <div class="login-err" id="login-err">❌ Username ya password galat hai!</div>
-    <div class="login-field">
-      <label>Username</label>
-      <input type="text" id="l-user" placeholder="Jaise: admin" onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
-    <div class="login-field">
-      <label>Password</label>
-      <input type="password" id="l-pass" placeholder="Password daalo" onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
+    <div class="login-field"><label>Username</label><input type="text" id="l-user" placeholder="Jaise: admin" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="login-field"><label>Password</label><input type="password" id="l-pass" placeholder="Password daalo" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <button class="login-btn" onclick="doLogin()">🔓 Login Karo</button>
   </div>
 </div>
 
 <header>
-  <div class="logo">
-    <div class="logo-icon">❄️</div>
-    <div>
-      <div class="logo-text">Prime ColdStore Pro</div>
-      <div class="logo-sub">Aloo Khareed System</div>
-    </div>
-  </div>
+  <div class="logo"><div class="logo-icon">❄️</div><div><div class="logo-text">Prime ColdStore Pro</div><div class="logo-sub">Grading & Stock System</div></div></div>
   <div class="hdr-r">
-    <div class="hdr-stat"><div class="v" id="h-bags">0</div><div class="l">Total Bags</div></div>
-    <div class="hdr-stat"><div class="v" id="h-amt">₹0</div><div class="l">Raqam</div></div>
-    <div class="hdr-stat"><div class="v" id="h-f">0</div><div class="l">FARMER</div></div>
+    <div class="hdr-stat"><div class="v" id="h-entries">0</div><div class="l">Entries</div></div>
+    <div class="hdr-stat"><div class="v" id="h-store">0</div><div class="l">Store Bags</div></div>
+    <div class="hdr-stat"><div class="v" id="h-own">0</div><div class="l">Own Purchase</div></div>
     <div id="ss">⟳ Connect ho raha...</div>
-  <div id="ss-mobile" style="display:none;width:100%;text-align:center;font-size:10px;padding:2px 0;color:rgba(255,255,255,0.8)"></div>
     <button class="btn-w" onclick="loadSheet()">🔄 Refresh</button>
-    <button class="btn-add" onclick="openM()">＋ Naya Khareed</button>
+    <button class="btn-add" onclick="openM()">＋ Naya Entry</button>
   </div>
 </header>
 
@@ -337,37 +286,31 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
   <div class="tabs">
     <button class="tab active" onclick="goTab('dash')" id="tab-dash">📊 Dashboard</button>
     <button class="tab" onclick="goTab('rec')" id="tab-rec">📋 Records</button>
-    <button class="tab" onclick="goTab('jim')" id="tab-jim">👨‍🌾 FARMER</button>
+    <button class="tab" onclick="goTab('jim')" id="tab-jim">👨‍🌾 Farmer</button>
+    <button class="tab store-tab" onclick="goTab('store')" id="tab-store">🏪 Store</button>
+    <button class="tab own-tab" onclick="goTab('own')" id="tab-own">🛒 Own Purchase</button>
     <button class="tab" onclick="goTab('rep')" id="tab-rep">📈 Reports</button>
     <button class="tab" onclick="goTab('users')" id="tab-users" style="display:none">👥 Users</button>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- MAIN DASHBOARD -->
   <div id="p-dash">
     <div class="stats-grid">
-      <div class="sc" style="--cc:var(--blue)"><span class="si">📦</span><div class="sl">TODAY PURCHASE</div><div class="sv" id="sd-today">0</div><div class="ss2">Total Purchase</div></div>
-      <div class="sc" style="--cc:var(--green)"><span class="si">💰</span><div class="sl">TOTAL AMOUNT</div><div class="sv" id="sd-amt">₹0</div><div class="ss2">Total Amount</div></div>
-      <div class="sc" style="--cc:var(--yellow)"><span class="si">🧺</span><div class="sl">TOTAL BAGS</div><div class="sv" id="sd-bags">0</div><div class="ss2">All Class</div></div>
-      <div class="sc" style="--cc:var(--orange)"><span class="si">👨‍🌾</span><div class="sl">FARMER</div><div class="sv" id="sd-f">0</div><div class="ss2">Registered</div></div>
-      <div class="sc" style="--cc:var(--green)"><span class="si">🟢</span><div class="sl">Class A</div><div class="sv" id="sd-a">0</div><div class="ss2">CLASS A</div></div>
-      <div class="sc" style="--cc:var(--yellow)"><span class="si">🟡</span><div class="sl">Class B</div><div class="sv" id="sd-b">0</div><div class="ss2">CLASS B</div></div>
-      <div class="sc" style="--cc:var(--orange)"><span class="si">🟠</span><div class="sl">Class C</div><div class="sv" id="sd-c">0</div><div class="ss2">CLASS C</div></div>
-      <div class="sc" style="--cc:var(--red)"><span class="si">🔴</span><div class="sl">Class D</div><div class="sv" id="sd-d">0</div><div class="ss2">CLASS D</div></div>
-    </div>
-    <div class="cbars">
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge A">CLASS A</span><span id="pct-a" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-a" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--green)">0 bags</div><div class="pb"><div class="pf" id="bar-a" style="background:var(--green);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-a" style="color:var(--green);font-weight:600">₹0</span></div></div>
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge B">CLASS B</span><span id="pct-b" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-b" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--yellow)">0 bags</div><div class="pb"><div class="pf" id="bar-b" style="background:var(--yellow);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-b" style="color:var(--yellow);font-weight:600">₹0</span></div></div>
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge C">CLASS C</span><span id="pct-c" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-c" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--orange)">0 bags</div><div class="pb"><div class="pf" id="bar-c" style="background:var(--orange);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-c" style="color:var(--orange);font-weight:600">₹0</span></div></div>
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge D">CLASS D</span><span id="pct-d" style="font-size:11px;color:#8a95a8">0%</span></div><div id="bags-d" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--red)">0 bags</div><div class="pb"><div class="pf" id="bar-d" style="background:var(--red);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg: <span id="avg-d" style="color:var(--red);font-weight:600">₹0</span></div></div>
+      <div class="sc" style="--cc:var(--blue)"><span class="si">📋</span><div class="sl">Total Entries</div><div class="sv" id="sd-entries">0</div><div class="ss2">Saari grading entries</div></div>
+      <div class="sc" style="--cc:var(--green)"><span class="si">👨‍🌾</span><div class="sl">Farmers</div><div class="sv" id="sd-farmers">0</div><div class="ss2">Registered</div></div>
+      <div class="sc" style="--cc:var(--teal)"><span class="si">🏪</span><div class="sl">Store Bags</div><div class="sv" id="sd-storebags">0</div><div class="ss2">Farmer ka maal</div></div>
+      <div class="sc" style="--cc:var(--purple)"><span class="si">🛒</span><div class="sl">Own Purchase</div><div class="sv" id="sd-ownbags">0</div><div class="ss2">Hamare bags</div></div>
+      <div class="sc" style="--cc:var(--yellow)"><span class="si">🏠</span><div class="sl">Ghar Gaye</div><div class="sv" id="sd-gharbags">0</div><div class="ss2">Farmer ghar le gaya</div></div>
+      <div class="sc" style="--cc:var(--red)"><span class="si">❌</span><div class="sl">Wastage</div><div class="sv" id="sd-waste">0</div><div class="ss2">Zero + Kaat</div></div>
+      <div class="sc" style="--cc:var(--green)"><span class="si">💰</span><div class="sl">Own Purchase Amt</div><div class="sv" id="sd-ownamt">₹0</div><div class="ss2">Total kharcha</div></div>
+      <div class="sc" style="--cc:var(--orange)"><span class="si">💸</span><div class="sl">Net Dena Farmer</div><div class="sv" id="sd-netpay">₹0</div><div class="ss2">Saari entries</div></div>
     </div>
     <div class="charts">
-      <div class="cc"><div class="ct">📊 FARMER wise Bags</div><div id="chart-bars"><div class="empty"><div class="ei">📊</div><p>Koi record nahi</p></div></div></div>
-      <div class="cc"><div class="ct">🥧 Class Distribution</div><div class="donut-w">
-        <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="42" fill="none" stroke="#eef0f4" stroke-width="20"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--green)" stroke-width="20" stroke-dasharray="0 264" id="d-a"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--yellow)" stroke-width="20" stroke-dasharray="0 264" id="d-b"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--orange)" stroke-width="20" stroke-dasharray="0 264" id="d-c"/><circle cx="60" cy="60" r="42" fill="none" stroke="var(--red)" stroke-width="20" stroke-dasharray="0 264" id="d-d"/></svg>
-        <div class="legend"><div class="li"><div class="ld" style="background:var(--green)"></div><span id="lg-a">Class A: 0</span></div><div class="li"><div class="ld" style="background:var(--yellow)"></div><span id="lg-b">Class B: 0</span></div><div class="li"><div class="ld" style="background:var(--orange)"></div><span id="lg-c">Class C: 0</span></div><div class="li"><div class="ld" style="background:var(--red)"></div><span id="lg-d">Class D: 0</span></div></div>
-      </div></div>
+      <div class="cc"><div class="ct">👨‍🌾 Farmer wise Bags</div><div id="chart-bars"><div class="empty"><div class="ei">📊</div><p>Koi record nahi</p></div></div></div>
+      <div class="cc"><div class="ct">📦 Destination wise Split</div><div id="dest-chart"><div class="empty"><div class="ei">📊</div><p>Koi record nahi</p></div></div></div>
     </div>
-    <div class="tw"><div class="th2"><div class="ttl">🕐 Recent Entries <span class="bliv">LIVE</span></div><button class="btn btn-ghost" onclick="goTab('rec')">Sab →</button></div><div class="tsc"><table><thead><tr><th>FARMER</th><th>Tarikh</th><th>Receipt</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Bags</th><th>Raqam</th></tr></thead><tbody id="rec-tbody"><tr><td colspan="9"><div class="empty"><div class="ei">📦</div><h3>Koi record nahi</h3></div></td></tr></tbody></table></div></div>
+    <div class="tw"><div class="th2"><div class="ttl">🕐 Recent Entries <span class="bliv">LIVE</span></div><button class="btn btn-ghost" onclick="goTab('rec')">Sab →</button></div>
+    <div class="tsc"><table><thead><tr><th>Farmer</th><th>Tarikh</th><th>Total Bags</th><th>Store</th><th>Own Purchase</th><th>Ghar</th><th>Grade Charge</th><th>Bardana</th><th>Net Dena</th></tr></thead><tbody id="rec-tbody"></tbody></table></div></div>
   </div>
 
   <!-- RECORDS -->
@@ -375,33 +318,20 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <div class="fbox">
       <div class="ftitle">🔍 Filter & Search</div>
       <div class="fg">
-        <div class="fgrp"><span class="fl">Search</span><input class="fi" id="f-s" placeholder="Naam, Receipt, Gaon..." oninput="applyF()"></div>
+        <div class="fgrp"><span class="fl">Search</span><input class="fi" id="f-s" placeholder="Farmer naam, receipt..." oninput="applyF()"></div>
         <div class="fgrp"><span class="fl">Shuru</span><input type="date" class="fi" id="f-from" onchange="applyF()"></div>
         <div class="fgrp"><span class="fl">Khatam</span><input type="date" class="fi" id="f-to" onchange="applyF()"></div>
-        <div class="fgrp"><span class="fl">Class</span><select class="fs" id="f-cl" onchange="applyF()"><option value="">Saari</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
-        <div class="fgrp"><span class="fl">FARMER</span><select class="fs" id="f-farm" onchange="applyF()"><option value="">Sab</option></select></div>
+        <div class="fgrp"><span class="fl">Farmer</span><select class="fs" id="f-farm" onchange="applyF()"><option value="">Sab</option></select></div>
+        <div class="fgrp"><span class="fl">Quality</span><input class="fi" id="f-q" placeholder="Quality..." oninput="applyF()"></div>
         <div style="display:flex;gap:5px"><button class="btn btn-blue" onclick="applyF()">⚡</button><button class="btn btn-ghost" onclick="clrF()">✕</button></div>
-      </div>
-      <div class="sort-bar"><span style="font-size:9px;color:#8a95a8;text-transform:uppercase;letter-spacing:1px">Sort:</span>
-        <button class="sb" onclick="sSort('date')">📅 Tarikh</button>
-        <button class="sb" onclick="sSort('farmer')">👨 Naam</button>
-        <button class="sb" onclick="sSort('totalBags')">📦 Bags</button>
-        <button class="sb" onclick="sSort('totalAmt')">💰 Raqam</button>
-        <button class="sb" onclick="togDir()" id="dir-b">↓ DESC</button>
       </div>
     </div>
     <div class="tw">
-      <div class="th2"><div class="ttl">📋 Khareed Records <span class="rcnt" id="r-cnt">0</span></div><div style="display:flex;gap:6px"><button class="btn btn-green" onclick="expCSV()">⬇ CSV</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
+      <div class="th2"><div class="ttl">📋 Grading Records <span class="rcnt" id="r-cnt">0</span></div>
+      <div style="display:flex;gap:6px"><button class="btn btn-green" onclick="expCSV()">⬇ CSV</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
       <div class="tsc"><table>
-        <thead><tr>
-          <th>Sr</th><th onclick="sSort('date')">Tarikh</th><th onclick="sSort('farmer')">FARMER</th><th>Gaon</th><th>Receipt</th>
-          <th style="color:var(--green)">A Bags</th><th style="color:var(--green)">A Rate</th>
-          <th style="color:var(--yellow)">B Bags</th><th style="color:var(--yellow)">B Rate</th>
-          <th style="color:var(--orange)">C Bags</th><th style="color:var(--orange)">C Rate</th>
-          <th style="color:var(--red)">D Bags</th><th style="color:var(--red)">D Rate</th>
-          <th>Bags</th><th>Raqam</th><th>Action</th>
-        </tr></thead>
-        <tbody id="main-tbody"><tr><td colspan="16"><div class="empty"><div class="ei">🥔</div><h3>Koi record nahi</h3><p style="margin:6px 0 12px">Naya entry karo</p><button class="btn btn-blue" onclick="openM()">＋ Add Karo</button></div></td></tr></tbody>
+        <thead><tr><th>Sr</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th><th>Store A</th><th>Store B</th><th>Store C</th><th>Store D</th><th>Own C</th><th>Own D</th><th>Own A</th><th>Own B</th><th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th></tr></thead>
+        <tbody id="main-tbody"></tbody>
       </table></div>
       <div class="pag"><div class="pi" id="p-info">0 records</div><div class="pbs" id="p-btns"></div></div>
     </div>
@@ -410,10 +340,58 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
   <!-- FARMER -->
   <div id="p-jim" class="hidden">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div class="stl">👨‍🌾 FARMER <span>Directory</span></div>
+      <div class="stl">👨‍🌾 Farmer <span>Directory</span></div>
       <input class="fi" style="width:200px" placeholder="Search..." id="j-s" oninput="renderJ()">
     </div>
-    <div class="jgrid" id="j-grid"><div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>Koi FARMER nahi</h3></div></div>
+    <div class="jgrid" id="j-grid"></div>
+  </div>
+
+  <!-- STORE DASHBOARD -->
+  <div id="p-store" class="hidden">
+    <div class="store-header">
+      <div><div class="dash-title">🏪 Store Dashboard</div><div class="dash-sub">Farmer ka maal jo cold store mein rakha hai</div></div>
+      <div style="display:flex;gap:10px">
+        <div style="text-align:center;background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:8px"><div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#fff" id="store-total-bags">0</div><div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase">Total Bags</div></div>
+        <div style="text-align:center;background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:8px"><div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#fff" id="store-total-farmers">0</div><div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase">Farmers</div></div>
+      </div>
+    </div>
+    <div class="cbars" id="store-cbars">
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge A">CLASS A</span><span id="store-pct-a" style="font-size:11px;color:#8a95a8">0%</span></div><div id="store-bags-a" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--green)">0 bags</div><div class="pb"><div class="pf" id="store-bar-a" style="background:var(--green);width:0%"></div></div></div>
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge B">CLASS B</span><span id="store-pct-b" style="font-size:11px;color:#8a95a8">0%</span></div><div id="store-bags-b" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--yellow)">0 bags</div><div class="pb"><div class="pf" id="store-bar-b" style="background:var(--yellow);width:0%"></div></div></div>
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge C">CLASS C</span><span id="store-pct-c" style="font-size:11px;color:#8a95a8">0%</span></div><div id="store-bags-c" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--orange)">0 bags</div><div class="pb"><div class="pf" id="store-bar-c" style="background:var(--orange);width:0%"></div></div></div>
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge D">CLASS D</span><span id="store-pct-d" style="font-size:11px;color:#8a95a8">0%</span></div><div id="store-bags-d" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--red)">0 bags</div><div class="pb"><div class="pf" id="store-bar-d" style="background:var(--red);width:0%"></div></div></div>
+    </div>
+    <div class="tw">
+      <div class="th2"><div class="ttl">🏪 Store Records</div></div>
+      <div class="tsc"><table>
+        <thead><tr><th>Farmer</th><th>Tarikh</th><th>Quality</th><th>A Bags</th><th>B Bags</th><th>C Bags</th><th>D Bags</th><th>Total Store</th><th>Chamber</th><th>Floor</th><th>Pillar</th></tr></thead>
+        <tbody id="store-tbody"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- OWN PURCHASE DASHBOARD -->
+  <div id="p-own" class="hidden">
+    <div class="own-header">
+      <div><div class="dash-title">🛒 Own Purchase Dashboard</div><div class="dash-sub">Prime ColdStore ka khud ka kharida hua maal</div></div>
+      <div style="display:flex;gap:10px">
+        <div style="text-align:center;background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:8px"><div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#fff" id="own-total-bags">0</div><div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase">Total Bags</div></div>
+        <div style="text-align:center;background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:8px"><div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#fff" id="own-total-amt">₹0</div><div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase">Total Amount</div></div>
+      </div>
+    </div>
+    <div class="cbars">
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge A">CLASS A</span><span id="own-pct-a" style="font-size:11px;color:#8a95a8">0%</span></div><div id="own-bags-a" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--green)">0 bags</div><div class="pb"><div class="pf" id="own-bar-a" style="background:var(--green);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span id="own-avg-a" style="color:var(--green);font-weight:600">₹0</span></div></div>
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge B">CLASS B</span><span id="own-pct-b" style="font-size:11px;color:#8a95a8">0%</span></div><div id="own-bags-b" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--yellow)">0 bags</div><div class="pb"><div class="pf" id="own-bar-b" style="background:var(--yellow);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span id="own-avg-b" style="color:var(--yellow);font-weight:600">₹0</span></div></div>
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge C">CLASS C</span><span id="own-pct-c" style="font-size:11px;color:#8a95a8">0%</span></div><div id="own-bags-c" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--orange)">0 bags</div><div class="pb"><div class="pf" id="own-bar-c" style="background:var(--orange);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span id="own-avg-c" style="color:var(--orange);font-weight:600">₹0</span></div></div>
+      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge D">CLASS D</span><span id="own-pct-d" style="font-size:11px;color:#8a95a8">0%</span></div><div id="own-bags-d" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--red)">0 bags</div><div class="pb"><div class="pf" id="own-bar-d" style="background:var(--red);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span id="own-avg-d" style="color:var(--red);font-weight:600">₹0</span></div></div>
+    </div>
+    <div class="tw">
+      <div class="th2"><div class="ttl">🛒 Own Purchase Records</div></div>
+      <div class="tsc"><table>
+        <thead><tr><th>Farmer</th><th>Tarikh</th><th>Quality</th><th>A Bags</th><th>A Rate</th><th>A Amt</th><th>B Bags</th><th>B Rate</th><th>B Amt</th><th>C Bags</th><th>C Rate</th><th>C Amt</th><th>D Bags</th><th>D Rate</th><th>D Amt</th><th>Total Bags</th><th>Total Amount</th></tr></thead>
+        <tbody id="own-tbody"></tbody>
+      </table></div>
+    </div>
   </div>
 
   <!-- REPORTS -->
@@ -421,59 +399,179 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <div class="stl">📈 Reports & <span>Analytics</span></div>
     <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
       <button class="btn btn-blue" onclick="genR('monthly')">📅 Monthly</button>
-      <button class="btn btn-ghost" onclick="genR('class')">🥔 Class-wise</button>
-      <button class="btn btn-ghost" onclick="genR('farmer')">👨‍🌾 FARMER-wise</button>
+      <button class="btn btn-ghost" onclick="genR('farmer')">👨‍🌾 Farmer-wise</button>
+      <button class="btn btn-teal" onclick="genR('store')">🏪 Store Report</button>
+      <button class="btn btn-purple" onclick="genR('own')">🛒 Own Purchase</button>
       <button class="btn btn-green" onclick="expCSV()">⬇ CSV Export</button>
     </div>
     <div id="r-out"><div class="empty" style="padding:50px"><div class="ei">📊</div><h3>Report select karo</h3></div></div>
   </div>
 
-  <!-- USERS PAGE -->
+  <!-- USERS -->
   <div id="p-users" class="hidden">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div class="stl">👥 Users <span>Management</span></div>
       <button class="btn btn-blue" onclick="openUserModal()">＋ Naya User</button>
     </div>
-    <div class="users-grid" id="users-grid">
-      <div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>
-    </div>
+    <div class="users-grid" id="users-grid"></div>
   </div>
-
 </main>
 
-<!-- ADD/EDIT MODAL -->
+<!-- MAIN ENTRY MODAL -->
 <div class="ov" id="modal" onclick="closeOut(event,'modal')">
   <div class="modal">
-    <div class="mh"><div class="mt">🥔 <span id="m-title">Naya Khareed</span></div><button class="mx" onclick="closeM('modal')">✕</button></div>
+    <div class="mh"><div class="mt">🥔 <span id="m-title">Naya Grading Entry</span></div><button class="mx" onclick="closeM('modal')">✕</button></div>
     <div class="mb">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8a95a8;margin-bottom:9px">👤 FARMER Info</div>
-      <div class="fgrid">
-        <div class="fg2"><label class="flbl">FARMER Naam *</label><div style="position:relative">
-  <input class="finp" id="fi-f" placeholder="Type karo ya select karo..." 
-    oninput="showFarmerDrop(this.value)" 
-    onfocus="showFarmerDrop(this.value)"
-    onblur="setTimeout(()=>hideFarmerDrop(),200)"
-    autocomplete="off">
-  <div id="farmer-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #dde1e9;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:999;max-height:180px;overflow-y:auto;"></div>
-</div></div>
+
+      <!-- SECTION 1: Farmer Info -->
+      <div class="sec-title">👤 Farmer Info</div>
+      <div class="fgrid3" style="margin-bottom:14px">
+        <div class="fg2"><label class="flbl">Farmer Naam *</label>
+          <div style="position:relative">
+            <input class="finp" id="fi-f" placeholder="Type karo ya select karo..." oninput="showFarmerDrop(this.value)" onfocus="showFarmerDrop(this.value)" onblur="setTimeout(()=>hideFarmerDrop(),200)" autocomplete="off">
+            <div id="farmer-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #dde1e9;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:999;max-height:180px;overflow-y:auto;"></div>
+          </div>
+        </div>
         <div class="fg2"><label class="flbl">Tarikh *</label><input type="date" class="finp" id="fi-d"></div>
-        <div class="fg2"><label class="flbl">Gaon</label><input class="finp" id="fi-v" placeholder="Ludhiana"></div>
         <div class="fg2"><label class="flbl">Receipt No.</label><input class="finp" id="fi-r" placeholder="Auto"></div>
-        <div class="fg2"><label class="flbl">📱 Mobile No.</label><input class="finp" id="fi-m" placeholder="98765-43210" type="tel"></div>
-        <div class="fg2"><label class="flbl">🥔 Potato Quality</label><div style="position:relative"><input class="finp" id="fi-q" placeholder="Type karo ya select karo..." oninput="showQualityDrop(this.value)" onfocus="showQualityDrop(this.value)" onblur="setTimeout(()=>hideQualityDrop(),200)" autocomplete="off"><div id="quality-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #dde1e9;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:999;max-height:180px;overflow-y:auto;"></div></div></div>
-        <div class="fg2 full"><label class="flbl">Notes</label><input class="finp" id="fi-n" placeholder="Koi khaas baat..."></div>
+        <div class="fg2"><label class="flbl">📱 Mobile</label><input class="finp" id="fi-m" placeholder="98765-43210" type="tel"></div>
+        <div class="fg2"><label class="flbl">Gaon</label><input class="finp" id="fi-v" placeholder="Ludhiana"></div>
+        <div class="fg2"><label class="flbl">🥔 Potato Quality</label>
+          <div style="position:relative">
+            <input class="finp" id="fi-q" placeholder="Pukhraj, Jyoti..." oninput="showQualityDrop(this.value)" onfocus="showQualityDrop(this.value)" onblur="setTimeout(()=>hideQualityDrop(),200)" autocomplete="off">
+            <div id="quality-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #dde1e9;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:999;max-height:180px;overflow-y:auto;"></div>
+          </div>
+        </div>
       </div>
+
       <div class="div"></div>
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8a95a8;margin-bottom:9px">🥔 Class Wise Qty & Rate</div>
-      <div class="cfgrid">
-        <div class="cfc A"><div class="cfh"><span class="cbadge A">A</span><span style="font-size:10px;color:var(--green)">CLASS A</span></div><div class="mfg"><label>Bags</label><input type="number" id="fa-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fa-r" placeholder="850" min="0" oninput="calcP()"></div><div class="cp" id="pa">₹0</div></div>
-        <div class="cfc B"><div class="cfh"><span class="cbadge B">B</span><span style="font-size:10px;color:var(--yellow)">Good</span></div><div class="mfg"><label>Bags</label><input type="number" id="fb-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fb-r" placeholder="750" min="0" oninput="calcP()"></div><div class="cp" id="pb">₹0</div></div>
-        <div class="cfc C"><div class="cfh"><span class="cbadge C">C</span><span style="font-size:10px;color:var(--orange)">CLASS C</span></div><div class="mfg"><label>Bags</label><input type="number" id="fc-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fc-r" placeholder="650" min="0" oninput="calcP()"></div><div class="cp" id="pc">₹0</div></div>
-        <div class="cfc D"><div class="cfh"><span class="cbadge D">D</span><span style="font-size:10px;color:var(--red)">Low</span></div><div class="mfg"><label>Bags</label><input type="number" id="fd-b" placeholder="0" min="0" oninput="calcP()"></div><div class="mfg"><label>Rate ₹</label><input type="number" id="fd-r" placeholder="550" min="0" oninput="calcP()"></div><div class="cp" id="pd">₹0</div></div>
+
+      <!-- SECTION 2: Grading -->
+      <div class="sec-title">⚖️ Grading — Har Class ka Destination Select Karo</div>
+      <table class="grade-table">
+        <thead>
+          <tr>
+            <th style="width:80px">Class</th>
+            <th style="width:100px">Bags</th>
+            <th>Destination (Farmer ki Choice)</th>
+            <th style="width:110px">Rate ₹/bag <span style="color:var(--purple);font-size:9px">(Own ke liye)</span></th>
+            <th style="width:110px">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="cbadge A">A</span></td>
+            <td><input type="number" class="grade-inp" id="g-a-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
+            <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+              <button class="dest-btn" id="da-store" onclick="setDest('A','store')">🏪 Store</button>
+              <button class="dest-btn" id="da-own" onclick="setDest('A','own')">🛒 Own Purchase</button>
+              <button class="dest-btn" id="da-ghar" onclick="setDest('A','ghar')">🏠 Ghar</button>
+            </div></td>
+            <td><input type="number" class="rate-inp" id="g-a-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
+            <td><span id="g-a-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
+          </tr>
+          <tr>
+            <td><span class="cbadge B">B</span></td>
+            <td><input type="number" class="grade-inp" id="g-b-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
+            <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+              <button class="dest-btn" id="db-store" onclick="setDest('B','store')">🏪 Store</button>
+              <button class="dest-btn" id="db-own" onclick="setDest('B','own')">🛒 Own Purchase</button>
+              <button class="dest-btn" id="db-ghar" onclick="setDest('B','ghar')">🏠 Ghar</button>
+            </div></td>
+            <td><input type="number" class="rate-inp" id="g-b-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
+            <td><span id="g-b-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
+          </tr>
+          <tr>
+            <td><span class="cbadge C">C</span></td>
+            <td><input type="number" class="grade-inp" id="g-c-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
+            <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+              <button class="dest-btn" id="dc-store" onclick="setDest('C','store')">🏪 Store</button>
+              <button class="dest-btn" id="dc-own" onclick="setDest('C','own')">🛒 Own Purchase</button>
+              <button class="dest-btn" id="dc-ghar" onclick="setDest('C','ghar')">🏠 Ghar</button>
+            </div></td>
+            <td><input type="number" class="rate-inp" id="g-c-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
+            <td><span id="g-c-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
+          </tr>
+          <tr>
+            <td><span class="cbadge D">D</span></td>
+            <td><input type="number" class="grade-inp" id="g-d-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
+            <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+              <button class="dest-btn" id="dd-store" onclick="setDest('D','store')">🏪 Store</button>
+              <button class="dest-btn" id="dd-own" onclick="setDest('D','own')">🛒 Own Purchase</button>
+              <button class="dest-btn" id="dd-ghar" onclick="setDest('D','ghar')">🏠 Ghar</button>
+            </div></td>
+            <td><input type="number" class="rate-inp" id="g-d-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
+            <td><span id="g-d-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
+          </tr>
+          <tr style="background:#fdf2f8">
+            <td><span class="cbadge Z">Zero</span></td>
+            <td><input type="number" class="grade-inp" id="g-z-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
+            <td><span style="font-size:11px;color:#64748b">❌ Wastage (auto)</span></td>
+            <td></td><td></td>
+          </tr>
+          <tr style="background:#fdf2f8">
+            <td><span class="cbadge K">Kaat</span></td>
+            <td><input type="number" class="grade-inp" id="g-k-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
+            <td><span style="font-size:11px;color:#64748b">❌ Wastage (auto)</span></td>
+            <td></td><td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="div"></div>
+
+      <!-- SECTION 3: Storage Location (Store wale ke liye) -->
+      <div class="sec-title">🏠 Storage Location <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(Store mein rakhe bags ke liye)</span></div>
+      <div class="loc-box">
+        <div class="fgrid3" style="margin-bottom:0">
+          <div class="fg2"><label class="flbl">Chamber Number</label><input class="finp" id="fi-cham" placeholder="Jaise: 1, 2, 3..."></div>
+          <div class="fg2"><label class="flbl">Floor</label><input class="finp" id="fi-floor" placeholder="Ground, 1st, 2nd..."></div>
+          <div class="fg2"><label class="flbl">Pillar No.</label><input class="finp" id="fi-pillar" placeholder="P-1, P-2..."></div>
+        </div>
       </div>
+
+      <div class="div"></div>
+
+      <!-- SECTION 4: Charges -->
+      <div class="sec-title">💸 Charges (Farmer se Lene Hain)</div>
+      <div class="charge-box">
+        <div class="charge-row">
+          <span class="charge-lbl">⚖️ Grading Rate ₹/bag</span>
+          <input type="number" class="charge-inp" id="fi-grate" placeholder="30" oninput="calcEntry()">
+          <span style="font-size:11px;color:var(--text3);margin:0 4px">×</span>
+          <span id="total-bags-show" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">0 bags</span>
+          <span style="font-size:11px;color:var(--text3);margin:0 4px">=</span>
+          <span class="charge-calc" id="grade-charge-amt">₹0</span>
+        </div>
+        <div class="charge-row">
+          <span class="charge-lbl">🧺 Bardana Rate ₹/bag</span>
+          <input type="number" class="charge-inp" id="fi-brate" placeholder="16" oninput="calcEntry()">
+          <span style="font-size:11px;color:var(--text3);margin:0 4px">×</span>
+          <span id="bardana-bags-show" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">0 bags</span>
+          <span style="font-size:11px;color:var(--text3);margin:0 4px">=</span>
+          <span class="charge-calc" id="bardana-charge-amt">₹0</span>
+        </div>
+        <div class="fg2" style="margin-top:8px"><label class="flbl">Notes</label><input class="finp" id="fi-n" placeholder="Koi khaas baat..."></div>
+      </div>
+
+      <!-- SECTION 5: Summary -->
+      <div class="summary-box">
+        <div class="sum-grid">
+          <div class="sum-item"><div class="sum-v" id="sum-total-bags">0</div><div class="sum-l">Total Bags</div></div>
+          <div class="sum-item"><div class="sum-v" id="sum-store-bags">0</div><div class="sum-l">🏪 Store Bags</div></div>
+          <div class="sum-item"><div class="sum-v" id="sum-own-bags">0</div><div class="sum-l">🛒 Own Purchase Bags</div></div>
+          <div class="sum-item"><div class="sum-v" id="sum-own-amt">₹0</div><div class="sum-l">🛒 Own Amount</div></div>
+        </div>
+        <div class="net-pay">
+          <div class="net-pay-l">💰 Net Farmer ko Dena Hai</div>
+          <div class="net-pay-v" id="sum-net-pay">₹0</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-top:4px" id="sum-calc-detail">Own Amt − Grading − Bardana</div>
+        </div>
+      </div>
+
     </div>
     <div class="mf">
-      <div class="tp"><div class="tpi"><div class="tpv" id="tp-b">0</div><div class="tpl">TOTAL BAGS</div></div><div style="width:1px;height:26px;background:var(--border)"></div><div class="tpi"><div class="tpv" id="tp-a">₹0</div><div class="tpl">TOTAL AMOUNT</div></div></div>
+      <div style="font-size:11px;color:var(--text3)">* Zaroor wale fields</div>
       <div style="display:flex;gap:6px"><button class="btn btn-ghost" onclick="closeM('modal')">Cancel</button><button class="btn btn-green" onclick="saveR()">✓ Save Karo</button></div>
     </div>
   </div>
@@ -481,13 +579,13 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 
 <!-- DETAIL MODAL -->
 <div class="ov" id="d-modal" onclick="closeOut(event,'d-modal')">
-  <div class="modal" style="max-width:560px">
+  <div class="modal" style="max-width:700px">
     <div class="mh"><div class="mt">📋 <span id="d-title">Detail</span></div><button class="mx" onclick="closeM('d-modal')">✕</button></div>
     <div class="mb" id="d-body"></div>
   </div>
 </div>
 
-<!-- USER ADD/EDIT MODAL -->
+<!-- USER MODAL -->
 <div class="ov" id="user-modal" onclick="closeOut(event,'user-modal')">
   <div class="modal" style="max-width:420px">
     <div class="mh"><div class="mt">👤 <span id="um-title">Naya User</span></div><button class="mx" onclick="closeM('user-modal')">✕</button></div>
@@ -496,213 +594,257 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
         <div class="fg2 full"><label class="flbl">Full Name *</label><input class="finp" id="u-name" placeholder="Jaise: Raam Singh"></div>
         <div class="fg2 full"><label class="flbl">Username *</label><input class="finp" id="u-user" placeholder="Jaise: raam123"></div>
         <div class="fg2 full"><label class="flbl">Password *</label><input type="password" class="finp" id="u-pass" placeholder="Strong password daalo"></div>
-        <div class="fg2 full"><label class="flbl">Role *</label>
-          <select class="finp" id="u-role">
-            <option value="admin">👑 Admin — Sab kuch kar sakta hai</option>
-            <option value="manager">🔧 Manager — Add + Dekh sakta hai</option>
-            <option value="viewer">👁 Viewer — Sirf dekh sakta hai</option>
-          </select>
-        </div>
+        <div class="fg2 full"><label class="flbl">Role *</label><select class="finp" id="u-role"><option value="admin">👑 Admin</option><option value="manager">🔧 Manager</option><option value="viewer">👁 Viewer</option></select></div>
       </div>
     </div>
-    <div class="mf">
-      <div></div>
-      <div style="display:flex;gap:6px">
-        <button class="btn btn-ghost" onclick="closeM('user-modal')">Cancel</button>
-        <button class="btn btn-green" onclick="saveUser()">✓ Save Karo</button>
-      </div>
-    </div>
+    <div class="mf"><div></div><div style="display:flex;gap:6px"><button class="btn btn-ghost" onclick="closeM('user-modal')">Cancel</button><button class="btn btn-green" onclick="saveUser()">✓ Save</button></div></div>
   </div>
 </div>
 
 <div class="tc" id="toasts"></div>
 
 <script>
-// ============ CONFIG ============
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxUZz_ewOxzIpRNQqxg6Iof8aoB-SKb-QasCUJxmeXd368Fflhrx6a9M03bqV-TEMXj0w/exec';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbxUZz_ewOxzIpRNQqxg6Iof8aoB-SKb-QasCUJxmeXd368Fflhrx6a9M03bqV-TEMXj0w/exec';
+let recs=[],filtered=[],editId=null,pg=1;
+const PP=15;
+let sField='date',sDir='desc',autoTimer=null;
+// Destination state for each class
+let dests={A:'',B:'',C:'',D:''};
 
-// ============ STATE ============
-let recs = [];
-let filtered = [];
-let editId = null;
-let pg = 1;
-const PP = 15;
-let sField = 'date', sDir = 'desc';
-let autoTimer = null;
-
-// ============ UTILS ============
-const FC = ['#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16','#ef4444','#a855f7'];
-const FCM = {}; let fci = 0;
+const FC=['#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16','#ef4444','#a855f7'];
+const FCM={};let fci=0;
 function gc(n){if(!FCM[n])FCM[n]=FC[fci++%FC.length];return FCM[n];}
 function ini(n){return(n||'').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';}
 function fmt(n){return(n||0).toLocaleString('en-IN');}
-function fmtS(n){n=n||0;return String(Math.round(n||0));}
-function hl(txt,s){if(!s||!txt)return txt||'';return String(txt).replace(new RegExp('('+s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
+function fmtS(n){return String(Math.round(n||0));}
 
-// ============ STATUS ============
+// ===== STATUS =====
 function setSt(s){
   const el=document.getElementById('ss');if(!el)return;
-  const m={
-    ok:'<span style="color:#4ade80;font-weight:600">● Sheet Connected ✓</span>',
-    sync:'<span style="color:#fbbf24">⟳ Sync ho raha...</span>',
-    load:'<span style="color:#fbbf24">⟳ Data load ho raha...</span>',
-    err:'<span style="color:#f87171">● Error — Retry...</span>',
-    ch:'<span style="color:rgba(255,255,255,0.6)">⟳ Check ho raha...</span>'
-  };
-  const txt = m[s]||m.ch;
-  el.innerHTML = txt;
-  // Mobile status bar bhi update karo
-  const mob = document.getElementById('ss-mobile');
-  if(mob) mob.innerHTML = txt;
+  const m={ok:'<span style="color:#4ade80;font-weight:600">● Sheet Connected ✓</span>',sync:'<span style="color:#fbbf24">⟳ Sync ho raha...</span>',load:'<span style="color:#fbbf24">⟳ Data load ho raha...</span>',err:'<span style="color:#f87171">● Error — Retry...</span>',ch:'<span style="color:rgba(255,255,255,0.6)">⟳ Check ho raha...</span>'};
+  el.innerHTML=m[s]||m.ch;
 }
 
-// ============ LOAD FROM SHEET ============
+// ===== LOAD SHEET =====
 async function loadSheet(){
   setSt('load');
-  const proxies=[
-    ()=>fetch(SHEET_URL,{method:'GET',redirect:'follow'}),
-    ()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL)),
-    ()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent(SHEET_URL)),
-  ];
+  const proxies=[()=>fetch(SHEET_URL,{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL)),()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent(SHEET_URL))];
   for(let i=0;i<proxies.length;i++){
     try{
-      const res=await proxies[i]();
-      let txt=await res.text();
+      const res=await proxies[i]();let txt=await res.text();
       try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
       const data=JSON.parse(txt);
       if(data.status==='success'&&Array.isArray(data.records)){
-        recs=data.records;
-        localStorage.setItem('cs_r',JSON.stringify(recs));
-        setSt('ok');
-        updAll();applyF();
+        recs=data.records;localStorage.setItem('cs_r',JSON.stringify(recs));
+        setSt('ok');updAll();applyF();
         toast('✅ Sheet se '+recs.length+' records load ho gaye!','s');
-        startAR();
-        return;
+        startAR();return;
       }
     }catch(e){console.log('Proxy '+i+' fail:',e.message);}
   }
-  // Sab fail — local
   recs=JSON.parse(localStorage.getItem('cs_r')||'[]');
-  setSt('err');
-  updAll();applyF();
-  toast('⚠️ Sheet connect nahi — local data dikh raha hai. 15s mein retry...','e');
+  setSt('err');updAll();applyF();
+  toast('⚠️ Sheet connect nahi — local data. Retry...','e');
   setTimeout(loadSheet,15000);
 }
 
-// ============ AUTO REFRESH (20 sec) ============
 function startAR(){
   if(autoTimer)clearInterval(autoTimer);
   autoTimer=setInterval(async()=>{
     try{
-      const res=await fetch(SHEET_URL,{method:'GET',redirect:'follow'});
-      let txt=await res.text();
+      const res=await fetch(SHEET_URL,{method:'GET',redirect:'follow'});let txt=await res.text();
       try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
       const data=JSON.parse(txt);
-      if(data.status==='success'&&Array.isArray(data.records)){
-        recs=data.records;
-        localStorage.setItem('cs_r',JSON.stringify(recs));
-        setSt('ok');
-        updAll();applyF();
-      }
+      if(data.status==='success'&&Array.isArray(data.records)){recs=data.records;localStorage.setItem('cs_r',JSON.stringify(recs));setSt('ok');updAll();applyF();}
     }catch(e){}
   },20000);
 }
 
-// ============ SAVE TO SHEET ============
 async function saveToSheet(rec,action='add'){
   setSt('sync');
-  const p={action,id:rec.id,date:rec.date,farmer:rec.farmer,mobile:rec.mobile||'',quality:rec.quality||'',village:rec.village||'',receipt:rec.receipt||'',classA_bags:rec.classA.bags||0,classA_rate:rec.classA.rate||0,classB_bags:rec.classB.bags||0,classB_rate:rec.classB.rate||0,classC_bags:rec.classC.bags||0,classC_rate:rec.classC.rate||0,classD_bags:rec.classD.bags||0,classD_rate:rec.classD.rate||0,totalBags:rec.totalBags||0,totalAmt:rec.totalAmt||0,notes:rec.notes||''};
-  try{
-    return new Promise((resolve)=>{
+  const p={action,id:rec.id,date:rec.date,farmer:rec.farmer,mobile:rec.mobile||'',quality:rec.quality||'',village:rec.village||'',receipt:rec.receipt||'',
+    gA_bags:rec.grading.A.bags,gA_dest:rec.grading.A.dest,gA_rate:rec.grading.A.rate,
+    gB_bags:rec.grading.B.bags,gB_dest:rec.grading.B.dest,gB_rate:rec.grading.B.rate,
+    gC_bags:rec.grading.C.bags,gC_dest:rec.grading.C.dest,gC_rate:rec.grading.C.rate,
+    gD_bags:rec.grading.D.bags,gD_dest:rec.grading.D.dest,gD_rate:rec.grading.D.rate,
+    zeroBags:rec.zeroBags,kaatBags:rec.kaatBags,
+    gradingRate:rec.gradingRate,bardanaRate:rec.bardanaRate,
+    chamber:rec.chamber||'',floor:rec.floor||'',pillar:rec.pillar||'',
+    totalBags:rec.totalBags,storeBags:rec.storeBags,ownBags:rec.ownBags,gharBags:rec.gharBags,
+    ownAmt:rec.ownAmt,gradingAmt:rec.gradingAmt,bardanaAmt:rec.bardanaAmt,netPay:rec.netPay,
+    notes:rec.notes||''};
+  return new Promise((resolve)=>{
     const img=new Image();
-    const url=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify(p));
-    img.onload=img.onerror=function(){setSt('ok');toast('✅ Google Sheet mein save ho gaya!','s');setTimeout(loadSheet,6000);resolve();};
-    img.src=url;
-  }); // 3 sec baad fresh data lao
-  }catch(e){
-    setSt('err');
-    toast('⚠️ Sheet sync nahi hua — local save hai','e');
-  }
+    img.onload=img.onerror=function(){setSt('ok');toast('✅ Sheet mein save ho gaya!','s');setTimeout(loadSheet,6000);resolve();};
+    img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify(p));
+  });
 }
 
-// ============ LOCAL SAVE ============
 function saveL(){localStorage.setItem('cs_r',JSON.stringify(recs));}
 
-// ============ TABS ============
+// ===== TABS =====
 function goTab(t){
-  ['dash','rec','jim','rep','users'].forEach(x=>{
+  ['dash','rec','jim','store','own','rep','users'].forEach(x=>{
     document.getElementById('p-'+x).classList.toggle('hidden',x!==t);
     document.getElementById('tab-'+x).classList.toggle('active',x===t);
   });
   if(t==='rec')applyF();
   if(t==='jim')renderJ();
   if(t==='dash')updDash();
+  if(t==='store')updStore();
+  if(t==='own')updOwn();
   if(t==='users')renderUsers();
 }
 
-// ============ MODAL ============
+// ===== DESTINATION =====
+function setDest(cls,dest){
+  dests[cls]=dest;
+  const lc=cls.toLowerCase();
+  ['store','own','ghar'].forEach(d=>{
+    const btn=document.getElementById('d'+lc+'-'+d);
+    if(btn){btn.className='dest-btn'+(d===dest?' '+d:'');}
+  });
+  // Rate input show/hide
+  const rateInp=document.getElementById('g-'+lc+'-rate');
+  if(rateInp)rateInp.style.display=dest==='own'?'block':'none';
+  calcEntry();
+}
+
+// ===== CALC =====
+function calcEntry(){
+  let totalBags=0,storeBags=0,ownBags=0,gharBags=0,ownAmt=0;
+  ['A','B','C','D'].forEach(cl=>{
+    const lc=cl.toLowerCase();
+    const bags=parseFloat(document.getElementById('g-'+lc+'-bags').value)||0;
+    const rate=parseFloat(document.getElementById('g-'+lc+'-rate').value)||0;
+    totalBags+=bags;
+    const dest=dests[cl];
+    if(dest==='store')storeBags+=bags;
+    else if(dest==='own'){ownBags+=bags;ownAmt+=bags*rate;}
+    else if(dest==='ghar')gharBags+=bags;
+    const amtEl=document.getElementById('g-'+lc+'-amt');
+    if(amtEl)amtEl.textContent=dest==='own'&&bags&&rate?'₹'+fmt(bags*rate):'—';
+  });
+  const zeroBags=parseFloat(document.getElementById('g-z-bags').value)||0;
+  const kaatBags=parseFloat(document.getElementById('g-k-bags').value)||0;
+  totalBags+=zeroBags+kaatBags;
+
+  const gRate=parseFloat(document.getElementById('fi-grate').value)||0;
+  const bRate=parseFloat(document.getElementById('fi-brate').value)||0;
+  const gradingAmt=totalBags*gRate;
+  const bardanaAmt=totalBags*bRate;
+  const netPay=ownAmt-gradingAmt-bardanaAmt;
+
+  document.getElementById('total-bags-show').textContent=totalBags+' bags';
+  document.getElementById('bardana-bags-show').textContent=totalBags+' bags';
+  document.getElementById('grade-charge-amt').textContent='₹'+fmt(gradingAmt);
+  document.getElementById('bardana-charge-amt').textContent='₹'+fmt(bardanaAmt);
+  document.getElementById('sum-total-bags').textContent=totalBags;
+  document.getElementById('sum-store-bags').textContent=storeBags;
+  document.getElementById('sum-own-bags').textContent=ownBags;
+  document.getElementById('sum-own-amt').textContent='₹'+fmt(ownAmt);
+  const netEl=document.getElementById('sum-net-pay');
+  netEl.textContent=(netPay>=0?'':'−')+'₹'+fmt(Math.abs(netPay));
+  netEl.style.color=netPay>=0?'#fff':'#fca5a5';
+  document.getElementById('sum-calc-detail').textContent=`₹${fmt(ownAmt)} − ₹${fmt(gradingAmt)} − ₹${fmt(bardanaAmt)}`;
+}
+
+// ===== MODAL =====
 function openM(id=null){
   editId=id;
+  document.getElementById('m-title').textContent=id?'Entry Edit':'Naya Grading Entry';
   document.getElementById('modal').classList.add('open');
-  document.getElementById('m-title').textContent=id?'Record Edit':'Naya Khareed';
   if(id){
     const r=recs.find(x=>x.id===id);
     if(r){
-      document.getElementById('fi-f').value=r.farmer;
-      document.getElementById('fi-d').value=r.date;
-      document.getElementById('fi-v').value=r.village||'';
+      document.getElementById('fi-f').value=r.farmer||'';
+      document.getElementById('fi-d').value=r.date||'';
       document.getElementById('fi-r').value=r.receipt||'';
       document.getElementById('fi-m').value=r.mobile||'';
+      document.getElementById('fi-v').value=r.village||'';
       document.getElementById('fi-q').value=r.quality||'';
       document.getElementById('fi-n').value=r.notes||'';
-      document.getElementById('fa-b').value=r.classA.bags||'';
-      document.getElementById('fa-r').value=r.classA.rate||'';
-      document.getElementById('fb-b').value=r.classB.bags||'';
-      document.getElementById('fb-r').value=r.classB.rate||'';
-      document.getElementById('fc-b').value=r.classC.bags||'';
-      document.getElementById('fc-r').value=r.classC.rate||'';
-      document.getElementById('fd-b').value=r.classD.bags||'';
-      document.getElementById('fd-r').value=r.classD.rate||'';
+      document.getElementById('fi-cham').value=r.chamber||'';
+      document.getElementById('fi-floor').value=r.floor||'';
+      document.getElementById('fi-pillar').value=r.pillar||'';
+      document.getElementById('fi-grate').value=r.gradingRate||'';
+      document.getElementById('fi-brate').value=r.bardanaRate||'';
+      document.getElementById('g-z-bags').value=r.zeroBags||'';
+      document.getElementById('g-k-bags').value=r.kaatBags||'';
+      ['A','B','C','D'].forEach(cl=>{
+        const lc=cl.toLowerCase();
+        const g=r.grading&&r.grading[cl]?r.grading[cl]:{bags:0,dest:'',rate:0};
+        document.getElementById('g-'+lc+'-bags').value=g.bags||'';
+        document.getElementById('g-'+lc+'-rate').value=g.rate||'';
+        setDest(cl,g.dest||'');
+      });
     }
   }else{
-    ['fi-f','fi-v','fi-r','fi-m','fi-q','fi-n','fa-b','fa-r','fb-b','fb-r','fc-b','fc-r','fd-b','fd-r'].forEach(x=>document.getElementById(x).value='');
+    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate'].forEach(x=>document.getElementById(x).value='');
+    ['g-a-bags','g-b-bags','g-c-bags','g-d-bags','g-z-bags','g-k-bags','g-a-rate','g-b-rate','g-c-rate','g-d-rate'].forEach(x=>document.getElementById(x).value='');
     document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
     document.getElementById('fi-r').value='RC-'+String(recs.length+1).padStart(3,'0');
+    dests={A:'',B:'',C:'',D:''};
+    ['A','B','C','D'].forEach(cl=>setDest(cl,''));
   }
-  updFarmerDL();
-  calcP();
+  calcEntry();
 }
 function closeM(id){document.getElementById(id).classList.remove('open');if(id==='modal')editId=null;}
 function closeOut(e,id){if(e.target===document.getElementById(id))closeM(id);}
 
-function calcP(){
-  let tb=0,ta=0;
-  [['a','pa'],['b','pb'],['c','pc'],['d','pd']].forEach(([c,pid])=>{
-    const bags=parseFloat(document.getElementById('f'+c+'-b').value)||0;
-    const rate=parseFloat(document.getElementById('f'+c+'-r').value)||0;
-    const amt=bags*rate;
-    document.getElementById(pid).textContent=amt>0?'₹'+fmt(amt):'₹0';
-    tb+=bags;ta+=amt;
-  });
-  document.getElementById('tp-b').textContent=tb;
-  document.getElementById('tp-a').textContent='₹'+fmt(ta);
-}
-
+// ===== SAVE =====
 function saveR(){
   const farmer=document.getElementById('fi-f').value.trim();
   const date=document.getElementById('fi-d').value;
-  if(!farmer){toast('FARMER naam zaroor daalo!','e');return;}
+  if(!farmer){toast('Farmer naam zaroor daalo!','e');return;}
   if(!date){toast('Tarikh zaroor daalo!','e');return;}
-  const A={bags:parseFloat(document.getElementById('fa-b').value)||0,rate:parseFloat(document.getElementById('fa-r').value)||0};
-  const B={bags:parseFloat(document.getElementById('fb-b').value)||0,rate:parseFloat(document.getElementById('fb-r').value)||0};
-  const C={bags:parseFloat(document.getElementById('fc-b').value)||0,rate:parseFloat(document.getElementById('fc-r').value)||0};
-  const D={bags:parseFloat(document.getElementById('fd-b').value)||0,rate:parseFloat(document.getElementById('fd-r').value)||0};
-  if(!A.bags&&!B.bags&&!C.bags&&!D.bags){toast('Kam se kam ek class ki bags daalo!','e');return;}
-  const tB=A.bags+B.bags+C.bags+D.bags;
-  const tA=A.bags*A.rate+B.bags*B.rate+C.bags*C.rate+D.bags*D.rate;
-  const rec={id:editId||Date.now().toString(),farmer,date,village:document.getElementById('fi-v').value.trim(),mobile:document.getElementById('fi-m').value.trim(),quality:document.getElementById('fi-q').value.trim(),receipt:document.getElementById('fi-r').value.trim()||'RC-'+String(recs.length+1).padStart(3,'0'),notes:document.getElementById('fi-n').value.trim(),classA:A,classB:B,classC:C,classD:D,totalBags:tB,totalAmt:tA,createdAt:editId?recs.find(x=>x.id===editId)?.createdAt:new Date().toISOString()};
+
+  const grading={};
+  let totalBags=0,storeBags=0,ownBags=0,gharBags=0,ownAmt=0;
+  ['A','B','C','D'].forEach(cl=>{
+    const lc=cl.toLowerCase();
+    const bags=parseFloat(document.getElementById('g-'+lc+'-bags').value)||0;
+    const rate=parseFloat(document.getElementById('g-'+lc+'-rate').value)||0;
+    const dest=dests[cl];
+    grading[cl]={bags,dest,rate};
+    totalBags+=bags;
+    if(dest==='store')storeBags+=bags;
+    else if(dest==='own'){ownBags+=bags;ownAmt+=bags*rate;}
+    else if(dest==='ghar')gharBags+=bags;
+  });
+
+  if(totalBags===0){toast('Kam se kam ek class ki bags daalo!','e');return;}
+
+  const zeroBags=parseFloat(document.getElementById('g-z-bags').value)||0;
+  const kaatBags=parseFloat(document.getElementById('g-k-bags').value)||0;
+  totalBags+=zeroBags+kaatBags;
+
+  const gradingRate=parseFloat(document.getElementById('fi-grate').value)||0;
+  const bardanaRate=parseFloat(document.getElementById('fi-brate').value)||0;
+  const gradingAmt=totalBags*gradingRate;
+  const bardanaAmt=totalBags*bardanaRate;
+  const netPay=ownAmt-gradingAmt-bardanaAmt;
+
+  const rec={
+    id:editId||Date.now().toString(),
+    farmer,date,
+    mobile:document.getElementById('fi-m').value.trim(),
+    village:document.getElementById('fi-v').value.trim(),
+    quality:document.getElementById('fi-q').value.trim(),
+    receipt:document.getElementById('fi-r').value.trim()||'RC-'+String(recs.length+1).padStart(3,'0'),
+    notes:document.getElementById('fi-n').value.trim(),
+    chamber:document.getElementById('fi-cham').value.trim(),
+    floor:document.getElementById('fi-floor').value.trim(),
+    pillar:document.getElementById('fi-pillar').value.trim(),
+    grading,zeroBags,kaatBags,
+    gradingRate,bardanaRate,
+    totalBags,storeBags,ownBags,gharBags,
+    ownAmt,gradingAmt,bardanaAmt,netPay,
+    createdAt:editId?recs.find(x=>x.id===editId)?.createdAt:new Date().toISOString()
+  };
+
   if(editId){recs=recs.map(x=>x.id===editId?rec:x);toast(farmer+' ka record update ho gaya!','s');}
-  else{recs.unshift(rec);toast(farmer+' ka record save ho gaya! 🥔','s');}
+  else{recs.unshift(rec);toast(farmer+' ki entry save ho gayi! 🥔','s');}
   saveL();closeM('modal');updAll();applyF();
   saveToSheet(rec,editId?'edit':'add');
 }
@@ -717,313 +859,30 @@ function delR(id){
   closeM('d-modal');
 }
 
-// ============ FILTERS ============
-function applyF(){
-  const s=document.getElementById('f-s').value.toLowerCase();
-  const from=document.getElementById('f-from').value;
-  const to=document.getElementById('f-to').value;
-  const cls=document.getElementById('f-cl').value;
-  const farm=document.getElementById('f-farm').value;
-  filtered=recs.filter(r=>{
-    if(s&&!r.farmer.toLowerCase().includes(s)&&!r.receipt.toLowerCase().includes(s)&&!r.village.toLowerCase().includes(s)&&!(r.notes||'').toLowerCase().includes(s))return false;
-    if(from&&r.date<from)return false;
-    if(to&&r.date>to)return false;
-    if(farm&&r.farmer!==farm)return false;
-    if(cls){const cm={A:'classA',B:'classB',C:'classC',D:'classD'};if(!r[cm[cls]]||r[cm[cls]].bags<=0)return false;}
-    return true;
-  });
-  filtered.sort((a,b)=>{
-    let av=a[sField],bv=b[sField];
-    if(sField==='farmer'){av=a.farmer.toLowerCase();bv=b.farmer.toLowerCase();}
-    if(typeof av==='string')return sDir==='asc'?av.localeCompare(bv):bv.localeCompare(av);
-    return sDir==='asc'?av-bv:bv-av;
-  });
-  pg=1;renderT();updFarm();setTimeout(applyPermissions,50);
-}
-
-function clrF(){
-  ['f-s','f-from','f-to'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-cl').value='';
-  document.getElementById('f-farm').value='';
-  applyF();
-}
-
-function sSort(f){
-  if(sField===f)sDir=sDir==='asc'?'desc':'asc';
-  else{sField=f;sDir='desc';}
-  document.getElementById('dir-b').textContent=sDir==='asc'?'↑ ASC':'↓ DESC';
-  applyF();
-}
-function togDir(){sDir=sDir==='asc'?'desc':'asc';document.getElementById('dir-b').textContent=sDir==='asc'?'↑ ASC':'↓ DESC';applyF();}
-
-function updFarm(){
-  const sel=document.getElementById('f-farm');
-  const cur=sel.value;
-  const fs=[...new Set(recs.map(r=>r.farmer))].sort();
-  sel.innerHTML=`<option value="">Sab</option>`+fs.map(f=>`<option value="${f}"${f===cur?' selected':''}>${f}</option>`).join('');
-}
-
-// ============ RENDER TABLE ============
-function renderT(){
-  const s=document.getElementById('f-s').value.toLowerCase();
-  const tot=filtered.length;
-  const pages=Math.max(1,Math.ceil(tot/PP));
-  pg=Math.min(pg,pages);
-  const st=(pg-1)*PP,en=Math.min(st+PP,tot);
-  const slice=filtered.slice(st,en);
-  document.getElementById('r-cnt').textContent=tot+' records';
-  document.getElementById('p-info').textContent=tot?`${st+1}-${en} / ${tot}`:'0 records';
-  if(!tot){
-    document.getElementById('main-tbody').innerHTML=`<tr><td colspan="16"><div class="empty"><div class="ei">🔍</div><h3>Koi record nahi mila</h3><p>Filter change karo ya naya add karo</p></div></td></tr>`;
-    document.getElementById('p-btns').innerHTML='';return;
-  }
-  document.getElementById('main-tbody').innerHTML=slice.map((r,i)=>{
-    const c=gc(r.farmer);
-    return `<tr>
-      <td style="color:#8a95a8;font-size:11px">${st+i+1}</td>
-      <td class="mono">${r.date}</td>
-      <td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div><span>${hl(r.farmer,s)}</span></div></td>
-      <td style="color:#4a5568">${hl(r.village||'—',s)}</td>
-      <td><span class="rtag">${hl(r.receipt,s)}</span></td>
-      <td>${r.classA.bags?`<span class="ct2 A">${r.classA.bags}</span>`:'<span style="color:#8a95a8">—</span>'}</td>
-      <td style="font-size:11px;color:var(--green)">${r.classA.rate?'₹'+r.classA.rate:''}</td>
-      <td>${r.classB.bags?`<span class="ct2 B">${r.classB.bags}</span>`:'<span style="color:#8a95a8">—</span>'}</td>
-      <td style="font-size:11px;color:var(--yellow)">${r.classB.rate?'₹'+r.classB.rate:''}</td>
-      <td>${r.classC.bags?`<span class="ct2 C">${r.classC.bags}</span>`:'<span style="color:#8a95a8">—</span>'}</td>
-      <td style="font-size:11px;color:var(--orange)">${r.classC.rate?'₹'+r.classC.rate:''}</td>
-      <td>${r.classD.bags?`<span class="ct2 D">${r.classD.bags}</span>`:'<span style="color:#8a95a8">—</span>'}</td>
-      <td style="font-size:11px;color:var(--red)">${r.classD.rate?'₹'+r.classD.rate:''}</td>
-      <td><strong style="font-family:'Rajdhani',sans-serif;font-size:13px">${r.totalBags}</strong></td>
-      <td class="amt">₹${fmt(r.totalAmt)}</td>
-      <td><div class="ab">
-        <button class="ab2 v" onclick="viewD('${r.id}')" title="View">👁</button>
-        ${currentUser&&currentUser.role==='admin'?`
-        <button class="ab2 e" onclick="openM('${r.id}')" title="Edit">✏</button>
-        <button class="ab2 d" onclick="delR('${r.id}')" title="Delete">🗑</button>`:''}
-      </div></td>
-    </tr>`;
-  }).join('');
-  // Pagination
-  const pages2=Math.ceil(tot/PP);
-  if(pages2<=1){document.getElementById('p-btns').innerHTML='';return;}
-  let h='';
-  if(pg>1)h+=`<button class="pb2" onclick="goPg(${pg-1})">‹</button>`;
-  const s2=Math.max(1,pg-2),e2=Math.min(pages2,pg+2);
-  if(s2>1)h+=`<button class="pb2" onclick="goPg(1)">1</button>${s2>2?'<span style="padding:0 3px;color:#8a95a8">...</span>':''}`;
-  for(let i=s2;i<=e2;i++)h+=`<button class="pb2${i===pg?' on':''}" onclick="goPg(${i})">${i}</button>`;
-  if(e2<pages2)h+=`${e2<pages2-1?'<span style="padding:0 3px;color:#8a95a8">...</span>':''}<button class="pb2" onclick="goPg(${pages2})">${pages2}</button>`;
-  if(pg<pages2)h+=`<button class="pb2" onclick="goPg(${pg+1})">›</button>`;
-  document.getElementById('p-btns').innerHTML=h;
-}
-function goPg(p){pg=p;renderT();}
-
-// ============ VIEW DETAIL ============
-function viewD(id){
-  const r=recs.find(x=>x.id===id);if(!r)return;
-  const c=gc(r.farmer);
-  document.getElementById('d-title').textContent=r.farmer+' — '+r.date;
-  document.getElementById('d-body').innerHTML=`
-    <div style="display:flex;gap:11px;align-items:center;margin-bottom:14px">
-      <div class="jav" style="width:44px;height:44px;font-size:16px;border-radius:8px;background:${c}22;color:${c}">${ini(r.farmer)}</div>
-      <div><div style="font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700">${r.farmer}</div><div style="font-size:11px;color:#8a95a8">📍 ${r.village||'N/A'} • 📋 ${r.receipt} • 🗓 ${r.date}</div>${r.notes?`<div style="font-size:11px;color:#4a5568;margin-top:2px">📝 ${r.notes}</div>`:''}</div>
-    </div>
-    <div class="dgrid">
-      ${['A','B','C','D'].map(cl=>{const x=r['class'+cl];return`<div class="dc ${cl}"><div class="cbadge ${cl}" style="margin:0 auto 5px;display:block;text-align:center">${cl}</div><div style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700">${x.bags}</div><div style="font-size:10px;color:#8a95a8">bags</div><div style="font-size:11px;margin-top:3px">@ ₹${x.rate}/bag</div><div style="font-size:12px;font-weight:700;margin-top:2px">₹${fmt(x.bags*x.rate)}</div></div>`;}).join('')}
-    </div>
-    <div style="text-align:right;margin-top:13px;padding:9px;background:#f7f8fa;border-radius:6px;border:1px solid #dde1e9">
-      <span style="font-size:11px;color:#8a95a8">TOTAL BAGS: </span><strong style="font-family:'Rajdhani',sans-serif;font-size:16px">${r.totalBags}</strong>
-      <span style="margin-left:16px;font-size:11px;color:#8a95a8">TOTAL AMOUNT: </span><strong style="font-family:'Rajdhani',sans-serif;font-size:19px;color:var(--green)">₹${fmt(r.totalAmt)}</strong>
-    </div>
-    <div style="margin-top:11px;display:flex;gap:6px;justify-content:flex-end">
-      ${currentUser&&currentUser.role==='admin'?`<button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button><button class="btn btn-red" onclick="delR('${r.id}')">🗑 Delete</button>`:''}
-    </div>`;
-  document.getElementById('d-modal').classList.add('open');
-}
-
-// ============ DASHBOARD ============
-function updDash(){
-  const td=new Date();const today=td.getFullYear()+'-'+String(td.getMonth()+1).padStart(2,'0')+'-'+String(td.getDate()).padStart(2,'0');
-  const tB=recs.reduce((s,r)=>s+r.totalBags,0);
-  const tA=recs.reduce((s,r)=>s+r.totalAmt,0);
-  const todB=recs.filter(r=>r.date===today).reduce((s,r)=>s+r.totalBags,0);
-  const fms=new Set(recs.map(r=>r.farmer)).size;
-  const cs={A:recs.reduce((s,r)=>s+r.classA.bags,0),B:recs.reduce((s,r)=>s+r.classB.bags,0),C:recs.reduce((s,r)=>s+r.classC.bags,0),D:recs.reduce((s,r)=>s+r.classD.bags,0)};
-  document.getElementById('h-bags').textContent=tB;
-  document.getElementById('h-amt').textContent='₹'+fmtS(tA);
-  document.getElementById('h-f').textContent=fms;
-  document.getElementById('sd-today').textContent=todB;
-  document.getElementById('sd-amt').textContent='₹'+fmtS(tA);
-  document.getElementById('sd-bags').textContent=tB;
-  document.getElementById('sd-f').textContent=fms;
-  document.getElementById('sd-a').textContent=cs.A;
-  document.getElementById('sd-b').textContent=cs.B;
-  document.getElementById('sd-c').textContent=cs.C;
-  document.getElementById('sd-d').textContent=cs.D;
-  const tot=tB||1;
-  [['A','a'],['B','b'],['C','c'],['D','d']].forEach(([cl,x])=>{
-    const bags=cs[cl];const pct=Math.round(bags/tot*100);
-    document.getElementById('bar-'+x).style.width=pct+'%';
-    document.getElementById('pct-'+x).textContent=pct+'%';
-    document.getElementById('bags-'+x).textContent=bags+' bags';
-    const rs=recs.filter(r=>r['class'+cl].bags>0);
-    const avg=rs.length?Math.round(rs.reduce((s,r)=>s+r['class'+cl].rate,0)/rs.length):0;
-    document.getElementById('avg-'+x).textContent='₹'+avg;
-  });
-  // Donut
-  const circ=2*Math.PI*42;let off=0;
-  [['A','d-a'],['B','d-b'],['C','d-c'],['D','d-d']].forEach(([cl,id])=>{
-    const bags=cs[cl];const len=tB?(bags/tB)*circ:0;
-    const el=document.getElementById(id);
-    el.setAttribute('stroke-dasharray',`${len} ${circ-len}`);
-    el.setAttribute('stroke-dashoffset',-off);off+=len;
-  });
-  document.getElementById('lg-a').textContent=`Class A: ${cs.A}`;
-  document.getElementById('lg-b').textContent=`Class B: ${cs.B}`;
-  document.getElementById('lg-c').textContent=`Class C: ${cs.C}`;
-  document.getElementById('lg-d').textContent=`Class D: ${cs.D}`;
-  // Farmer bar chart
-  const fb={};recs.forEach(r=>fb[r.farmer]=(fb[r.farmer]||0)+r.totalBags);
-  const sorted=Object.entries(fb).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const mx=sorted[0]?.[1]||1;
-  document.getElementById('chart-bars').innerHTML=sorted.length?sorted.map(([name,bags])=>{
-    const c=gc(name);
-    return`<div class="br"><div class="bl" title="${name}">${name}</div><div class="bt"><div class="bf" style="background:${c};width:${bags/mx*100}%"><span class="bv">${bags}</span></div></div></div>`;
-  }).join(''):'<div class="empty" style="padding:20px"><div class="ei">📊</div><p>Koi record nahi</p></div>';
-  // Recent 5
-  const recent=recs.slice(0,5);
-  if(!recent.length){document.getElementById('rec-tbody').innerHTML=`<tr><td colspan="9"><div class="empty"><div class="ei">📦</div><h3>Koi record nahi</h3><p>Naya khareed add karo</p></div></td></tr>`;return;}
-  document.getElementById('rec-tbody').innerHTML=recent.map(r=>{
-    const c=gc(r.farmer);
-    return`<tr><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td><td class="mono" style="font-size:11px">${r.date}</td><td><span class="rtag">${r.receipt}</span></td><td>${r.classA.bags||'—'}</td><td>${r.classB.bags||'—'}</td><td>${r.classC.bags||'—'}</td><td>${r.classD.bags||'—'}</td><td><strong style="font-family:'Rajdhani',sans-serif">${r.totalBags}</strong></td><td class="amt">₹${fmt(r.totalAmt)}</td></tr>`;
-  }).join('');
-}
-
-// ============ FARMER ============
-function renderJ(){
-  const s=document.getElementById('j-s').value.toLowerCase();
-  const fm={};
-  recs.forEach(r=>{
-    if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,village:r.village||'',tb:0,ta:0,entries:0,A:0,B:0,C:0,D:0,last:r.date};
-    const f=fm[r.farmer];
-    f.tb+=r.totalBags;f.ta+=r.totalAmt;f.entries++;
-    f.A+=r.classA.bags;f.B+=r.classB.bags;f.C+=r.classC.bags;f.D+=r.classD.bags;
-    if(r.date>f.last)f.last=r.date;
-  });
-  let fs=Object.values(fm);
-  if(s)fs=fs.filter(f=>f.name.toLowerCase().includes(s));
-  fs.sort((a,b)=>b.tb-a.tb);
-  const grid=document.getElementById('j-grid');
-  if(!fs.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>${s?'Koi nahi mila':'Koi FARMER nahi'}</h3></div>`;return;}
-  grid.innerHTML=fs.map(f=>{
-    const c=gc(f.name);const mx=Math.max(f.A,f.B,f.C,f.D)||1;
-    return`<div class="jcard" onclick="showJD('${f.name}')">
-      <div class="jh"><div class="jav" style="background:${c}22;color:${c}">${ini(f.name)}</div><div><div class="jn" style="color:${c}">${f.name}</div><div class="jm">📍 ${f.village||'N/A'} • 🗓 ${f.last}</div></div></div>
-      <div class="jstats">
-        <div class="jst"><div class="jsv" style="color:var(--blue)">${f.tb}</div><div class="jsl">TOTAL BAGS</div></div>
-        <div class="jst"><div class="jsv" style="color:var(--green)">₹${fmtS(f.ta)}</div><div class="jsl">TOTAL AMOUNT</div></div>
-        <div class="jst"><div class="jsv">${f.entries}</div><div class="jsl">Entries</div></div>
-        <div class="jst"><div class="jsv" style="color:var(--yellow)">₹${f.entries?Math.round(f.ta/f.entries):0}</div><div class="jsl">Avg/Entry</div></div>
-      </div>
-      <div class="mbars">${[['A','var(--green)'],['B','var(--yellow)'],['C','var(--orange)'],['D','var(--red)']].map(([cl,col])=>`<div class="mbar" title="Class ${cl}: ${f[cl]} bags"><div class="mbarf" style="width:${f[cl]/mx*100}%;background:${col}"></div></div>`).join('')}</div>
-    </div>`;
-  }).join('');
-}
-
-function showJD(name){
-  const rs=recs.filter(r=>r.farmer===name).sort((a,b)=>b.date.localeCompare(a.date));
-  const tB=rs.reduce((s,r)=>s+r.totalBags,0);const tA=rs.reduce((s,r)=>s+r.totalAmt,0);
-  const c=gc(name);
-  document.getElementById('d-title').textContent=name;
-  document.getElementById('d-body').innerHTML=`
-    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
-      <div class="jav" style="width:44px;height:44px;font-size:16px;border-radius:8px;background:${c}22;color:${c}">${ini(name)}</div>
-      <div><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:${c}">${name}</div><div style="font-size:11px;color:#8a95a8">${rs.length} entries • Kul ₹${fmt(tA)}</div></div>
-    </div>
-    <div class="dgrid">${['A','B','C','D'].map(cl=>{const bags=rs.reduce((s,r)=>s+r['class'+cl].bags,0);const amt=rs.reduce((s,r)=>s+r['class'+cl].bags*r['class'+cl].rate,0);return`<div class="dc ${cl}"><div class="cbadge ${cl}" style="margin:0 auto 5px;display:block;text-align:center">${cl}</div><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700">${bags}</div><div style="font-size:10px;color:#8a95a8">bags</div><div style="font-size:12px;margin-top:3px">₹${fmt(amt)}</div></div>`;}).join('')}</div>
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#8a95a8;margin:11px 0 7px">Saari Entries</div>
-    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
-      <thead><tr style="background:#f0f4fc">${['Tarikh','Receipt','A','B','C','D','Raqam',''].map(h=>`<th style="padding:6px 9px;text-align:left;color:var(--blue2);border-bottom:2px solid #dae4f8;font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
-      <tbody>${rs.map(r=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">${r.date}</td><td style="padding:6px 9px"><span class="rtag">${r.receipt}</span></td><td style="padding:6px 9px;text-align:center">${r.classA.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classB.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classC.bags||'—'}</td><td style="padding:6px 9px;text-align:center">${r.classD.bags||'—'}</td><td style="padding:6px 9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--green)">₹${fmt(r.totalAmt)}</td><td style="padding:6px 9px">${currentUser&&currentUser.role==='admin'?`<button class="ab2 d" onclick="delR('${r.id}')">🗑</button>`:''}</td></tr>`).join('')}</tbody>
-    </table></div>`;
-  document.getElementById('d-modal').classList.add('open');
-}
-
-// ============ REPORTS ============
-function genR(type){
-  const out=document.getElementById('r-out');
-  if(type==='monthly'){
-    const m={};recs.forEach(r=>{const k=r.date.slice(0,7);if(!m[k])m[k]={bags:0,amt:0,n:0};m[k].bags+=r.totalBags;m[k].amt+=r.totalAmt;m[k].n++;});
-    const rows=Object.entries(m).sort((a,b)=>b[0].localeCompare(a[0]));
-    if(!rows.length){out.innerHTML='<div class="empty"><div class="ei">📅</div><h3>Koi data nahi</h3></div>';return;}
-    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📅 Monthly Report</div></div><div class="tsc"><table><thead><tr><th>Month</th><th>Entries</th><th>TOTAL BAGS</th><th>TOTAL AMOUNT</th><th>Avg/Entry</th></tr></thead><tbody>${rows.map(([k,d])=>`<tr><td class="mono">${k}</td><td>${d.n}</td><td><strong style="font-family:'Rajdhani',sans-serif">${d.bags}</strong></td><td class="amt">₹${fmt(d.amt)}</td><td style="color:#4a5568">₹${fmt(Math.round(d.amt/d.n))}</td></tr>`).join('')}</tbody></table></div></div>`;
-  }
-  if(type==='class'){
-    out.innerHTML=`<div class="cbars">${['A','B','C','D'].map(cl=>{const bags=recs.reduce((s,r)=>s+r['class'+cl].bags,0);const amt=recs.reduce((s,r)=>s+r['class'+cl].bags*r['class'+cl].rate,0);const rs=recs.filter(r=>r['class'+cl].bags>0);const avg=rs.length?Math.round(rs.reduce((s,r)=>s+r['class'+cl].rate,0)/rs.length):0;return`<div class="cbc"><div style="margin-bottom:7px"><span class="cbadge ${cl}">CLASS ${cl}</span></div><div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700">${bags}</div><div style="font-size:11px;color:#8a95a8">bags</div><div style="margin-top:7px;font-size:12px">Avg Rate: <strong>₹${avg}</strong></div><div style="font-size:12px">Raqam: <strong>₹${fmt(amt)}</strong></div></div>`;}).join('')}</div>`;
-  }
-  if(type==='farmer'){
-    const fm={};recs.forEach(r=>{if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,bags:0,amt:0,n:0};fm[r.farmer].bags+=r.totalBags;fm[r.farmer].amt+=r.totalAmt;fm[r.farmer].n++;});
-    const sorted=Object.values(fm).sort((a,b)=>b.amt-a.amt);
-    if(!sorted.length){out.innerHTML='<div class="empty"><div class="ei">👨‍🌾</div><h3>Koi data nahi</h3></div>';return;}
-    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">👨‍🌾 FARMER Report</div></div><div class="tsc"><table><thead><tr><th>Rank</th><th>FARMER</th><th>Entries</th><th>TOTAL BAGS</th><th>TOTAL AMOUNT</th><th>Avg/Entry</th></tr></thead><tbody>${sorted.map((f,i)=>{const c=gc(f.name);return`<tr><td style="color:#8a95a8">#${i+1}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(f.name)}</div>${f.name}</div></td><td>${f.n}</td><td><strong style="font-family:'Rajdhani',sans-serif">${f.bags}</strong></td><td class="amt">₹${fmt(f.amt)}</td><td>₹${fmt(Math.round(f.amt/f.n))}</td></tr>`;}).join('')}</tbody></table></div></div>`;
-  }
-}
-
-// ============ CSV EXPORT ============
-function expCSV(){
-  if(!recs.length){toast('Koi record nahi','e');return;}
-  const h=['Sr','Tarikh','FARMER','Gaon','Receipt','A Bags','A Rate','A Raqam','B Bags','B Rate','B Raqam','C Bags','C Rate','C Raqam','D Bags','D Rate','D Raqam','Total Bags','Total Raqam','Notes'];
-  const rows=recs.map((r,i)=>[i+1,r.date,r.farmer,r.village||'',r.receipt,r.classA.bags,r.classA.rate,r.classA.bags*r.classA.rate,r.classB.bags,r.classB.rate,r.classB.bags*r.classB.rate,r.classC.bags,r.classC.rate,r.classC.bags*r.classC.rate,r.classD.bags,r.classD.rate,r.classD.bags*r.classD.rate,r.totalBags,r.totalAmt,r.notes||'']);
-  const csv=[h,...rows].map(r=>r.join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='ColdStore_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
-  toast('CSV export ho gaya! ⬇','s');
-}
-
-// ============ TOAST ============
-function toast(msg,type='i'){
-  const c=document.getElementById('toasts');
-  const t=document.createElement('div');t.className=`toast ${type}`;
-  const icons={s:'✅',e:'❌',i:'ℹ️'};
-  t.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
-  c.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(50px)';t.style.transition='all 0.3s';setTimeout(()=>t.remove(),300);},3500);
-}
-
-// ============ UPDATE ALL ============
+// ===== DROPDOWNS =====
 function showFarmerDrop(val){
-  const drop = document.getElementById('farmer-drop');
-  const farmers = [...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort();
-  const filtered = val ? farmers.filter(f=>f.toLowerCase().includes(val.toLowerCase())) : farmers;
-  if(!filtered.length){drop.style.display='none';return;}
-  drop.innerHTML = filtered.map(f=>
-    `<div onclick="selectFarmer('${f}')" style="padding:9px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid #f0f2f5;transition:background 0.15s" 
-     onmouseover="this.style.background='#e8f0fd'" 
-     onmouseout="this.style.background=''">${f}</div>`
-  ).join('');
+  const drop=document.getElementById('farmer-drop');
+  const farmers=[...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort();
+  const fil=val?farmers.filter(f=>f.toLowerCase().includes(val.toLowerCase())):farmers;
+  if(!fil.length){drop.style.display='none';return;}
+  drop.innerHTML=fil.map(f=>`<div onclick="selectFarmer('${f}')" style="padding:9px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid #f0f2f5;" onmouseover="this.style.background='#e8f0fd'" onmouseout="this.style.background=''">${f}</div>`).join('');
   drop.style.display='block';
 }
-
-function hideFarmerDrop(){
-  const drop = document.getElementById('farmer-drop');
-  if(drop) drop.style.display='none';
-}
-
+function hideFarmerDrop(){const d=document.getElementById('farmer-drop');if(d)d.style.display='none';}
 function selectFarmer(name){
-  document.getElementById('fi-f').value = name;
+  document.getElementById('fi-f').value=name;
   hideFarmerDrop();
-  const farmerRecs = recs.filter(r=>r.farmer === name);
-  if(farmerRecs.length > 0){
-    const lastRec = farmerRecs.sort((a,b)=>b.date.localeCompare(a.date))[0];
-    // Village fill
-    document.getElementById('fi-v').value = lastRec.village || '';
-    // Mobile fill - directly set karo condition ke bina
-    const mEl = document.getElementById('fi-m');
-    if(mEl) mEl.value = lastRec.mobile || '';
-    // Quality fill - directly set karo condition ke bina  
-    const qEl = document.getElementById('fi-q');
-    if(qEl) qEl.value = lastRec.quality || '';
+  const farmerRecs=recs.filter(r=>r.farmer===name);
+  if(farmerRecs.length>0){
+    const last=farmerRecs.sort((a,b)=>b.date.localeCompare(a.date))[0];
+    document.getElementById('fi-v').value=last.village||'';
+    document.getElementById('fi-m').value=last.mobile||'';
+    document.getElementById('fi-q').value=last.quality||'';
+    if(last.gradingRate)document.getElementById('fi-grate').value=last.gradingRate;
+    if(last.bardanaRate)document.getElementById('fi-brate').value=last.bardanaRate;
   }
+  calcEntry();
 }
-
 function showQualityDrop(val){
   const drop=document.getElementById('quality-drop');
   const qualities=[...new Set(recs.map(r=>r.quality).filter(Boolean))].sort();
@@ -1035,278 +894,390 @@ function showQualityDrop(val){
 function hideQualityDrop(){const d=document.getElementById('quality-drop');if(d)d.style.display='none';}
 function selectQuality(q){document.getElementById('fi-q').value=q;hideQualityDrop();}
 
-function updFarmerDL(){
-  // Dropdown mein sab farmers dikhao
-  const dl = document.getElementById('f-dl');
-  if(!dl) return;
-  const farmers = [...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort();
-  dl.innerHTML = farmers.map(f=>`<option value="${f}">`).join('');
-}
-
-function updAll(){updDash();updFarm();updFarmerDL();setTimeout(applyPermissions,100);}
-
-
-// ============ AUTH SYSTEM ============
-const USERS_SHEET = 'Users'; // Google Sheet tab name
-let currentUser = null;
-let users = [];
-let editUserId = null;
-
-// Default admin — pehli baar
-const DEFAULT_USERS = [
-  {id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}
-];
-
-function loadUsers(){
-  // LocalStorage se load karo (Sheet se aane tak)
-  const stored = localStorage.getItem('cs_users');
-  users = stored ? JSON.parse(stored) : [...DEFAULT_USERS];
-}
-
-function saveUsers(){
-  localStorage.setItem('cs_users', JSON.stringify(users));
-  // Google Sheet mein bhi save karo
-  saveUsersToSheet();
-}
-
-async function saveUsersToSheet(){
-  const p = {action:'saveUsers', users: users};
-  try{
-    const img = new Image();
-    img.onload = img.onerror = function(){
-      console.log('Users saved to sheet');
-    };
-    img.src = SHEET_URL + '?data=' + encodeURIComponent(JSON.stringify(p));
-  }catch(e){
-    console.log('Sheet save error:', e);
-  }
-}
-
-async function loadUsersFromSheet(){
-  try{
-    const proxies = [
-      ()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),
-      ()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1')),
-      ()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent(SHEET_URL+'?getUsers=1')),
-    ];
-    for(let i=0;i<proxies.length;i++){
-      try{
-        const res = await proxies[i]();
-        let txt = await res.text();
-        try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
-        const data = JSON.parse(txt);
-        if(data.users && Array.isArray(data.users) && data.users.length>0){
-          users = data.users;
-          localStorage.setItem('cs_users', JSON.stringify(users));
-          console.log('Users loaded from sheet:', users.length);
-          return;
-        }
-      }catch(e){console.log('Proxy '+i+' fail:',e.message);}
-    }
-  }catch(e){}
-  // Local fallback
-  loadUsers();
-}
-
-// ===== LOGIN =====
-function doLogin(){
-  const username = document.getElementById('l-user').value.trim().toLowerCase();
-  const password = document.getElementById('l-pass').value.trim();
-  const err = document.getElementById('login-err');
-  
-  loadUsers();
-  const user = users.find(u => u.username.toLowerCase()===username && u.password===password);
-  
-  if(!user){
-    err.classList.add('show');
-    document.getElementById('l-pass').value='';
-    return;
-  }
-  
-  err.classList.remove('show');
-  currentUser = user;
-  localStorage.setItem('cs_session', JSON.stringify(user));
-  document.getElementById('login-wrap').style.display='none';
-  applyPermissions();
-  addUserBadge();
-  toast('Welcome '+user.name+'! 👋','s');
-  // Background mein sheet se fresh users load karo
-  loadUsersFromSheet();
-}
-
-async function checkSession(){
-  // Pehle Sheet se users load karo
-  await loadUsersFromSheet();
-  
-  const session = localStorage.getItem('cs_session');
-  if(session){
-    try{
-      currentUser = JSON.parse(session);
-      // Verify user still exists in sheet
-      const exists = users.find(u=>u.id===currentUser.id && u.password===currentUser.password);
-      if(exists){
-        currentUser = exists;
-        document.getElementById('login-wrap').style.display='none';
-        applyPermissions();
-        addUserBadge();
-        return;
-      }
-    }catch(e){}
-  }
-  // Show login
-  document.getElementById('login-wrap').style.display='flex';
-}
-
-function logout(){
-  localStorage.removeItem('cs_session');
-  currentUser = null;
-  document.getElementById('login-wrap').style.display='flex';
-  document.getElementById('l-user').value='';
-  document.getElementById('l-pass').value='';
-  toast('Logout ho gaye! 👋','i');
-}
-
-function addUserBadge(){
-  const hdr = document.querySelector('.hdr-r');
-  // Remove existing badge
-  const existing = document.getElementById('user-badge');
-  if(existing) existing.remove();
-  
-  const roleColors = {admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};
-  const roleNames = {admin:'Admin',manager:'Manager',viewer:'Viewer'};
-  const color = roleColors[currentUser.role] || '#1a5fc8';
-  
-  const badge = document.createElement('div');
-  badge.id = 'user-badge';
-  badge.style.cssText = `display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;`;
-  badge.innerHTML = `<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${roleNames[currentUser.role]}</span>`;
-  badge.onclick = () => {
-    if(confirm('Logout karna chahte hain?')) logout();
-  };
-  hdr.insertBefore(badge, hdr.firstChild);
-}
-
-function applyPermissions(){
-  const role = currentUser ? currentUser.role : 'viewer';
-  
-  // Add button - admin aur manager dekh sakte hain
-  const addBtn = document.querySelector('.btn-add');
-  if(addBtn) addBtn.style.display = (role==='admin'||role==='manager') ? '' : 'none';
-  
-  // Refresh button - sab dekh sakte hain
-  const refBtn = document.querySelector('.btn-w');
-  if(refBtn) refBtn.style.display = '';
-  
-  // Users tab - sirf admin
-  const usersTab = document.getElementById('tab-users');
-  if(usersTab) usersTab.style.display = role==='admin' ? '' : 'none';
-  
-  // Edit/Delete buttons - sirf admin
-  document.querySelectorAll('.ab2.e, .ab2.d').forEach(btn=>{
-    btn.style.display = role==='admin' ? '' : 'none';
+// ===== FILTERS =====
+function applyF(){
+  const s=(document.getElementById('f-s').value||'').toLowerCase();
+  const from=document.getElementById('f-from').value;
+  const to=document.getElementById('f-to').value;
+  const farm=document.getElementById('f-farm').value;
+  const fq=(document.getElementById('f-q').value||'').toLowerCase();
+  filtered=recs.filter(r=>{
+    if(s&&!(r.farmer||'').toLowerCase().includes(s)&&!(r.receipt||'').toLowerCase().includes(s)&&!(r.mobile||'').includes(s))return false;
+    if(from&&r.date<from)return false;
+    if(to&&r.date>to)return false;
+    if(farm&&r.farmer!==farm)return false;
+    if(fq&&!(r.quality||'').toLowerCase().includes(fq))return false;
+    return true;
   });
-  
-  // Records page + Naya button
-  document.querySelectorAll('.btn-blue').forEach(btn=>{
-    if(btn.textContent.includes('＋ Naya')){
-      btn.style.display = (role==='admin'||role==='manager') ? '' : 'none';
-    }
-  });
+  filtered.sort((a,b)=>b.date.localeCompare(a.date));
+  pg=1;renderT();updFarm();setTimeout(applyPermissions,50);
+}
+function clrF(){['f-s','f-from','f-to','f-q'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-farm').value='';applyF();}
+function updFarm(){
+  const sel=document.getElementById('f-farm');const cur=sel.value;
+  const fs=[...new Set(recs.map(r=>r.farmer))].sort();
+  sel.innerHTML='<option value="">Sab</option>'+fs.map(f=>`<option value="${f}"${f===cur?' selected':''}>${f}</option>`).join('');
 }
 
-// ===== USER MANAGEMENT =====
-function openUserModal(id=null){
-  editUserId = id;
-  document.getElementById('um-title').textContent = id ? 'User Edit' : 'Naya User';
-  if(id){
-    const u = users.find(x=>x.id===id);
-    if(u){
-      document.getElementById('u-name').value = u.name;
-      document.getElementById('u-user').value = u.username;
-      document.getElementById('u-pass').value = u.password;
-      document.getElementById('u-role').value = u.role;
-    }
-  } else {
-    ['u-name','u-user','u-pass'].forEach(x=>document.getElementById(x).value='');
-    document.getElementById('u-role').value='viewer';
-  }
-  document.getElementById('user-modal').classList.add('open');
+// ===== RENDER TABLE =====
+function renderT(){
+  const tot=filtered.length;
+  document.getElementById('r-cnt').textContent=tot+' records';
+  document.getElementById('p-info').textContent=tot?`${Math.min((pg-1)*PP+1,tot)}-${Math.min(pg*PP,tot)} / ${tot}`:'0 records';
+  if(!tot){document.getElementById('main-tbody').innerHTML=`<tr><td colspan="23"><div class="empty"><div class="ei">🥔</div><h3>Koi record nahi</h3></div></td></tr>`;document.getElementById('p-btns').innerHTML='';return;}
+  const slice=filtered.slice((pg-1)*PP,pg*PP);
+  document.getElementById('main-tbody').innerHTML=slice.map((r,i)=>{
+    const c=gc(r.farmer);
+    const g=r.grading||{A:{bags:0,dest:'',rate:0},B:{bags:0,dest:'',rate:0},C:{bags:0,dest:'',rate:0},D:{bags:0,dest:'',rate:0}};
+    const destIcon={store:'🏪',own:'🛒',ghar:'🏠','':`—`};
+    const storeBags=(g.A.dest==='store'?g.A.bags:0)+(g.B.dest==='store'?g.B.bags:0)+(g.C.dest==='store'?g.C.bags:0)+(g.D.dest==='store'?g.D.bags:0);
+    const ownBags=(g.A.dest==='own'?g.A.bags:0)+(g.B.dest==='own'?g.B.bags:0)+(g.C.dest==='own'?g.C.bags:0)+(g.D.dest==='own'?g.D.bags:0);
+    return`<tr>
+      <td style="color:#8a95a8;font-size:11px">${(pg-1)*PP+i+1}</td>
+      <td class="mono">${r.date}</td>
+      <td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td>
+      <td style="color:var(--blue);font-size:11px">${r.mobile?`📱${r.mobile}`:''}</td>
+      <td>${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 6px;font-size:11px">${r.quality}</span>`:''}</td>
+      <td><strong style="font-family:'Rajdhani',sans-serif">${r.totalBags||0}</strong></td>
+      <td style="color:#64748b">${r.zeroBags||0}</td>
+      <td style="color:#9d174d">${r.kaatBags||0}</td>
+      <td>${g.A.dest==='store'?`<span class="ct2 A">${g.A.bags}</span>`:'—'}</td>
+      <td>${g.B.dest==='store'?`<span class="ct2 B">${g.B.bags}</span>`:'—'}</td>
+      <td>${g.C.dest==='store'?`<span class="ct2 C">${g.C.bags}</span>`:'—'}</td>
+      <td>${g.D.dest==='store'?`<span class="ct2 D">${g.D.bags}</span>`:'—'}</td>
+      <td>${g.C.dest==='own'?`<span class="ct2 C">${g.C.bags}</span>`:''}</td>
+      <td>${g.D.dest==='own'?`<span class="ct2 D">${g.D.bags}</span>`:''}</td>
+      <td>${g.A.dest==='own'?`<span class="ct2 A">${g.A.bags}</span>`:''}</td>
+      <td>${g.B.dest==='own'?`<span class="ct2 B">${g.B.bags}</span>`:''}</td>
+      <td style="color:var(--yellow)">${r.gharBags||0}</td>
+      <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px">₹${fmt(r.gradingAmt||0)}</td>
+      <td style="color:var(--orange);font-family:'JetBrains Mono',monospace;font-size:11px">₹${fmt(r.bardanaAmt||0)}</td>
+      <td class="amt">₹${fmt(r.ownAmt||0)}</td>
+      <td><strong style="font-family:'Rajdhani',sans-serif;color:var(--green)">₹${fmt(r.netPay||0)}</strong></td>
+      <td>${r.chamber?`<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">C${r.chamber}${r.floor?' F'+r.floor:''}${r.pillar?' '+r.pillar:''}</span>`:'—'}</td>
+      <td><div class="ab">
+        <button class="ab2 v" onclick="viewD('${r.id}')">👁</button>
+        ${currentUser&&currentUser.role==='admin'?`<button class="ab2 e" onclick="openM('${r.id}')">✏</button><button class="ab2 d" onclick="delR('${r.id}')">🗑</button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('');
+  // Pagination
+  const pages=Math.ceil(tot/PP);
+  if(pages<=1){document.getElementById('p-btns').innerHTML='';return;}
+  let h='';
+  if(pg>1)h+=`<button class="pb2" onclick="goPg(${pg-1})">‹</button>`;
+  for(let i=Math.max(1,pg-2);i<=Math.min(pages,pg+2);i++)h+=`<button class="pb2${i===pg?' on':''}" onclick="goPg(${i})">${i}</button>`;
+  if(pg<pages)h+=`<button class="pb2" onclick="goPg(${pg+1})">›</button>`;
+  document.getElementById('p-btns').innerHTML=h;
 }
+function goPg(p){pg=p;renderT();}
 
-function saveUser(){
-  const name = document.getElementById('u-name').value.trim();
-  const username = document.getElementById('u-user').value.trim().toLowerCase();
-  const password = document.getElementById('u-pass').value.trim();
-  const role = document.getElementById('u-role').value;
-  
-  if(!name){toast('Naam zaroor daalo!','e');return;}
-  if(!username){toast('Username zaroor daalo!','e');return;}
-  if(!password){toast('Password zaroor daalo!','e');return;}
-  
-  // Duplicate username check
-  const dup = users.find(u=>u.username===username && u.id!==editUserId);
-  if(dup){toast('Yeh username pehle se exists karta hai!','e');return;}
-  
-  if(editUserId){
-    users = users.map(u=>u.id===editUserId ? {id:editUserId,name,username,password,role} : u);
-    toast(name+' update ho gaya! ✓','s');
-  } else {
-    users.push({id:Date.now().toString(),name,username,password,role});
-    toast(name+' add ho gaya! 👤','s');
-  }
-  
-  saveUsers();
-  closeM('user-modal');
-  renderUsers();
-}
-
-function deleteUser(id){
-  if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}
-  if(!confirm('Kya delete karna chahte hain?'))return;
-  users = users.filter(u=>u.id!==id);
-  saveUsers();
-  renderUsers();
-  toast('User delete ho gaya','i');
-}
-
-function renderUsers(){
-  const grid = document.getElementById('users-grid');
-  if(!grid) return;
-  
-  if(!users.length){
-    grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';
-    return;
-  }
-  
-  const roleColors = {admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};
-  const roleBg = {admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};
-  const roleNames = {admin:'👑 Admin',manager:'🔧 Manager',viewer:'👁 Viewer'};
-  
-  grid.innerHTML = users.map(u=>{
-    const color = roleColors[u.role]||'#1a5fc8';
-    const bg = roleBg[u.role]||'#e8f0fd';
-    const isMe = u.id===currentUser.id;
-    return `<div class="user-card">
-      <div class="user-card-hdr">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="user-av" style="background:${bg};color:${color}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div>
-          <div>
-            <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700">${u.name} ${isMe?'<span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div>
-            <div style="font-size:11px;color:#8a95a8">@${u.username}</div>
-          </div>
-        </div>
-        <span class="role-badge ${u.role}">${roleNames[u.role]}</span>
+// ===== VIEW DETAIL =====
+function viewD(id){
+  const r=recs.find(x=>x.id===id);if(!r)return;
+  const c=gc(r.farmer);
+  const g=r.grading||{A:{bags:0,dest:'',rate:0},B:{bags:0,dest:'',rate:0},C:{bags:0,dest:'',rate:0},D:{bags:0,dest:'',rate:0}};
+  const destIcon={store:'🏪 Store',own:'🛒 Own Purchase',ghar:'🏠 Ghar Le Gaya','':`—`};
+  const destColor={store:'var(--teal)',own:'var(--purple)',ghar:'var(--yellow)','':`var(--text3)`};
+  document.getElementById('d-title').textContent=r.farmer+' — '+r.date;
+  document.getElementById('d-body').innerHTML=`
+    <div style="display:flex;gap:11px;align-items:center;margin-bottom:14px">
+      <div class="jav" style="width:44px;height:44px;font-size:16px;border-radius:8px;background:${c}22;color:${c}">${ini(r.farmer)}</div>
+      <div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700">${r.farmer}</div>
+        <div style="font-size:11px;color:#8a95a8">📍 ${r.village||'N/A'} • 📋 ${r.receipt} • 🗓 ${r.date}</div>
+        ${r.mobile?`<div style="font-size:11px;color:var(--blue)">📱 ${r.mobile}</div>`:''}
+        ${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600">🥔 ${r.quality}</span>`:''}
       </div>
-      <div style="display:flex;gap:6px;justify-content:flex-end">
-        <button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>
-        ${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑 Delete</button>`:''}
+    </div>
+    ${r.chamber?`<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px;font-size:12px">🏠 Chamber: <strong>C-${r.chamber}</strong> | Floor: <strong>${r.floor||'—'}</strong> | Pillar: <strong>${r.pillar||'—'}</strong></div>`:''}
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
+      <thead><tr style="background:#f0f4fc"><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Class</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Bags</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Destination</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Rate</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Amount</th></tr></thead>
+      <tbody>
+        ${['A','B','C','D'].map(cl=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px"><span class="cbadge ${cl}">${cl}</span></td><td style="padding:7px 10px;font-weight:700;font-family:'Rajdhani',sans-serif;font-size:15px">${g[cl].bags||0}</td><td style="padding:7px 10px;color:${destColor[g[cl].dest||'']}"><strong>${destIcon[g[cl].dest||'']}</strong></td><td style="padding:7px 10px">${g[cl].dest==='own'?'₹'+g[cl].rate+'/bag':'—'}</td><td style="padding:7px 10px;font-weight:700;color:var(--purple)">${g[cl].dest==='own'?'₹'+fmt(g[cl].bags*g[cl].rate):'—'}</td></tr>`).join('')}
+        <tr style="border-bottom:1px solid var(--border);background:#fdf2f8"><td style="padding:7px 10px"><span class="cbadge Z">Zero</span></td><td style="padding:7px 10px">${r.zeroBags||0}</td><td style="padding:7px 10px;color:#64748b">❌ Wastage</td><td></td><td></td></tr>
+        <tr style="border-bottom:1px solid var(--border);background:#fdf2f8"><td style="padding:7px 10px"><span class="cbadge K">Kaat</span></td><td style="padding:7px 10px">${r.kaatBags||0}</td><td style="padding:7px 10px;color:#64748b">❌ Wastage</td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <div style="background:linear-gradient(135deg,#1a3a6b,#1a5fc8);border-radius:9px;padding:13px 16px;color:#fff">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:11px">
+        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700">${r.totalBags||0}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">TOTAL BAGS</div></div>
+        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700">₹${fmt(r.ownAmt||0)}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">OWN PURCHASE</div></div>
+        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fca5a5">−₹${fmt(r.gradingAmt||0)}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">GRADING</div></div>
+        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fca5a5">−₹${fmt(r.bardanaAmt||0)}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">BARDANA</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:7px;padding:10px;text-align:center">
+        <div style="font-size:10px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px">💰 Net Farmer ko Dena</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#fff">₹${fmt(r.netPay||0)}</div>
+      </div>
+    </div>
+    ${r.notes?`<div style="margin-top:11px;padding:9px;background:var(--s2);border-radius:6px;font-size:12px;color:var(--text2)">📝 ${r.notes}</div>`:''}
+    <div style="margin-top:11px;display:flex;gap:6px;justify-content:flex-end">
+      ${currentUser&&currentUser.role==='admin'?`<button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button><button class="btn btn-red" onclick="delR('${r.id}')">🗑 Delete</button>`:''}
+    </div>`;
+  document.getElementById('d-modal').classList.add('open');
+}
+
+// ===== DASHBOARD =====
+function updDash(){
+  const totalEntries=recs.length;
+  const farmers=new Set(recs.map(r=>r.farmer)).size;
+  const storeBags=recs.reduce((s,r)=>s+(r.storeBags||0),0);
+  const ownBags=recs.reduce((s,r)=>s+(r.ownBags||0),0);
+  const gharBags=recs.reduce((s,r)=>s+(r.gharBags||0),0);
+  const waste=recs.reduce((s,r)=>s+(r.zeroBags||0)+(r.kaatBags||0),0);
+  const ownAmt=recs.reduce((s,r)=>s+(r.ownAmt||0),0);
+  const netPay=recs.reduce((s,r)=>s+(r.netPay||0),0);
+
+  document.getElementById('h-entries').textContent=totalEntries;
+  document.getElementById('h-store').textContent=storeBags;
+  document.getElementById('h-own').textContent=ownBags;
+  document.getElementById('sd-entries').textContent=totalEntries;
+  document.getElementById('sd-farmers').textContent=farmers;
+  document.getElementById('sd-storebags').textContent=storeBags;
+  document.getElementById('sd-ownbags').textContent=ownBags;
+  document.getElementById('sd-gharbags').textContent=gharBags;
+  document.getElementById('sd-waste').textContent=waste;
+  document.getElementById('sd-ownamt').textContent='₹'+fmtS(ownAmt);
+  document.getElementById('sd-netpay').textContent='₹'+fmtS(netPay);
+
+  // Farmer chart
+  const fb={};recs.forEach(r=>fb[r.farmer]=(fb[r.farmer]||0)+(r.totalBags||0));
+  const sorted=Object.entries(fb).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const mx=sorted[0]?.[1]||1;
+  document.getElementById('chart-bars').innerHTML=sorted.length?sorted.map(([name,bags])=>{const c=gc(name);return`<div class="br"><div class="bl" title="${name}">${name}</div><div class="bt"><div class="bf" style="background:${c};width:${bags/mx*100}%"><span class="bv">${bags}</span></div></div></div>`;}).join(''):'<div class="empty" style="padding:20px"><div class="ei">📊</div><p>Koi record nahi</p></div>';
+
+  // Destination chart
+  const total=(storeBags+ownBags+gharBags+waste)||1;
+  document.getElementById('dest-chart').innerHTML=`
+    ${[['🏪 Store',storeBags,'var(--teal)'],['🛒 Own Purchase',ownBags,'var(--purple)'],['🏠 Ghar Gaya',gharBags,'var(--yellow)'],['❌ Wastage',waste,'var(--red)']].map(([lbl,bags,col])=>`<div class="br"><div class="bl">${lbl}</div><div class="bt"><div class="bf" style="background:${col};width:${bags/total*100}%"><span class="bv">${bags}</span></div></div></div>`).join('')}`;
+
+  // Recent
+  const recent=recs.slice(0,5);
+  document.getElementById('rec-tbody').innerHTML=recent.length?recent.map(r=>{const c=gc(r.farmer);return`<tr><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td><td class="mono" style="font-size:11px">${r.date}</td><td><strong style="font-family:'Rajdhani',sans-serif">${r.totalBags||0}</strong></td><td style="color:var(--teal)">${r.storeBags||0}</td><td style="color:var(--purple)">${r.ownBags||0}</td><td style="color:var(--yellow)">${r.gharBags||0}</td><td style="color:var(--red);font-size:11px">₹${fmt(r.gradingAmt||0)}</td><td style="color:var(--orange);font-size:11px">₹${fmt(r.bardanaAmt||0)}</td><td class="amt">₹${fmt(r.netPay||0)}</td></tr>`;}).join(''):`<tr><td colspan="9"><div class="empty"><div class="ei">📦</div><h3>Koi record nahi</h3></div></td></tr>`;
+}
+
+// ===== STORE DASHBOARD =====
+function updStore(){
+  const storeRecs=recs.filter(r=>r.storeBags>0);
+  const total=storeRecs.reduce((s,r)=>s+(r.storeBags||0),0);
+  const farmers=new Set(storeRecs.map(r=>r.farmer)).size;
+  document.getElementById('store-total-bags').textContent=total;
+  document.getElementById('store-total-farmers').textContent=farmers;
+
+  const cs={A:0,B:0,C:0,D:0};
+  storeRecs.forEach(r=>{
+    const g=r.grading||{};
+    ['A','B','C','D'].forEach(cl=>{if(g[cl]&&g[cl].dest==='store')cs[cl]+=g[cl].bags;});
+  });
+  const tot=(cs.A+cs.B+cs.C+cs.D)||1;
+  ['A','B','C','D'].forEach(cl=>{
+    const lc=cl.toLowerCase();
+    const pct=Math.round(cs[cl]/tot*100);
+    document.getElementById('store-bar-'+lc).style.width=pct+'%';
+    document.getElementById('store-pct-'+lc).textContent=pct+'%';
+    document.getElementById('store-bags-'+lc).textContent=cs[cl]+' bags';
+  });
+
+  document.getElementById('store-tbody').innerHTML=storeRecs.length?storeRecs.map(r=>{
+    const g=r.grading||{};const c=gc(r.farmer);
+    return`<tr>
+      <td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td>
+      <td class="mono">${r.date}</td>
+      <td>${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 6px;font-size:11px">${r.quality}</span>`:''}</td>
+      <td>${g.A&&g.A.dest==='store'?`<span class="ct2 A">${g.A.bags}</span>`:'—'}</td>
+      <td>${g.B&&g.B.dest==='store'?`<span class="ct2 B">${g.B.bags}</span>`:'—'}</td>
+      <td>${g.C&&g.C.dest==='store'?`<span class="ct2 C">${g.C.bags}</span>`:'—'}</td>
+      <td>${g.D&&g.D.dest==='store'?`<span class="ct2 D">${g.D.bags}</span>`:'—'}</td>
+      <td><strong style="font-family:'Rajdhani',sans-serif">${r.storeBags}</strong></td>
+      <td>${r.chamber?`<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">C-${r.chamber}</span>`:'—'}</td>
+      <td>${r.floor||'—'}</td>
+      <td>${r.pillar||'—'}</td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="11"><div class="empty"><div class="ei">🏪</div><h3>Koi store record nahi</h3></div></td></tr>`;
+}
+
+// ===== OWN PURCHASE DASHBOARD =====
+function updOwn(){
+  const ownRecs=recs.filter(r=>r.ownBags>0);
+  const totalBags=ownRecs.reduce((s,r)=>s+(r.ownBags||0),0);
+  const totalAmt=ownRecs.reduce((s,r)=>s+(r.ownAmt||0),0);
+  document.getElementById('own-total-bags').textContent=totalBags;
+  document.getElementById('own-total-amt').textContent='₹'+fmtS(totalAmt);
+
+  const cs={A:{bags:0,amt:0},B:{bags:0,amt:0},C:{bags:0,amt:0},D:{bags:0,amt:0}};
+  ownRecs.forEach(r=>{
+    const g=r.grading||{};
+    ['A','B','C','D'].forEach(cl=>{if(g[cl]&&g[cl].dest==='own'){cs[cl].bags+=g[cl].bags;cs[cl].amt+=g[cl].bags*g[cl].rate;}});
+  });
+  const tot=totalBags||1;
+  ['A','B','C','D'].forEach(cl=>{
+    const lc=cl.toLowerCase();
+    const pct=Math.round(cs[cl].bags/tot*100);
+    document.getElementById('own-bar-'+lc).style.width=pct+'%';
+    document.getElementById('own-pct-'+lc).textContent=pct+'%';
+    document.getElementById('own-bags-'+lc).textContent=cs[cl].bags+' bags';
+    const avg=cs[cl].bags?Math.round(cs[cl].amt/cs[cl].bags):0;
+    document.getElementById('own-avg-'+lc).textContent='₹'+avg;
+  });
+
+  document.getElementById('own-tbody').innerHTML=ownRecs.length?ownRecs.map(r=>{
+    const g=r.grading||{};const c=gc(r.farmer);
+    return`<tr>
+      <td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td>
+      <td class="mono">${r.date}</td>
+      <td>${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 6px;font-size:11px">${r.quality}</span>`:''}</td>
+      ${['A','B','C','D'].map(cl=>`
+        <td>${g[cl]&&g[cl].dest==='own'?`<span class="ct2 ${cl}">${g[cl].bags}</span>`:'—'}</td>
+        <td style="font-size:11px">${g[cl]&&g[cl].dest==='own'&&g[cl].rate?'₹'+g[cl].rate:''}</td>
+        <td style="color:var(--purple);font-family:'JetBrains Mono',monospace;font-size:11px">${g[cl]&&g[cl].dest==='own'?'₹'+fmt(g[cl].bags*g[cl].rate):''}</td>
+      `).join('')}
+      <td><strong style="font-family:'Rajdhani',sans-serif">${r.ownBags}</strong></td>
+      <td class="amt">₹${fmt(r.ownAmt||0)}</td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="17"><div class="empty"><div class="ei">🛒</div><h3>Koi own purchase nahi</h3></div></td></tr>`;
+}
+
+// ===== FARMER =====
+function renderJ(){
+  const s=document.getElementById('j-s').value.toLowerCase();
+  const fm={};
+  recs.forEach(r=>{
+    if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,village:r.village||'',mobile:r.mobile||'',storeBags:0,ownBags:0,gharBags:0,entries:0,last:r.date,netPay:0};
+    const f=fm[r.farmer];
+    f.storeBags+=(r.storeBags||0);f.ownBags+=(r.ownBags||0);f.gharBags+=(r.gharBags||0);
+    f.entries++;f.netPay+=(r.netPay||0);
+    if(r.mobile&&!f.mobile)f.mobile=r.mobile;
+    if(r.date>f.last)f.last=r.date;
+  });
+  let fs=Object.values(fm);
+  if(s)fs=fs.filter(f=>f.name.toLowerCase().includes(s));
+  fs.sort((a,b)=>b.storeBags-a.storeBags);
+  const grid=document.getElementById('j-grid');
+  if(!fs.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>Koi farmer nahi</h3></div>`;return;}
+  grid.innerHTML=fs.map(f=>{
+    const c=gc(f.name);
+    return`<div class="jcard" onclick="showJD('${f.name}')">
+      <div class="jh"><div class="jav" style="background:${c}22;color:${c}">${ini(f.name)}</div>
+      <div><div class="jn" style="color:${c}">${f.name}</div>
+      <div class="jm">📍 ${f.village||'N/A'}${f.mobile?' • 📱'+f.mobile:''}</div>
+      <div class="jm">🗓 ${f.last} • ${f.entries} entries</div></div></div>
+      <div class="jstats">
+        <div class="jst"><div class="jsv" style="color:var(--teal)">${f.storeBags}</div><div class="jsl">🏪 Store Bags</div></div>
+        <div class="jst"><div class="jsv" style="color:var(--purple)">${f.ownBags}</div><div class="jsl">🛒 Own Purchase</div></div>
+        <div class="jst"><div class="jsv" style="color:var(--yellow)">${f.gharBags}</div><div class="jsl">🏠 Ghar Gaya</div></div>
+        <div class="jst"><div class="jsv" style="color:var(--green)">₹${fmtS(f.netPay)}</div><div class="jsl">💰 Net Dena</div></div>
       </div>
     </div>`;
   }).join('');
 }
 
+function showJD(name){
+  const rs=recs.filter(r=>r.farmer===name).sort((a,b)=>b.date.localeCompare(a.date));
+  const c=gc(name);
+  const storeBags=rs.reduce((s,r)=>s+(r.storeBags||0),0);
+  const ownBags=rs.reduce((s,r)=>s+(r.ownBags||0),0);
+  const netPay=rs.reduce((s,r)=>s+(r.netPay||0),0);
+  document.getElementById('d-title').textContent=name;
+  document.getElementById('d-body').innerHTML=`
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
+      <div class="jav" style="width:44px;height:44px;font-size:16px;border-radius:8px;background:${c}22;color:${c}">${ini(name)}</div>
+      <div><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:${c}">${name}</div>
+      <div style="font-size:11px;color:#8a95a8">${rs.length} entries • Store: ${storeBags} bags • Own: ${ownBags} bags</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px">
+      <div style="background:var(--tbg);border:1px solid var(--tb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--teal)">${storeBags}</div><div style="font-size:10px;color:var(--text3)">🏪 Store Bags</div></div>
+      <div style="background:var(--pbg);border:1px solid var(--pb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--purple)">${ownBags}</div><div style="font-size:10px;color:var(--text3)">🛒 Own Purchase</div></div>
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--green)">₹${fmt(netPay)}</div><div style="font-size:10px;color:var(--text3)">💰 Net Dena</div></div>
+    </div>
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:#f0f4fc">${['Tarikh','Total','Store','Own','Ghar','Own Amt','Grade','Bardana','Net Dena','Action'].map(h=>`<th style="padding:6px 9px;text-align:left;color:var(--blue2);border-bottom:2px solid #dae4f8;font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
+      <tbody>${rs.map(r=>`<tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">${r.date}</td>
+        <td style="padding:6px 9px"><strong>${r.totalBags||0}</strong></td>
+        <td style="padding:6px 9px;color:var(--teal)">${r.storeBags||0}</td>
+        <td style="padding:6px 9px;color:var(--purple)">${r.ownBags||0}</td>
+        <td style="padding:6px 9px;color:var(--yellow)">${r.gharBags||0}</td>
+        <td style="padding:6px 9px;color:var(--purple);font-weight:700">₹${fmt(r.ownAmt||0)}</td>
+        <td style="padding:6px 9px;color:var(--red)">₹${fmt(r.gradingAmt||0)}</td>
+        <td style="padding:6px 9px;color:var(--orange)">₹${fmt(r.bardanaAmt||0)}</td>
+        <td style="padding:6px 9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--green)">₹${fmt(r.netPay||0)}</td>
+        <td style="padding:6px 9px"><button class="ab2 v" onclick="viewD('${r.id}')">👁</button></td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  document.getElementById('d-modal').classList.add('open');
+}
 
-// ============ INIT ============
+// ===== REPORTS =====
+function genR(type){
+  const out=document.getElementById('r-out');
+  if(type==='monthly'){
+    const m={};recs.forEach(r=>{const k=r.date.slice(0,7);if(!m[k])m[k]={entries:0,bags:0,store:0,own:0,ownAmt:0,netPay:0};m[k].entries++;m[k].bags+=(r.totalBags||0);m[k].store+=(r.storeBags||0);m[k].own+=(r.ownBags||0);m[k].ownAmt+=(r.ownAmt||0);m[k].netPay+=(r.netPay||0);});
+    const rows=Object.entries(m).sort((a,b)=>b[0].localeCompare(a[0]));
+    if(!rows.length){out.innerHTML='<div class="empty"><div class="ei">📅</div><h3>Koi data nahi</h3></div>';return;}
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📅 Monthly Report</div></div><div class="tsc"><table><thead><tr><th>Month</th><th>Entries</th><th>Total Bags</th><th>Store</th><th>Own Purchase</th><th>Own Amount</th><th>Net Dena</th></tr></thead><tbody>${rows.map(([k,d])=>`<tr><td class="mono">${k}</td><td>${d.entries}</td><td><strong style="font-family:'Rajdhani',sans-serif">${d.bags}</strong></td><td style="color:var(--teal)">${d.store}</td><td style="color:var(--purple)">${d.own}</td><td class="amt">₹${fmt(d.ownAmt)}</td><td style="color:var(--green);font-weight:700">₹${fmt(d.netPay)}</td></tr>`).join('')}</tbody></table></div></div>`;
+  }
+  if(type==='farmer'){
+    const fm={};recs.forEach(r=>{if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,entries:0,store:0,own:0,ownAmt:0,netPay:0};fm[r.farmer].entries++;fm[r.farmer].store+=(r.storeBags||0);fm[r.farmer].own+=(r.ownBags||0);fm[r.farmer].ownAmt+=(r.ownAmt||0);fm[r.farmer].netPay+=(r.netPay||0);});
+    const sorted=Object.values(fm).sort((a,b)=>b.netPay-a.netPay);
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">👨‍🌾 Farmer Report</div></div><div class="tsc"><table><thead><tr><th>Rank</th><th>Farmer</th><th>Entries</th><th>Store Bags</th><th>Own Bags</th><th>Own Amount</th><th>Net Dena</th></tr></thead><tbody>${sorted.map((f,i)=>{const c=gc(f.name);return`<tr><td style="color:#8a95a8">#${i+1}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(f.name)}</div>${f.name}</div></td><td>${f.entries}</td><td style="color:var(--teal)">${f.store}</td><td style="color:var(--purple)">${f.own}</td><td class="amt">₹${fmt(f.ownAmt)}</td><td style="color:var(--green);font-weight:700">₹${fmt(f.netPay)}</td></tr>`;}).join('')}</tbody></table></div></div>`;
+  }
+  if(type==='store'){updStore();toast('Store tab mein jaake dekho!','i');goTab('store');}
+  if(type==='own'){updOwn();toast('Own Purchase tab mein jaake dekho!','i');goTab('own');}
+}
+
+// ===== CSV =====
+function expCSV(){
+  if(!recs.length){toast('Koi record nahi','e');return;}
+  const h=['Sr','Tarikh','Farmer','Mobile','Gaon','Quality','Receipt','Total Bags','A Bags','A Dest','A Rate','B Bags','B Dest','B Rate','C Bags','C Dest','C Rate','D Bags','D Dest','D Rate','Zero','Kaat','Store Bags','Own Bags','Ghar Bags','Own Amt','Grading Rate','Grading Amt','Bardana Rate','Bardana Amt','Net Dena','Chamber','Floor','Pillar','Notes'];
+  const rows=recs.map((r,i)=>{const g=r.grading||{A:{bags:0,dest:'',rate:0},B:{bags:0,dest:'',rate:0},C:{bags:0,dest:'',rate:0},D:{bags:0,dest:'',rate:0}};return[i+1,r.date,r.farmer,r.mobile||'',r.village||'',r.quality||'',r.receipt,r.totalBags||0,g.A.bags,g.A.dest,g.A.rate,g.B.bags,g.B.dest,g.B.rate,g.C.bags,g.C.dest,g.C.rate,g.D.bags,g.D.dest,g.D.rate,r.zeroBags||0,r.kaatBags||0,r.storeBags||0,r.ownBags||0,r.gharBags||0,r.ownAmt||0,r.gradingRate||0,r.gradingAmt||0,r.bardanaRate||0,r.bardanaAmt||0,r.netPay||0,r.chamber||'',r.floor||'',r.pillar||'',r.notes||''];});
+  const csv=[h,...rows].map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='ColdStore_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+  toast('CSV export ho gaya! ⬇','s');
+}
+
+// ===== TOAST =====
+function toast(msg,type='i'){
+  const c=document.getElementById('toasts');const t=document.createElement('div');t.className=`toast ${type}`;
+  t.innerHTML=`<span>${{s:'✅',e:'❌',i:'ℹ️'}[type]||'ℹ️'}</span><span>${msg}</span>`;
+  c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(50px)';t.style.transition='all 0.3s';setTimeout(()=>t.remove(),300);},3500);
+}
+
+function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
+
+// ===== AUTH =====
+const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}];
+let currentUser=null,users=[],editUserId=null;
+function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
+function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
+async function saveUsersToSheet(){const img=new Image();img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify({action:'saveUsers',users}));}
+async function loadUsersFromSheet(){try{const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];for(let i=0;i<proxies.length;i++){try{const res=await proxies[i]();let txt=await res.text();try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}const data=JSON.parse(txt);if(data.users&&data.users.length>0){users=data.users;localStorage.setItem('cs_users',JSON.stringify(users));return;}}catch(e){}}}catch(e){}loadUsers();}
+function doLogin(){
+  const username=document.getElementById('l-user').value.trim().toLowerCase();
+  const password=document.getElementById('l-pass').value.trim();
+  const err=document.getElementById('login-err');
+  loadUsers();
+  const user=users.find(u=>u.username.toLowerCase()===username&&u.password===password);
+  if(!user){err.classList.add('show');document.getElementById('l-pass').value='';return;}
+  err.classList.remove('show');currentUser=user;localStorage.setItem('cs_session',JSON.stringify(user));
+  document.getElementById('login-wrap').style.display='none';applyPermissions();addUserBadge();
+  toast('Welcome '+user.name+'! 👋','s');loadUsersFromSheet();
+}
+async function checkSession(){await loadUsersFromSheet();const session=localStorage.getItem('cs_session');if(session){try{currentUser=JSON.parse(session);const exists=users.find(u=>u.id===currentUser.id&&u.password===currentUser.password);if(exists){currentUser=exists;document.getElementById('login-wrap').style.display='none';applyPermissions();addUserBadge();return;}}catch(e){}}document.getElementById('login-wrap').style.display='flex';}
+function logout(){localStorage.removeItem('cs_session');currentUser=null;document.getElementById('login-wrap').style.display='flex';document.getElementById('l-user').value='';document.getElementById('l-pass').value='';toast('Logout ho gaye! 👋','i');}
+function addUserBadge(){const hdr=document.querySelector('.hdr-r');const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
+function applyPermissions(){
+  const role=currentUser?currentUser.role:'viewer';
+  const addBtn=document.querySelector('.btn-add');if(addBtn)addBtn.style.display=(role==='admin'||role==='manager')?'':'none';
+  const usersTab=document.getElementById('tab-users');if(usersTab)usersTab.style.display=role==='admin'?'':'none';
+  document.querySelectorAll('.ab2.e,.ab2.d').forEach(btn=>btn.style.display=role==='admin'?'':'none');
+}
+function openUserModal(id=null){editUserId=id;document.getElementById('um-title').textContent=id?'User Edit':'Naya User';if(id){const u=users.find(x=>x.id===id);if(u){document.getElementById('u-name').value=u.name;document.getElementById('u-user').value=u.username;document.getElementById('u-pass').value=u.password;document.getElementById('u-role').value=u.role;}}else{['u-name','u-user','u-pass'].forEach(x=>document.getElementById(x).value='');document.getElementById('u-role').value='viewer';}document.getElementById('user-modal').classList.add('open');}
+function saveUser(){const name=document.getElementById('u-name').value.trim();const username=document.getElementById('u-user').value.trim().toLowerCase();const password=document.getElementById('u-pass').value.trim();const role=document.getElementById('u-role').value;if(!name||!username||!password){toast('Sab fields bharo!','e');return;}if(users.find(u=>u.username===username&&u.id!==editUserId)){toast('Username pehle se exists karta hai!','e');return;}if(editUserId){users=users.map(u=>u.id===editUserId?{id:editUserId,name,username,password,role}:u);toast(name+' update ho gaya!','s');}else{users.push({id:Date.now().toString(),name,username,password,role});toast(name+' add ho gaya!','s');}saveUsers();closeM('user-modal');renderUsers();}
+function deleteUser(id){if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}if(!confirm('Delete karna chahte hain?'))return;users=users.filter(u=>u.id!==id);saveUsers();renderUsers();toast('User delete ho gaya','i');}
+function renderUsers(){const grid=document.getElementById('users-grid');if(!grid)return;if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};grid.innerHTML=users.map(u=>{const isMe=u.id===currentUser.id;return`<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${u.role}">${u.role}</span></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;}).join('');}
+
+// ===== INIT =====
 loadUsers();
 checkSession();
 setSt('ch');
