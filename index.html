@@ -662,16 +662,19 @@ function startAR(){
 
 async function saveToSheet(rec,action='add'){
   setSt('sync');
+  const g=rec.grading||{A:{bags:0,dest:'',rate:0},B:{bags:0,dest:'',rate:0},C:{bags:0,dest:'',rate:0},D:{bags:0,dest:'',rate:0}};
   const p={action,id:rec.id,date:rec.date,farmer:rec.farmer,mobile:rec.mobile||'',quality:rec.quality||'',village:rec.village||'',receipt:rec.receipt||'',
-    gA_bags:rec.grading.A.bags,gA_dest:rec.grading.A.dest,gA_rate:rec.grading.A.rate,
-    gB_bags:rec.grading.B.bags,gB_dest:rec.grading.B.dest,gB_rate:rec.grading.B.rate,
-    gC_bags:rec.grading.C.bags,gC_dest:rec.grading.C.dest,gC_rate:rec.grading.C.rate,
-    gD_bags:rec.grading.D.bags,gD_dest:rec.grading.D.dest,gD_rate:rec.grading.D.rate,
-    zeroBags:rec.zeroBags,kaatBags:rec.kaatBags,
-    gradingRate:rec.gradingRate,bardanaRate:rec.bardanaRate,
-    chamber:rec.chamber||'',floor:rec.floor||'',pillar:rec.pillar||'',
-    totalBags:rec.totalBags,storeBags:rec.storeBags,ownBags:rec.ownBags,gharBags:rec.gharBags,
-    ownAmt:rec.ownAmt,gradingAmt:rec.gradingAmt,bardanaAmt:rec.bardanaAmt,netPay:rec.netPay,
+    gA_bags:g.A.bags||0, gA_dest:g.A.dest||'', gA_rate:g.A.rate||0,
+    gB_bags:g.B.bags||0, gB_dest:g.B.dest||'', gB_rate:g.B.rate||0,
+    gC_bags:g.C.bags||0, gC_dest:g.C.dest||'', gC_rate:g.C.rate||0,
+    gD_bags:g.D.bags||0, gD_dest:g.D.dest||'', gD_rate:g.D.rate||0,
+    zeroBags:rec.zeroBags||0, kaatBags:rec.kaatBags||0,
+    gradingRate:rec.gradingRate||0, gradingAmt:rec.gradingAmt||0,
+    bardanaRate:rec.bardanaRate||0, bardanaAmt:rec.bardanaAmt||0,
+    totalBags:rec.totalBags||0, storeBags:rec.storeBags||0,
+    ownBags:rec.ownBags||0, gharBags:rec.gharBags||0,
+    ownAmt:rec.ownAmt||0, netPay:rec.netPay||0,
+    chamber:rec.chamber||'', floor:rec.floor||'', pillar:rec.pillar||'',
     notes:rec.notes||''};
   return new Promise((resolve)=>{
     const img=new Image();
