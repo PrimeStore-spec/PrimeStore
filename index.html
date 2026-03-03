@@ -459,6 +459,8 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
         <div class="fg2"><label class="flbl">Tarikh *</label><input type="date" class="finp" id="fi-d"></div>
         <div class="fg2"><label class="flbl">Gaon</label><input class="finp" id="fi-v" placeholder="Ludhiana"></div>
         <div class="fg2"><label class="flbl">Receipt No.</label><input class="finp" id="fi-r" placeholder="Auto"></div>
+        <div class="fg2"><label class="flbl">📱 Mobile No.</label><input class="finp" id="fi-m" placeholder="98765-43210" type="tel"></div>
+        <div class="fg2"><label class="flbl">🥔 Potato Quality</label><div style="position:relative"><input class="finp" id="fi-q" placeholder="Type karo ya select karo..." oninput="showQualityDrop(this.value)" onfocus="showQualityDrop(this.value)" onblur="setTimeout(()=>hideQualityDrop(),200)" autocomplete="off"><div id="quality-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #dde1e9;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:999;max-height:180px;overflow-y:auto;"></div></div></div>
         <div class="fg2 full"><label class="flbl">Notes</label><input class="finp" id="fi-n" placeholder="Koi khaas baat..."></div>
       </div>
       <div class="div"></div>
@@ -648,6 +650,8 @@ function openM(id=null){
       document.getElementById('fi-d').value=r.date;
       document.getElementById('fi-v').value=r.village||'';
       document.getElementById('fi-r').value=r.receipt||'';
+      document.getElementById('fi-m').value=r.mobile||'';
+      document.getElementById('fi-q').value=r.quality||'';
       document.getElementById('fi-n').value=r.notes||'';
       document.getElementById('fa-b').value=r.classA.bags||'';
       document.getElementById('fa-r').value=r.classA.rate||'';
@@ -659,7 +663,7 @@ function openM(id=null){
       document.getElementById('fd-r').value=r.classD.rate||'';
     }
   }else{
-    ['fi-f','fi-v','fi-r','fi-n','fa-b','fa-r','fb-b','fb-r','fc-b','fc-r','fd-b','fd-r'].forEach(x=>document.getElementById(x).value='');
+    ['fi-f','fi-v','fi-r','fi-m','fi-q','fi-n','fa-b','fa-r','fb-b','fb-r','fc-b','fc-r','fd-b','fd-r'].forEach(x=>document.getElementById(x).value='');
     document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
     document.getElementById('fi-r').value='RC-'+String(recs.length+1).padStart(3,'0');
   }
@@ -694,7 +698,7 @@ function saveR(){
   if(!A.bags&&!B.bags&&!C.bags&&!D.bags){toast('Kam se kam ek class ki bags daalo!','e');return;}
   const tB=A.bags+B.bags+C.bags+D.bags;
   const tA=A.bags*A.rate+B.bags*B.rate+C.bags*C.rate+D.bags*D.rate;
-  const rec={id:editId||Date.now().toString(),farmer,date,village:document.getElementById('fi-v').value.trim(),receipt:document.getElementById('fi-r').value.trim()||'RC-'+String(recs.length+1).padStart(3,'0'),notes:document.getElementById('fi-n').value.trim(),classA:A,classB:B,classC:C,classD:D,totalBags:tB,totalAmt:tA,createdAt:editId?recs.find(x=>x.id===editId)?.createdAt:new Date().toISOString()};
+  const rec={id:editId||Date.now().toString(),farmer,date,village:document.getElementById('fi-v').value.trim(),mobile:document.getElementById('fi-m').value.trim(),quality:document.getElementById('fi-q').value.trim(),receipt:document.getElementById('fi-r').value.trim()||'RC-'+String(recs.length+1).padStart(3,'0'),notes:document.getElementById('fi-n').value.trim(),classA:A,classB:B,classC:C,classD:D,totalBags:tB,totalAmt:tA,createdAt:editId?recs.find(x=>x.id===editId)?.createdAt:new Date().toISOString()};
   if(editId){recs=recs.map(x=>x.id===editId?rec:x);toast(farmer+' ka record update ho gaya!','s');}
   else{recs.unshift(rec);toast(farmer+' ka record save ho gaya! 🥔','s');}
   saveL();closeM('modal');updAll();applyF();
@@ -1004,17 +1008,25 @@ function hideFarmerDrop(){
 function selectFarmer(name){
   document.getElementById('fi-f').value = name;
   hideFarmerDrop();
-  
-  // Gaon auto fill karo — us farmer ki last entry se
   const farmerRecs = recs.filter(r=>r.farmer === name);
   if(farmerRecs.length > 0){
-    // Last entry ka gaon le lo
     const lastRec = farmerRecs.sort((a,b)=>b.date.localeCompare(a.date))[0];
-    if(lastRec.village){
-      document.getElementById('fi-v').value = lastRec.village;
-    }
+    if(lastRec.village) document.getElementById('fi-v').value = lastRec.village;
+    if(lastRec.mobile) document.getElementById('fi-m').value = lastRec.mobile;
+    if(lastRec.quality) document.getElementById('fi-q').value = lastRec.quality;
   }
 }
+
+function showQualityDrop(val){
+  const drop=document.getElementById('quality-drop');
+  const qualities=[...new Set(recs.map(r=>r.quality).filter(Boolean))].sort();
+  const fil=val?qualities.filter(q=>q.toLowerCase().includes(val.toLowerCase())):qualities;
+  if(!fil.length){drop.style.display='none';return;}
+  drop.innerHTML=fil.map(q=>`<div onclick="selectQuality('${q}')" style="padding:9px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid #f0f2f5;" onmouseover="this.style.background='#e8f0fd'" onmouseout="this.style.background=''">${q}</div>`).join('');
+  drop.style.display='block';
+}
+function hideQualityDrop(){const d=document.getElementById('quality-drop');if(d)d.style.display='none';}
+function selectQuality(q){document.getElementById('fi-q').value=q;hideQualityDrop();}
 
 function updFarmerDL(){
   // Dropdown mein sab farmers dikhao
