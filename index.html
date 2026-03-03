@@ -503,17 +503,19 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
             <td><input type="number" class="rate-inp" id="g-d-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
             <td><span id="g-d-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
           </tr>
-          <tr style="background:#fdf2f8">
+          <tr>
             <td><span class="cbadge Z">Zero</span></td>
             <td><input type="number" class="grade-inp" id="g-z-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
-            <td><span style="font-size:11px;color:#64748b">❌ Wastage (auto)</span></td>
-            <td></td><td></td>
+            <td><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="dest-btn" id="dz-store" onclick="setDest('Z','store')">🏪 Store</button><button class="dest-btn" id="dz-own" onclick="setDest('Z','own')">🛒 Own</button><button class="dest-btn" id="dz-ghar" onclick="setDest('Z','ghar')">🏠 Ghar</button></div></td>
+            <td><input type="number" class="rate-inp" id="g-z-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
+            <td><span id="g-z-amt" style="font-size:12px;color:var(--purple);font-weight:700">-</span></td>
           </tr>
-          <tr style="background:#fdf2f8">
+          <tr>
             <td><span class="cbadge K">Kaat</span></td>
             <td><input type="number" class="grade-inp" id="g-k-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
-            <td><span style="font-size:11px;color:#64748b">❌ Wastage (auto)</span></td>
-            <td></td><td></td>
+            <td><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="dest-btn" id="dk-store" onclick="setDest('K','store')">🏪 Store</button><button class="dest-btn" id="dk-own" onclick="setDest('K','own')">🛒 Own</button><button class="dest-btn" id="dk-ghar" onclick="setDest('K','ghar')">🏠 Ghar</button></div></td>
+            <td><input type="number" class="rate-inp" id="g-k-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
+            <td><span id="g-k-amt" style="font-size:12px;color:var(--purple);font-weight:700">-</span></td>
           </tr>
         </tbody>
       </table>
@@ -539,7 +541,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
           <span class="charge-lbl">⚖️ Grading Rate ₹/bag</span>
           <input type="number" class="charge-inp" id="fi-grate" placeholder="30" oninput="calcEntry()">
           <span style="font-size:11px;color:var(--text3);margin:0 4px">×</span>
-          <span id="total-bags-show" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">0 bags</span>
+          <input type="number" class="charge-inp" id="fi-gbags" placeholder="0" oninput="this.dataset.manual='1';calcEntry()" style="width:72px;border-color:var(--blue)" title="Default: Total Bags">
           <span style="font-size:11px;color:var(--text3);margin:0 4px">=</span>
           <span class="charge-calc" id="grade-charge-amt">₹0</span>
         </div>
@@ -547,9 +549,18 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
           <span class="charge-lbl">🧺 Bardana Rate ₹/bag</span>
           <input type="number" class="charge-inp" id="fi-brate" placeholder="16" oninput="calcEntry()">
           <span style="font-size:11px;color:var(--text3);margin:0 4px">×</span>
-          <span id="bardana-bags-show" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">0 bags</span>
+          <input type="number" class="charge-inp" id="fi-bbags" placeholder="0" oninput="this.dataset.manual='1';calcEntry()" style="width:72px;border-color:var(--blue)" title="Default: Total Bags">
           <span style="font-size:11px;color:var(--text3);margin:0 4px">=</span>
           <span class="charge-calc" id="bardana-charge-amt">₹0</span>
+        </div>
+        <div class="charge-row">
+          <span class="charge-lbl">👷 Labour Rate ₹/bag</span>
+          <input type="number" class="charge-inp" id="fi-lrate" placeholder="0" oninput="calcEntry()">
+          <span style="font-size:11px;color:var(--text3);margin:0 4px">×</span>
+          <input type="number" class="charge-inp" id="fi-lbags" placeholder="0" oninput="this.dataset.manual='1';calcEntry()" style="width:72px;border-color:var(--blue)" title="Default: Total Bags">
+          <span style="font-size:9px;color:var(--text3);margin:0 2px">bags</span>
+          <span style="font-size:11px;color:var(--text3);margin:0 4px">=</span>
+          <span class="charge-calc" id="labour-charge-amt">₹0</span>
         </div>
         <div class="fg2" style="margin-top:8px"><label class="flbl">Notes</label><input class="finp" id="fi-n" placeholder="Koi khaas baat..."></div>
       </div>
@@ -609,7 +620,7 @@ let recs=[],filtered=[],editId=null,pg=1;
 const PP=15;
 let sField='date',sDir='desc',autoTimer=null;
 // Destination state for each class
-let dests={A:'',B:'',C:'',D:''};
+let dests={A:'',B:'',C:'',D:'',Z:'',K:''};
 
 const FC=['#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16','#ef4444','#a855f7'];
 const FCM={};let fci=0;
@@ -668,9 +679,12 @@ async function saveToSheet(rec,action='add'){
     gB_bags:g.B.bags||0, gB_dest:g.B.dest||'', gB_rate:g.B.rate||0,
     gC_bags:g.C.bags||0, gC_dest:g.C.dest||'', gC_rate:g.C.rate||0,
     gD_bags:g.D.bags||0, gD_dest:g.D.dest||'', gD_rate:g.D.rate||0,
+    gZ_bags:(g.Z&&g.Z.bags)||0, gZ_dest:(g.Z&&g.Z.dest)||'', gZ_rate:(g.Z&&g.Z.rate)||0,
+    gK_bags:(g.K&&g.K.bags)||0, gK_dest:(g.K&&g.K.dest)||'', gK_rate:(g.K&&g.K.rate)||0,
     zeroBags:rec.zeroBags||0, kaatBags:rec.kaatBags||0,
-    gradingRate:rec.gradingRate||0, gradingAmt:rec.gradingAmt||0,
-    bardanaRate:rec.bardanaRate||0, bardanaAmt:rec.bardanaAmt||0,
+    gradingRate:rec.gradingRate||0, gradingAmt:rec.gradingAmt||0, gradingBags:rec.gradingBags||0,
+    bardanaRate:rec.bardanaRate||0, bardanaAmt:rec.bardanaAmt||0, bardanaBags:rec.bardanaBags||0,
+    labourRate:rec.labourRate||0, labourAmt:rec.labourAmt||0, labourBags:rec.labourBags||0,
     totalBags:rec.totalBags||0, storeBags:rec.storeBags||0,
     ownBags:rec.ownBags||0, gharBags:rec.gharBags||0,
     ownAmt:rec.ownAmt||0, netPay:rec.netPay||0,
@@ -716,10 +730,12 @@ function setDest(cls,dest){
 // ===== CALC =====
 function calcEntry(){
   let totalBags=0,storeBags=0,ownBags=0,gharBags=0,ownAmt=0;
-  ['A','B','C','D'].forEach(cl=>{
+  ['A','B','C','D','Z','K'].forEach(cl=>{
     const lc=cl.toLowerCase();
-    const bags=parseFloat(document.getElementById('g-'+lc+'-bags').value)||0;
-    const rate=parseFloat(document.getElementById('g-'+lc+'-rate').value)||0;
+    const bEl=document.getElementById('g-'+lc+'-bags');
+    const rEl=document.getElementById('g-'+lc+'-rate');
+    const bags=parseFloat(bEl?bEl.value:0)||0;
+    const rate=parseFloat(rEl?rEl.value:0)||0;
     totalBags+=bags;
     const dest=dests[cl];
     if(dest==='store')storeBags+=bags;
@@ -728,20 +744,25 @@ function calcEntry(){
     const amtEl=document.getElementById('g-'+lc+'-amt');
     if(amtEl)amtEl.textContent=dest==='own'&&bags&&rate?'₹'+fmt(bags*rate):'—';
   });
-  const zeroBags=parseFloat(document.getElementById('g-z-bags').value)||0;
-  const kaatBags=parseFloat(document.getElementById('g-k-bags').value)||0;
-  totalBags+=zeroBags+kaatBags;
-
+  // Editable bags — auto-fill total unless user changed manually
+  const gbEl=document.getElementById('fi-gbags'),bbEl=document.getElementById('fi-bbags'),lbEl=document.getElementById('fi-lbags');
+  if(gbEl&&!gbEl.dataset.manual)gbEl.value=totalBags||'';
+  if(bbEl&&!bbEl.dataset.manual)bbEl.value=totalBags||'';
+  if(lbEl&&!lbEl.dataset.manual)lbEl.value=totalBags||'';
+  const gBags=parseFloat(gbEl?gbEl.value:0)||totalBags;
+  const bBags=parseFloat(bbEl?bbEl.value:0)||totalBags;
+  const lBags=parseFloat(lbEl?lbEl.value:0)||totalBags;
   const gRate=parseFloat(document.getElementById('fi-grate').value)||0;
   const bRate=parseFloat(document.getElementById('fi-brate').value)||0;
-  const gradingAmt=totalBags*gRate;
-  const bardanaAmt=totalBags*bRate;
-  const netPay=ownAmt-gradingAmt-bardanaAmt;
-
-  document.getElementById('total-bags-show').textContent=totalBags+' bags';
-  document.getElementById('bardana-bags-show').textContent=totalBags+' bags';
+  const lRateEl=document.getElementById('fi-lrate');
+  const lRate=parseFloat(lRateEl?lRateEl.value:0)||0;
+  const gradingAmt=gBags*gRate;
+  const bardanaAmt=bBags*bRate;
+  const labourAmt=lBags*lRate;
+  const netPay=ownAmt-gradingAmt-bardanaAmt-labourAmt;
   document.getElementById('grade-charge-amt').textContent='₹'+fmt(gradingAmt);
   document.getElementById('bardana-charge-amt').textContent='₹'+fmt(bardanaAmt);
+  const lAmtEl=document.getElementById('labour-charge-amt');if(lAmtEl)lAmtEl.textContent='₹'+fmt(labourAmt);
   document.getElementById('sum-total-bags').textContent=totalBags;
   document.getElementById('sum-store-bags').textContent=storeBags;
   document.getElementById('sum-own-bags').textContent=ownBags;
@@ -749,7 +770,7 @@ function calcEntry(){
   const netEl=document.getElementById('sum-net-pay');
   netEl.textContent=(netPay>=0?'':'−')+'₹'+fmt(Math.abs(netPay));
   netEl.style.color=netPay>=0?'#fff':'#fca5a5';
-  document.getElementById('sum-calc-detail').textContent=`₹${fmt(ownAmt)} − ₹${fmt(gradingAmt)} − ₹${fmt(bardanaAmt)}`;
+  document.getElementById('sum-calc-detail').textContent='₹'+fmt(ownAmt)+' − Grading ₹'+fmt(gradingAmt)+' − Bardana ₹'+fmt(bardanaAmt)+(labourAmt?' − Labour ₹'+fmt(labourAmt):'');
 }
 
 // ===== MODAL =====
@@ -774,21 +795,26 @@ function openM(id=null){
       document.getElementById('fi-brate').value=r.bardanaRate||'';
       document.getElementById('g-z-bags').value=r.zeroBags||'';
       document.getElementById('g-k-bags').value=r.kaatBags||'';
-      ['A','B','C','D'].forEach(cl=>{
+      ['A','B','C','D','Z','K'].forEach(cl=>{
         const lc=cl.toLowerCase();
         const g=r.grading&&r.grading[cl]?r.grading[cl]:{bags:0,dest:'',rate:0};
-        document.getElementById('g-'+lc+'-bags').value=g.bags||'';
-        document.getElementById('g-'+lc+'-rate').value=g.rate||'';
+        const bEl=document.getElementById('g-'+lc+'-bags');if(bEl)bEl.value=g.bags||'';
+        const rEl=document.getElementById('g-'+lc+'-rate');if(rEl)rEl.value=g.rate||'';
         setDest(cl,g.dest||'');
       });
+      if(r.gradingBags){const el=document.getElementById('fi-gbags');if(el){el.value=r.gradingBags;el.dataset.manual='1';}}
+      if(r.bardanaBags){const el=document.getElementById('fi-bbags');if(el){el.value=r.bardanaBags;el.dataset.manual='1';}}
+      if(r.labourBags){const el=document.getElementById('fi-lbags');if(el){el.value=r.labourBags;el.dataset.manual='1';}}
+      if(r.labourRate){const el=document.getElementById('fi-lrate');if(el)el.value=r.labourRate;}
     }
   }else{
-    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate'].forEach(x=>document.getElementById(x).value='');
-    ['g-a-bags','g-b-bags','g-c-bags','g-d-bags','g-z-bags','g-k-bags','g-a-rate','g-b-rate','g-c-rate','g-d-rate'].forEach(x=>document.getElementById(x).value='');
+    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
+    ['g-a-bags','g-b-bags','g-c-bags','g-d-bags','g-z-bags','g-k-bags','g-a-rate','g-b-rate','g-c-rate','g-d-rate','g-z-rate','g-k-rate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
+    ['fi-gbags','fi-bbags','fi-lbags'].forEach(x=>{const el=document.getElementById(x);if(el){el.value='';el.dataset.manual='';}});
     document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
     document.getElementById('fi-r').value='RC-'+String(recs.length+1).padStart(3,'0');
-    dests={A:'',B:'',C:'',D:''};
-    ['A','B','C','D'].forEach(cl=>setDest(cl,''));
+    dests={A:'',B:'',C:'',D:'',Z:'',K:''};
+    ['A','B','C','D','Z','K'].forEach(cl=>setDest(cl,''));
   }
   calcEntry();
 }
@@ -820,13 +846,24 @@ function saveR(){
 
   const zeroBags=parseFloat(document.getElementById('g-z-bags').value)||0;
   const kaatBags=parseFloat(document.getElementById('g-k-bags').value)||0;
+  const zRate=parseFloat((document.getElementById('g-z-rate')||{}).value)||0;
+  const kRate=parseFloat((document.getElementById('g-k-rate')||{}).value)||0;
+  if(dests['Z']==='store')storeBags+=zeroBags;else if(dests['Z']==='own'){ownBags+=zeroBags;ownAmt+=zeroBags*zRate;}else if(dests['Z']==='ghar')gharBags+=zeroBags;
+  if(dests['K']==='store')storeBags+=kaatBags;else if(dests['K']==='own'){ownBags+=kaatBags;ownAmt+=kaatBags*kRate;}else if(dests['K']==='ghar')gharBags+=kaatBags;
+  grading['Z']={bags:zeroBags,dest:dests['Z']||'',rate:zRate};
+  grading['K']={bags:kaatBags,dest:dests['K']||'',rate:kRate};
   totalBags+=zeroBags+kaatBags;
-
   const gradingRate=parseFloat(document.getElementById('fi-grate').value)||0;
   const bardanaRate=parseFloat(document.getElementById('fi-brate').value)||0;
-  const gradingAmt=totalBags*gradingRate;
-  const bardanaAmt=totalBags*bardanaRate;
-  const netPay=ownAmt-gradingAmt-bardanaAmt;
+  const labourRate=parseFloat((document.getElementById('fi-lrate')||{}).value)||0;
+  const gbEl2=document.getElementById('fi-gbags'),bbEl2=document.getElementById('fi-bbags'),lbEl2=document.getElementById('fi-lbags');
+  const gradingBags=parseFloat(gbEl2?gbEl2.value:0)||totalBags;
+  const bardanaBags=parseFloat(bbEl2?bbEl2.value:0)||totalBags;
+  const labourBags=parseFloat(lbEl2?lbEl2.value:0)||totalBags;
+  const gradingAmt=gradingBags*gradingRate;
+  const bardanaAmt=bardanaBags*bardanaRate;
+  const labourAmt=labourBags*labourRate;
+  const netPay=ownAmt-gradingAmt-bardanaAmt-labourAmt;
 
   const rec={
     id:editId||Date.now().toString(),
@@ -840,9 +877,11 @@ function saveR(){
     floor:document.getElementById('fi-floor').value.trim(),
     pillar:document.getElementById('fi-pillar').value.trim(),
     grading,zeroBags,kaatBags,
-    gradingRate,bardanaRate,
+    gradingRate,bardanaRate,labourRate,
+    gradingBags,bardanaBags,labourBags,
+    gradingAmt,bardanaAmt,labourAmt,
     totalBags,storeBags,ownBags,gharBags,
-    ownAmt,gradingAmt,bardanaAmt,netPay,
+    ownAmt,netPay,
     createdAt:editId?recs.find(x=>x.id===editId)?.createdAt:new Date().toISOString()
   };
 
