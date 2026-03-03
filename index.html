@@ -1013,9 +1013,14 @@ function selectFarmer(name){
   const farmerRecs = recs.filter(r=>r.farmer === name);
   if(farmerRecs.length > 0){
     const lastRec = farmerRecs.sort((a,b)=>b.date.localeCompare(a.date))[0];
-    if(lastRec.village) document.getElementById('fi-v').value = lastRec.village;
-    if(lastRec.mobile) document.getElementById('fi-m').value = lastRec.mobile;
-    if(lastRec.quality) document.getElementById('fi-q').value = lastRec.quality;
+    // Village fill
+    document.getElementById('fi-v').value = lastRec.village || '';
+    // Mobile fill - directly set karo condition ke bina
+    const mEl = document.getElementById('fi-m');
+    if(mEl) mEl.value = lastRec.mobile || '';
+    // Quality fill - directly set karo condition ke bina  
+    const qEl = document.getElementById('fi-q');
+    if(qEl) qEl.value = lastRec.quality || '';
   }
 }
 
