@@ -1084,7 +1084,7 @@ function updDash(){
   document.getElementById('h-entries').textContent=totalEntries;
   document.getElementById('h-store').textContent=storeBags;
   document.getElementById('h-own').textContent=ownBags;
-  const todayDate=new Date().toISOString().split('T')[0];const todayEntries=recs.filter(r=>r.date===todayDate).length;document.getElementById('sd-entries').textContent=todayEntries;
+  const todayDate=new Date().toISOString().split('T')[0];const todayEntries=recs.filter(r=>r.date===todayDate).reduce((s,r)=>s+(r.totalBags||0),0);document.getElementById('sd-entries').textContent=todayEntries;
   document.getElementById('sd-farmers').textContent=farmers;
   document.getElementById('sd-storebags').textContent=storeBags;
   document.getElementById('sd-ownbags').textContent=ownBags;
