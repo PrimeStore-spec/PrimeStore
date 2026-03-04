@@ -296,7 +296,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
   <!-- MAIN DASHBOARD -->
   <div id="p-dash">
     <div class="stats-grid">
-      <div class="sc" style="--cc:var(--blue)"><span class="si">📋</span><div class="sl">Total Entries</div><div class="sv" id="sd-entries">0</div><div class="ss2">Saari grading entries</div></div>
+      <div class="sc" style="--cc:var(--blue)"><span class="si">📋</span><div class="sl">Today Purchase</div><div class="sv" id="sd-entries">0</div><div class="ss2">Aaj ki entries</div></div>
       <div class="sc" style="--cc:var(--green)"><span class="si">👨‍🌾</span><div class="sl">Farmers</div><div class="sv" id="sd-farmers">0</div><div class="ss2">Registered</div></div>
       <div class="sc" style="--cc:var(--teal)"><span class="si">🏪</span><div class="sl">Store Bags</div><div class="sv" id="sd-storebags">0</div><div class="ss2">Farmer ka maal</div></div>
       <div class="sc" style="--cc:var(--purple)"><span class="si">🛒</span><div class="sl">Own Purchase</div><div class="sv" id="sd-ownbags">0</div><div class="ss2">Hamare bags</div></div>
@@ -1035,7 +1035,7 @@ function updDash(){
   document.getElementById('h-entries').textContent=totalEntries;
   document.getElementById('h-store').textContent=storeBags;
   document.getElementById('h-own').textContent=ownBags;
-  document.getElementById('sd-entries').textContent=totalEntries;
+  const todayDate=new Date().toISOString().split('T')[0];const todayEntries=recs.filter(r=>r.date===todayDate).length;document.getElementById('sd-entries').textContent=todayEntries;
   document.getElementById('sd-farmers').textContent=farmers;
   document.getElementById('sd-storebags').textContent=storeBags;
   document.getElementById('sd-ownbags').textContent=ownBags;
