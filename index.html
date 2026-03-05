@@ -99,7 +99,7 @@ main{max-width:1600px;margin:0 auto;padding:16px 18px;}
 .th2{display:flex;justify-content:space-between;align-items:center;padding:11px 15px;border-bottom:2px solid var(--border);background:var(--s2);}
 .ttl{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;}
 .rcnt{font-size:11px;background:var(--bluebg);border:1px solid #c5d8f8;color:var(--blue);padding:2px 9px;border-radius:20px;font-weight:600;}
-.tsc{overflow-x:auto;}
+.tsc{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:12px;}
 thead tr{background:#f0f4fc;}
 th{padding:8px 11px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue2);border-bottom:2px solid #dae4f8;white-space:nowrap;}
@@ -241,6 +241,11 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 .login-btn:hover{opacity:0.9;transform:translateY(-1px);}
 .login-err{background:#fef0f0;border:1px solid #fcc8c8;color:#b91c1c;border-radius:6px;padding:9px 12px;font-size:12px;margin-bottom:12px;display:none;}
 .login-err.show{display:block;}
+.pay-row{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px;}
+.pay-row:last-child{border-bottom:none;}
+.pay-badge{background:#e8f5ed;color:#1a7a3c;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600;}
+.pay-total{background:var(--gbg);border:1px solid var(--gb);border-radius:7px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.add-pay-btn{background:#1a7a3c;color:#fff;border:none;border-radius:6px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;}
 .role-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
 .role-badge.admin{background:#e8f0fd;color:#1a5fc8;border:1px solid #c5d8f8;}
 .role-badge.manager{background:#e8f5ed;color:#1a7a3c;border:1px solid #c8ecd4;}
@@ -254,11 +259,27 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 .tpv{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--blue);}
 .tpl{font-size:9px;color:var(--text3);text-transform:uppercase;}
 @media(max-width:900px){.fg{grid-template-columns:1fr 1fr;}.cbars{grid-template-columns:1fr 1fr;}.charts{grid-template-columns:1fr;}.fgrid3,.fgrid4{grid-template-columns:1fr 1fr;}.sum-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr;}.fgrid,.fgrid3,.fgrid4{grid-template-columns:1fr;}.cbars{grid-template-columns:1fr 1fr;}main{padding:10px;}header{padding:6px 10px;}.hdr-stat{display:none;}}
+@media(max-width:600px){.tsc table{min-width:700px;}.main-wrap{padding:8px;}.modal-box{width:98vw;max-height:95vh;}.fgrid3,.fgrid2{grid-template-columns:1fr;}.charge-row{flex-wrap:wrap;gap:6px;}.stats-grid{grid-template-columns:1fr 1fr;}.fgrid,.fgrid3,.fgrid4{grid-template-columns:1fr;}.cbars{grid-template-columns:1fr 1fr;}main{padding:10px;}header{padding:6px 10px;}.hdr-stat{display:none;}}
 </style>
 </head>
 <body>
 
+<!-- PAYMENT MODAL -->
+<div class="ov" id="pay-modal" onclick="closeOut(event,'pay-modal')">
+  <div class="modal-box" style="max-width:400px">
+    <div class="mh"><div class="mt">💵 Payment Add Karo</div><button class="mx" onclick="closeM('pay-modal')">✕</button></div>
+    <div class="mb" id="pay-modal-body">
+      <div class="fg2"><label class="flbl">Farmer</label><input class="finp" id="pay-farmer" readonly></div>
+      <div class="fg2" style="margin-top:10px"><label class="flbl">Amount ₹</label><input class="finp" type="number" id="pay-amount" placeholder="Jaise: 50000"></div>
+      <div class="fg2" style="margin-top:10px"><label class="flbl">Tarikh</label><input class="finp" type="date" id="pay-date"></div>
+      <div class="fg2" style="margin-top:10px"><label class="flbl">Note (optional)</label><input class="finp" id="pay-note" placeholder="Jaise: Cash, Online..."></div>
+      <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="closeM('pay-modal')">Cancel</button>
+        <button class="btn" onclick="savePayment()" style="background:#1a7a3c;color:#fff">💵 Save Payment</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- LOGIN -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-box">
@@ -819,8 +840,9 @@ function openM(id=null){
       });
     }
   }else{
-    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate'].forEach(x=>document.getElementById(x).value='');
-    ['g-a-bags','g-b-bags','g-c-bags','g-d-bags','g-z-bags','g-k-bags','g-a-rate','g-b-rate','g-c-rate','g-d-rate'].forEach(x=>document.getElementById(x).value='');
+    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
+    ['g-a-bags','g-b-bags','g-c-bags','g-d-bags','g-z-bags','g-k-bags','g-a-rate','g-b-rate','g-c-rate','g-d-rate','g-z-rate','g-k-rate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
+    ['fi-gbags','fi-bbags','fi-lbags'].forEach(x=>{const el=document.getElementById(x);if(el){el.value='';delete el.dataset.m;}});
     document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
     const rcNums=recs.map(r=>{const m=(r.receipt||'').match(/RC-?(\d+)/i);return m?parseInt(m[1]):0;});const nextRc=rcNums.length?Math.max(...rcNums)+1:1;document.getElementById('fi-r').value='RC-'+String(nextRc).padStart(3,'0');
     dests={A:'',B:'',C:'',D:'',Z:'',K:''};
@@ -1053,11 +1075,12 @@ function viewD(id){
       </tbody>
     </table>
     <div style="background:linear-gradient(135deg,#1a3a6b,#1a5fc8);border-radius:9px;padding:13px 16px;color:#fff">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:11px">
-        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700">${r.totalBags||0}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">TOTAL BAGS</div></div>
-        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700">₹${fmt(r.ownAmt||0)}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">OWN PURCHASE</div></div>
-        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fca5a5">−₹${fmt(r.gradingAmt||0)}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">GRADING</div></div>
-        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fca5a5">−₹${fmt(r.bardanaAmt||0)}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">BARDANA</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:8px;margin-bottom:11px">
+        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700">${r.totalBags||0}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">TOTAL BAGS</div></div>
+        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700">₹${fmt(r.ownAmt||0)}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">OWN AMT</div></div>
+        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#fca5a5">−₹${fmt(r.gradingAmt||0)}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">GRADING</div></div>
+        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#fca5a5">−₹${fmt(r.bardanaAmt||0)}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">BARDANA</div></div>
+        <div style="text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#fca5a5">${r.labourAmt?'−₹'+fmt(r.labourAmt):'—'}</div><div style="font-size:9px;color:rgba(255,255,255,0.65)">LABOUR</div></div>
       </div>
       <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:7px;padding:10px;text-align:center">
         <div style="font-size:10px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px">💰 Net Farmer ko Dena</div>
@@ -1199,7 +1222,7 @@ function renderJ(){
     if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,village:r.village||'',mobile:r.mobile||'',storeBags:0,ownBags:0,gharBags:0,entries:0,last:r.date,netPay:0};
     const f=fm[r.farmer];
     f.storeBags+=(r.storeBags||0);f.ownBags+=(r.ownBags||0);f.gharBags+=(r.gharBags||0);
-    f.entries++;f.netPay+=(r.netPay||0);
+    f.entries++;f.netPay+=(r.netPay||0);f.paid=payments.filter(p=>p.farmer===f.name).reduce((s,p)=>s+p.amount,0);
     if(r.mobile&&!f.mobile)f.mobile=r.mobile;
     if(r.date>f.last)f.last=r.date;
   });
@@ -1219,7 +1242,7 @@ function renderJ(){
         <div class="jst"><div class="jsv" style="color:var(--teal)">${f.storeBags}</div><div class="jsl">🏪 Store Bags</div></div>
         <div class="jst"><div class="jsv" style="color:var(--purple)">${f.ownBags}</div><div class="jsl">🛒 Own Purchase</div></div>
         <div class="jst"><div class="jsv" style="color:var(--yellow)">${f.gharBags}</div><div class="jsl">🏠 Ghar Gaya</div></div>
-        <div class="jst"><div class="jsv" style="color:var(--green)">₹${fmtS(f.netPay)}</div><div class="jsl">💰 Net Dena</div></div>
+        <div class="jst"><div class="jsv" style="color:var(--green)">₹${fmtS(f.netPay-f.paid)}</div><div class="jsl">💰 Baaki Balance</div></div>
       </div>
     </div>`;
   }).join('');
@@ -1231,6 +1254,9 @@ function showJD(name){
   const storeBags=rs.reduce((s,r)=>s+(r.storeBags||0),0);
   const ownBags=rs.reduce((s,r)=>s+(r.ownBags||0),0);
   const netPay=rs.reduce((s,r)=>s+(r.netPay||0),0);
+  const farmerPays=payments.filter(p=>p.farmer===name);
+  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
+  const balance=netPay-totalPaid;
   document.getElementById('d-title').textContent=name;
   document.getElementById('d-body').innerHTML=`
     <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
@@ -1241,7 +1267,7 @@ function showJD(name){
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px">
       <div style="background:var(--tbg);border:1px solid var(--tb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--teal)">${storeBags}</div><div style="font-size:10px;color:var(--text3)">🏪 Store Bags</div></div>
       <div style="background:var(--pbg);border:1px solid var(--pb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--purple)">${ownBags}</div><div style="font-size:10px;color:var(--text3)">🛒 Own Purchase</div></div>
-      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--green)">₹${fmt(netPay)}</div><div style="font-size:10px;color:var(--text3)">💰 Net Dena</div></div>
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--green)">₹${fmt(netPay)}</div><div style="font-size:10px;color:var(--text3)">💰 Kul Dena</div></div>
     </div>
     <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
       <thead><tr style="background:#f0f4fc">${['Tarikh','Total','Store','Own','Ghar','Own Amt','Grade','Bardana','Net Dena','Action'].map(h=>`<th style="padding:6px 9px;text-align:left;color:var(--blue2);border-bottom:2px solid #dae4f8;font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
@@ -1316,7 +1342,7 @@ function doLogin(){
   document.getElementById('login-wrap').style.display='none';applyPermissions();addUserBadge();
   toast('Welcome '+user.name+'! 👋','s');loadUsersFromSheet();
 }
-async function checkSession(){await loadUsersFromSheet();const session=localStorage.getItem('cs_session');if(session){try{currentUser=JSON.parse(session);const exists=users.find(u=>u.id===currentUser.id&&u.password===currentUser.password);if(exists){currentUser=exists;document.getElementById('login-wrap').style.display='none';applyPermissions();addUserBadge();return;}}catch(e){}}document.getElementById('login-wrap').style.display='flex';}
+async function checkSession(){await loadUsersFromSheet();const session=localStorage.getItem('cs_session');if(session){try{currentUser=JSON.parse(session);const exists=users.find(u=>u.id===currentUser.id&&u.password===currentUser.password);if(exists){currentUser=exists;document.getElementById('login-wrap').style.display='none';applyPermissions();addUserBadge();setSt('ch');loadSheet();return;}}catch(e){}}document.getElementById('login-wrap').style.display='flex';}
 function logout(){localStorage.removeItem('cs_session');currentUser=null;document.getElementById('login-wrap').style.display='flex';document.getElementById('l-user').value='';document.getElementById('l-pass').value='';toast('Logout ho gaye! 👋','i');}
 function addUserBadge(){const hdr=document.querySelector('.hdr-r');const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
 function applyPermissions(){
@@ -1330,8 +1356,42 @@ function saveUser(){const name=document.getElementById('u-name').value.trim();co
 function deleteUser(id){if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}if(!confirm('Delete karna chahte hain?'))return;users=users.filter(u=>u.id!==id);saveUsers();renderUsers();toast('User delete ho gaya','i');}
 function renderUsers(){const grid=document.getElementById('users-grid');if(!grid)return;if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};grid.innerHTML=users.map(u=>{const isMe=u.id===currentUser.id;return`<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${u.role}">${u.role}</span></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;}).join('');}
 
+// ===== PAYMENTS =====
+let payments = [];
+function loadPayments(){const s=localStorage.getItem('cs_payments');payments=s?JSON.parse(s):[];}
+function savePayments(){localStorage.setItem('cs_payments',JSON.stringify(payments));}
+function openPayModal(farmerName){
+  document.getElementById('pay-farmer').value=farmerName;
+  document.getElementById('pay-amount').value='';
+  document.getElementById('pay-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('pay-note').value='';
+  document.getElementById('pay-modal').classList.add('open');
+}
+function savePayment(){
+  const farmer=document.getElementById('pay-farmer').value;
+  const amount=parseFloat(document.getElementById('pay-amount').value)||0;
+  const date=document.getElementById('pay-date').value;
+  const note=document.getElementById('pay-note').value.trim();
+  if(!amount){toast('Amount daalo!','e');return;}
+  if(!date){toast('Tarikh daalo!','e');return;}
+  payments.push({id:'P'+Date.now(),farmer,amount,date,note});
+  savePayments();
+  closeM('pay-modal');
+  toast('✅ Payment save ho gayi!','s');
+  updFarm();
+  showJD(farmer);
+}
+function deletePayment(id,farmerName){
+  if(!confirm('Payment delete karna chahte hain?'))return;
+  payments=payments.filter(p=>p.id!==id);
+  savePayments();
+  toast('Payment delete ho gayi','i');
+  updFarm();
+  showJD(farmerName);
+}
 // ===== INIT =====
 loadUsers();
+loadPayments();
 checkSession();
 setSt('ch');
 loadSheet();
