@@ -1283,7 +1283,31 @@ function showJD(name){
         <td style="padding:6px 9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--green)">₹${fmt(r.netPay||0)}</td>
         <td style="padding:6px 9px"><button class="ab2 v" onclick="viewD('${r.id}')">👁</button></td>
       </tr>`).join('')}</tbody>
-    </table></div>`;
+    </table></div>
+    <div style='margin-top:14px'>
+      <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px'>
+        <div style='font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--blue2)'>💵 Payment Ledger</div>
+        ${currentUser&&currentUser.role!=='viewer'?`<button class='add-pay-btn' onclick="openPayModal('${name}')">+ Payment</button>`:''}
+      </div>
+      <div style='background:var(--s2);border:1px solid var(--border);border-radius:7px;overflow:hidden'>
+        ${farmerPays.length?farmerPays.sort((a,b)=>b.date.localeCompare(a.date)).map(p=>`
+          <div class='pay-row'>
+            <div><span class='pay-badge'>₹${fmt(p.amount)}</span> <span style='margin-left:6px;color:var(--text2)'>${p.note||'Cash'}</span></div>
+            <div style='display:flex;align-items:center;gap:8px'>
+              <span style='font-size:11px;color:#8a95a8'>${p.date}</span>
+              ${currentUser&&currentUser.role!=='viewer'?`<button onclick="deletePayment('${p.id}','${name}')" style='background:none;border:none;cursor:pointer;color:#e74c3c;font-size:14px'>✕</button>`:''}
+            </div>
+          </div>`).join(''):'<div style="padding:12px;text-align:center;color:#8a95a8;font-size:12px">Koi payment nahi abhi tak</div>'}
+      </div>
+      <div class='pay-total'>
+        <div><div style='font-size:11px;color:var(--text3)'>💰 Kul Dena</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:var(--green)'>₹${fmt(netPay)}</div></div>
+        <div style='font-size:20px;color:#8a95a8'>−</div>
+        <div><div style='font-size:11px;color:var(--text3)'>✅ Diya</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:#1a7a3c'>₹${fmt(totalPaid)}</div></div>
+        <div style='font-size:20px;color:#8a95a8'>=</div>
+        <div><div style='font-size:11px;color:var(--text3)'>⚖️ Baaki</div><div style='font-family:Rajdhani,sans-serif;font-size:18px;font-weight:700;color:${balance<=0?"#1a7a3c":"var(--red)"}'>${balance<=0?"✅":"⚠️"} ₹${fmt(Math.abs(balance))}</div></div>
+      </div>
+    </div>
+  `;
   document.getElementById('d-modal').classList.add('open');
 }
 
