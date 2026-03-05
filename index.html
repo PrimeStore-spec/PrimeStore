@@ -351,7 +351,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="th2"><div class="ttl">📋 Grading Records <span class="rcnt" id="r-cnt">0</span></div>
       <div style="display:flex;gap:6px"><button class="btn btn-green" onclick="expCSV()">⬇ CSV</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
       <div class="tsc"><table>
-        <thead><tr><th>Sr</th><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th><th>Store A</th><th>Store B</th><th>Store C</th><th>Store D</th><th>Own C</th><th>Own D</th><th>Own A</th><th>Own B</th><th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th></tr></thead>
+        <thead><tr><th>Sr</th><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th><th>Store A</th><th>Store B</th><th>Store C</th><th>Store D</th><th>Own C</th><th>Own D</th><th>Own A</th><th>Own B</th><th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Labour ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th></tr></thead>
         <tbody id="main-tbody"></tbody>
       </table></div>
       <div class="pag"><div class="pi" id="p-info">0 records</div><div class="pbs" id="p-btns"></div></div>
@@ -998,7 +998,7 @@ function renderT(){
   const tot=filtered.length;
   document.getElementById('r-cnt').textContent=tot+' records';
   document.getElementById('p-info').textContent=tot?`${Math.min((pg-1)*PP+1,tot)}-${Math.min(pg*PP,tot)} / ${tot}`:'0 records';
-  if(!tot){document.getElementById('main-tbody').innerHTML=`<tr><td colspan="24"><div class="empty"><div class="ei">🥔</div><h3>Koi record nahi</h3></div></td></tr>`;document.getElementById('p-btns').innerHTML='';return;}
+  if(!tot){document.getElementById('main-tbody').innerHTML=`<tr><td colspan="25"><div class="empty"><div class="ei">🥔</div><h3>Koi record nahi</h3></div></td></tr>`;document.getElementById('p-btns').innerHTML='';return;}
   const slice=filtered.slice((pg-1)*PP,pg*PP);
   document.getElementById('main-tbody').innerHTML=slice.map((r,i)=>{
     const c=gc(r.farmer);
@@ -1027,6 +1027,7 @@ function renderT(){
       <td style="color:var(--yellow)">${r.gharBags||0}</td>
       <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px">₹${fmt(r.gradingAmt||0)}</td>
       <td style="color:var(--orange);font-family:'JetBrains Mono',monospace;font-size:11px">₹${fmt(r.bardanaAmt||0)}</td>
+      <td style="color:#7c3aed;font-family:'JetBrains Mono',monospace;font-size:11px">${r.labourAmt?'₹'+fmt(r.labourAmt):'—'}</td>
       <td class="amt">₹${fmt(r.ownAmt||0)}</td>
       <td><strong style="font-family:'Rajdhani',sans-serif;color:var(--green)">₹${fmt(r.netPay||0)}</strong></td>
       <td>${r.chamber?`<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">C${r.chamber}${r.floor?' F'+r.floor:''}${r.pillar?' '+r.pillar:''}</span>`:'—'}</td>
@@ -1104,6 +1105,8 @@ function updDash(){
   const waste=recs.reduce((s,r)=>s+(r.zeroBags||0)+(r.kaatBags||0),0);
   const ownAmt=recs.reduce((s,r)=>s+(r.ownAmt||0),0);
   const netPay=recs.reduce((s,r)=>s+(r.netPay||0),0);
+  const totalPaidAll=payments.reduce((s,p)=>s+p.amount,0);
+  const netPayAfterPayments=netPay-totalPaidAll;
 
   document.getElementById('h-entries').textContent=totalEntries;
   document.getElementById('h-store').textContent=storeBags;
@@ -1115,7 +1118,7 @@ function updDash(){
   document.getElementById('sd-gharbags').textContent=gharBags;
   document.getElementById('sd-waste').textContent=waste;
   document.getElementById('sd-ownamt').textContent='₹'+fmtS(ownAmt);
-  document.getElementById('sd-netpay').textContent='₹'+fmtS(netPay);
+  document.getElementById('sd-netpay').textContent='₹'+fmtS(netPayAfterPayments);
 
   // Farmer chart
   const fb={};recs.forEach(r=>fb[r.farmer]=(fb[r.farmer]||0)+(r.totalBags||0));
