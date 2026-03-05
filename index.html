@@ -1364,7 +1364,7 @@ function doLogin(){
   if(!user){err.classList.add('show');document.getElementById('l-pass').value='';return;}
   err.classList.remove('show');currentUser=user;localStorage.setItem('cs_session',JSON.stringify(user));
   document.getElementById('login-wrap').style.display='none';applyPermissions();addUserBadge();
-  toast('Welcome '+user.name+'! 👋','s');loadUsersFromSheet();
+  toast('Welcome '+user.name+'! 👋','s');loadUsersFromSheet();setSt('ch');loadSheet();
 }
 async function checkSession(){await loadUsersFromSheet();const session=localStorage.getItem('cs_session');if(session){try{currentUser=JSON.parse(session);const exists=users.find(u=>u.id===currentUser.id&&u.password===currentUser.password);if(exists){currentUser=exists;document.getElementById('login-wrap').style.display='none';applyPermissions();addUserBadge();setSt('ch');loadSheet();return;}}catch(e){}}document.getElementById('login-wrap').style.display='flex';}
 function logout(){localStorage.removeItem('cs_session');currentUser=null;document.getElementById('login-wrap').style.display='flex';document.getElementById('l-user').value='';document.getElementById('l-pass').value='';toast('Logout ho gaye! 👋','i');}
@@ -1398,17 +1398,26 @@ function savePayment(){
   const note=document.getElementById('pay-note').value.trim();
   if(!amount){toast('Amount daalo!','e');return;}
   if(!date){toast('Tarikh daalo!','e');return;}
-  payments.push({id:'P'+Date.now(),farmer,amount,date,note});
+  const newPay={id:'P'+Date.now(),farmer,amount,date,note};
+  payments.push(newPay);
   savePayments();
+  savePaymentToSheet(newPay,'add');
   closeM('pay-modal');
   toast('✅ Payment save ho gayi!','s');
   updFarm();
   showJD(farmer);
 }
+function savePaymentToSheet(pay,action){
+  if(!SHEET_URL||SHEET_URL==='YOUR_SHEET_URL_HERE')return;
+  const p={action:'payment_'+action,id:pay.id||'',farmer:pay.farmer||'',amount:pay.amount||0,date:pay.date||'',note:pay.note||''};
+  const img=new Image();
+  img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify(p));
+}
 function deletePayment(id,farmerName){
   if(!confirm('Payment delete karna chahte hain?'))return;
   payments=payments.filter(p=>p.id!==id);
   savePayments();
+  savePaymentToSheet({id},'delete');
   toast('Payment delete ho gayi','i');
   updFarm();
   showJD(farmerName);
@@ -1417,8 +1426,6 @@ function deletePayment(id,farmerName){
 loadUsers();
 loadPayments();
 checkSession();
-setSt('ch');
-loadSheet();
 </script>
 </body>
 </html>
