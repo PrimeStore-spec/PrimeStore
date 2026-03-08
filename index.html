@@ -831,13 +831,16 @@ function openM(id=null){
       if(r.labourBags){const el=document.getElementById('fi-lbags');if(el){el.value=r.labourBags;el.dataset.m='1';}}
       document.getElementById('g-z-bags').value=r.zeroBags||'';
       document.getElementById('g-k-bags').value=r.kaatBags||'';
-      ['A','B','C','D','Z','K'].forEach(cl=>{
+      ['A','B','C','D'].forEach(cl=>{
         const lc=cl.toLowerCase();
         const g=r.grading&&r.grading[cl]?r.grading[cl]:{bags:0,dest:'',rate:0};
         const bEl=document.getElementById('g-'+lc+'-bags');if(bEl)bEl.value=g.bags||'';
         const rEl=document.getElementById('g-'+lc+'-rate');if(rEl)rEl.value=g.rate||'';
         setDest(cl,g.dest||'');
       });
+      // Z aur K dest bhi restore karo
+      if(r.grading&&r.grading['Z'])setDest('Z',r.grading['Z'].dest||'');
+      if(r.grading&&r.grading['K'])setDest('K',r.grading['K'].dest||'');
     }
   }else{
     ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
