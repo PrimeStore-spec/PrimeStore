@@ -331,7 +331,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="cc"><div class="ct">📦 Destination wise Split</div><div id="dest-chart"><div class="empty"><div class="ei">📊</div><p>Koi record nahi</p></div></div></div>
     </div>
     <div class="tw"><div class="th2"><div class="ttl">🕐 Recent Entries <span class="bliv">LIVE</span></div><button class="btn btn-ghost" onclick="goTab('rec')">Sab →</button></div>
-    <div class="tsc"><table><thead><tr><th>Farmer</th><th>Tarikh</th><th>Total Bags</th><th>Store</th><th>Own Purchase</th><th>Ghar</th><th>Grade Charge</th><th>Bardana</th><th>Net Dena</th></tr></thead><tbody id="rec-tbody"></tbody></table></div></div>
+    <div class="tsc"><table><thead><tr><th>Farmer</th><th>Tarikh</th><th>Total Bags</th><th>Store</th><th>Own Purchase</th><th>Ghar</th><th>Grade Charge</th><th>Bardana</th><th>Labour</th><th>Net Dena</th></tr></thead><tbody id="rec-tbody"></tbody></table></div></div>
   </div>
 
   <!-- RECORDS -->
@@ -351,7 +351,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="th2"><div class="ttl">📋 Grading Records <span class="rcnt" id="r-cnt">0</span></div>
       <div style="display:flex;gap:6px"><button class="btn btn-green" onclick="expCSV()">⬇ CSV</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
       <div class="tsc"><table>
-        <thead><tr><th>Sr</th><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th><th>Store A</th><th>Store B</th><th>Store C</th><th>Store D</th><th>Own C</th><th>Own D</th><th>Own A</th><th>Own B</th><th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th></tr></thead>
+        <thead><tr><th>Sr</th><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th><th>Store A</th><th>Store B</th><th>Store C</th><th>Store D</th><th>Own C</th><th>Own D</th><th>Own A</th><th>Own B</th><th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Labour ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th></tr></thead>
         <tbody id="main-tbody"></tbody>
       </table></div>
       <div class="pag"><div class="pi" id="p-info">0 records</div><div class="pbs" id="p-btns"></div></div>
@@ -1027,6 +1027,7 @@ function renderT(){
       <td style="color:var(--yellow)">${r.gharBags||0}</td>
       <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px">₹${fmt(r.gradingAmt||0)}</td>
       <td style="color:var(--orange);font-family:'JetBrains Mono',monospace;font-size:11px">₹${fmt(r.bardanaAmt||0)}</td>
+      <td style="color:#7c3aed;font-family:'JetBrains Mono',monospace;font-size:11px">${r.labourAmt?'₹'+fmt(r.labourAmt):'—'}</td>
       <td class="amt">₹${fmt(r.ownAmt||0)}</td>
       <td><strong style="font-family:'Rajdhani',sans-serif;color:var(--green)">₹${fmt(r.netPay||0)}</strong></td>
       <td>${r.chamber?`<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">C${r.chamber}${r.floor?' F'+r.floor:''}${r.pillar?' '+r.pillar:''}</span>`:'—'}</td>
@@ -1130,7 +1131,7 @@ function updDash(){
 
   // Recent
   const recent=recs.slice(0,5);
-  document.getElementById('rec-tbody').innerHTML=recent.length?recent.map(r=>{const c=gc(r.farmer);return`<tr><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td><td class="mono" style="font-size:11px">${r.date}</td><td><strong style="font-family:'Rajdhani',sans-serif">${r.totalBags||0}</strong></td><td style="color:var(--teal)">${r.storeBags||0}</td><td style="color:var(--purple)">${r.ownBags||0}</td><td style="color:var(--yellow)">${r.gharBags||0}</td><td style="color:var(--red);font-size:11px">₹${fmt(r.gradingAmt||0)}</td><td style="color:var(--orange);font-size:11px">₹${fmt(r.bardanaAmt||0)}</td><td class="amt">₹${fmt(r.netPay||0)}</td></tr>`;}).join(''):`<tr><td colspan="9"><div class="empty"><div class="ei">📦</div><h3>Koi record nahi</h3></div></td></tr>`;
+  document.getElementById('rec-tbody').innerHTML=recent.length?recent.map(r=>{const c=gc(r.farmer);return`<tr><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td><td class="mono" style="font-size:11px">${r.date}</td><td><strong style="font-family:'Rajdhani',sans-serif">${r.totalBags||0}</strong></td><td style="color:var(--teal)">${r.storeBags||0}</td><td style="color:var(--purple)">${r.ownBags||0}</td><td style="color:var(--yellow)">${r.gharBags||0}</td><td style="color:var(--red);font-size:11px">₹${fmt(r.gradingAmt||0)}</td><td style="color:var(--orange);font-size:11px">₹${fmt(r.bardanaAmt||0)}</td><td style="color:#7c3aed;font-size:11px">${r.labourAmt?'₹'+fmt(r.labourAmt):'—'}</td><td class="amt">₹${fmt(r.netPay||0)}</td></tr>`;}).join(''):`<tr><td colspan="9"><div class="empty"><div class="ei">📦</div><h3>Koi record nahi</h3></div></td></tr>`;
 }
 
 // ===== STORE DASHBOARD =====
@@ -1270,7 +1271,7 @@ function showJD(name){
       <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--green)">₹${fmt(netPay)}</div><div style="font-size:10px;color:var(--text3)">💰 Kul Dena</div></div>
     </div>
     <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
-      <thead><tr style="background:#f0f4fc">${['Tarikh','Total','Store','Own','Ghar','Own Amt','Grade','Bardana','Net Dena','Action'].map(h=>`<th style="padding:6px 9px;text-align:left;color:var(--blue2);border-bottom:2px solid #dae4f8;font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
+      <thead><tr style="background:#f0f4fc">${['Tarikh','Total','Store','Own','Ghar','Own Amt','Grade','Bardana','Labour','Net Dena','Action'].map(h=>`<th style="padding:6px 9px;text-align:left;color:var(--blue2);border-bottom:2px solid #dae4f8;font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
       <tbody>${rs.map(r=>`<tr style="border-bottom:1px solid var(--border)">
         <td style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:11px">${r.date}</td>
         <td style="padding:6px 9px"><strong>${r.totalBags||0}</strong></td>
@@ -1280,6 +1281,7 @@ function showJD(name){
         <td style="padding:6px 9px;color:var(--purple);font-weight:700">₹${fmt(r.ownAmt||0)}</td>
         <td style="padding:6px 9px;color:var(--red)">₹${fmt(r.gradingAmt||0)}</td>
         <td style="padding:6px 9px;color:var(--orange)">₹${fmt(r.bardanaAmt||0)}</td>
+        <td style="padding:6px 9px;color:#7c3aed">${r.labourAmt?'₹'+fmt(r.labourAmt):'—'}</td>
         <td style="padding:6px 9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--green)">₹${fmt(r.netPay||0)}</td>
         <td style="padding:6px 9px"><button class="ab2 v" onclick="viewD('${r.id}')">👁</button></td>
       </tr>`).join('')}</tbody>
