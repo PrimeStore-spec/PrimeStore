@@ -638,7 +638,27 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 <div class="tc" id="toasts"></div>
 
 <script>
+// ===== FIREBASE CONFIG =====
+const FB_CONFIG={apiKey:'AIzaSyBhvCmZLVSOKflr7Ub_Vjhw_1CBlV2PaAI',authDomain:'primecoldstore-439ab.firebaseapp.com',databaseURL:'https://primecoldstore-439ab-default-rtdb.asia-southeast1.firebasedatabase.app',projectId:'primecoldstore-439ab',storageBucket:'primecoldstore-439ab.firebasestorage.app',messagingSenderId:'848383603685',appId:'1:848383603685:web:7c9b45a123aa25e153f50c'};
 const SHEET_URL='https://script.google.com/macros/s/AKfycbxUZz_ewOxzIpRNQqxg6Iof8aoB-SKb-QasCUJxmeXd368Fflhrx6a9M03bqV-TEMXj0w/exec';
+let FB_APP=null,FB_DB=null,FB_READY=false;
+function initFirebase(){
+  return new Promise((resolve)=>{
+    if(FB_READY){resolve();return;}
+    const s1=document.createElement('script');
+    s1.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';
+    s1.onload=()=>{
+      const s2=document.createElement('script');
+      s2.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';
+      s2.onload=()=>{
+        try{if(!firebase.apps.length){FB_APP=firebase.initializeApp(FB_CONFIG);}else{FB_APP=firebase.app();}FB_DB=firebase.database();FB_READY=true;}catch(e){console.log('FB init err:',e);}
+        resolve();
+      };
+      document.head.appendChild(s2);
+    };
+    document.head.appendChild(s1);
+  });
+}
 let recs=[],filtered=[],editId=null,pg=1;
 const PP=15;
 let sField='date',sDir='desc',autoTimer=null;
@@ -659,9 +679,28 @@ function setSt(s){
   el.innerHTML=m[s]||m.ch;
 }
 
-// ===== LOAD SHEET =====
+// ===== LOAD DATA =====
 async function loadSheet(){
   setSt('load');
+  await initFirebase();
+  if(FB_READY&&FB_DB){
+    try{
+      const snap=await FB_DB.ref('coldstore/records').once('value');
+      const val=snap.val();
+      if(val&&Object.keys(val).length>0){
+        recs=Object.values(val).filter(Boolean).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+        localStorage.setItem('cs_r',JSON.stringify(recs));
+        setSt('ok');updAll();applyF();
+        toast('Firebase se '+recs.length+' records load!','s');
+        startAR();return;
+      } else {
+        await migrateFromSheet();return;
+      }
+    }catch(e){console.log('FB load fail:',e.message);}
+  }
+  await loadFromSheet();
+}
+async function loadFromSheet(){
   const proxies=[()=>fetch(SHEET_URL,{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL)),()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent(SHEET_URL))];
   for(let i=0;i<proxies.length;i++){
     try{
@@ -671,31 +710,73 @@ async function loadSheet(){
       if(data.status==='success'&&Array.isArray(data.records)){
         recs=data.records;localStorage.setItem('cs_r',JSON.stringify(recs));
         setSt('ok');updAll();applyF();
-        toast('✅ Sheet se '+recs.length+' records load ho gaye!','s');
+        toast('Sheet se '+recs.length+' records load!','s');
         startAR();return;
       }
     }catch(e){console.log('Proxy '+i+' fail:',e.message);}
   }
   recs=JSON.parse(localStorage.getItem('cs_r')||'[]');
   setSt('err');updAll();applyF();
-  toast('⚠️ Sheet connect nahi — local data. Retry...','e');
+  toast('Connect nahi - local data','e');
   setTimeout(loadSheet,15000);
 }
+async function migrateFromSheet(){
+  toast('Pehli baar setup - data migrate ho raha hai...','i');
+  await loadFromSheet();
+  if(FB_READY&&FB_DB&&recs.length>0){
+    try{
+      const updates={};
+      recs.forEach(r=>{if(r.id)updates['coldstore/records/'+r.id]=r;});
+      await FB_DB.ref().update(updates);
+      toast('Data Firebase mein save ho gaya! Ab real-time sync!','s');
+    }catch(e){console.log('Migrate fail:',e);}
+  }
+}
 
+function startAR()
 function startAR(){
   if(autoTimer)clearInterval(autoTimer);
-  autoTimer=setInterval(async()=>{
-    try{
-      const res=await fetch(SHEET_URL,{method:'GET',redirect:'follow'});let txt=await res.text();
-      try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
-      const data=JSON.parse(txt);
-      if(data.status==='success'&&Array.isArray(data.records)){recs=data.records;localStorage.setItem('cs_r',JSON.stringify(recs));setSt('ok');updAll();applyF();}
-    }catch(e){}
-  },20000);
+  if(FB_READY&&FB_DB){
+    FB_DB.ref('coldstore/records').on('value',(snap)=>{
+      const val=snap.val();
+      if(val){
+        const nr=Object.values(val).filter(Boolean).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+        if(JSON.stringify(nr)!==JSON.stringify(recs)){recs=nr;localStorage.setItem('cs_r',JSON.stringify(recs));setSt('ok');updAll();applyF();}
+      }
+    });
+  } else {
+    autoTimer=setInterval(async()=>{
+      try{
+        const res=await fetch(SHEET_URL,{method:'GET',redirect:'follow'});let txt=await res.text();
+        try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
+        const data=JSON.parse(txt);
+        if(data.status==='success'&&Array.isArray(data.records)){recs=data.records;localStorage.setItem('cs_r',JSON.stringify(recs));setSt('ok');updAll();applyF();}
+      }catch(e){}
+    },20000);
+  }
 }
 
 async function saveToSheet(rec,action='add'){
   setSt('sync');
+  await initFirebase();
+  if(FB_READY&&FB_DB){
+    try{
+      if(action==='delete'){
+        await FB_DB.ref('coldstore/records/'+rec.id).remove();
+      } else {
+        await FB_DB.ref('coldstore/records/'+rec.id).set(rec);
+      }
+      setSt('ok');
+      toast(action==='delete'?'Record delete ho gaya!':'Record save ho gaya!','s');
+      saveToSheetBackup(rec,action);
+      return Promise.resolve();
+    }catch(e){
+      console.log('FB save fail, sheet pe try:',e);
+    }
+  }
+  return saveToSheetBackup(rec,action);
+}
+async function saveToSheetBackup(rec,action='add'){
   const g=rec.grading||{A:{bags:0,dest:'',rate:0},B:{bags:0,dest:'',rate:0},C:{bags:0,dest:'',rate:0},D:{bags:0,dest:'',rate:0}};
   const p={action,id:rec.id,date:rec.date,farmer:rec.farmer,mobile:rec.mobile||'',quality:rec.quality||'',village:rec.village||'',receipt:rec.receipt||'',
     gA_bags:g.A.bags||0, gA_dest:g.A.dest||'', gA_rate:g.A.rate||0,
@@ -1354,7 +1435,7 @@ function toast(msg,type='i'){
 function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
 
 // ===== AUTH =====
-const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'Mandy@147',role:'admin'}];
+const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}];
 let currentUser=null,users=[],editUserId=null;
 function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
 function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
