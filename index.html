@@ -1360,19 +1360,101 @@ function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse
 function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
 async function saveUsersToSheet(){const img=new Image();img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify({action:'saveUsers',users}));}
 async function loadUsersFromSheet(){try{const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];for(let i=0;i<proxies.length;i++){try{const res=await proxies[i]();let txt=await res.text();try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}const data=JSON.parse(txt);if(data.users&&data.users.length>0){users=data.users;localStorage.setItem('cs_users',JSON.stringify(users));return;}}catch(e){}}}catch(e){}loadUsers();}
+// ===== SECURITY CONFIG =====
+const SESSION_HOURS=8;
+const MAX_ATTEMPTS=3;
+const LOCKOUT_MIN=15;
+
+function genToken(){return Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)+Date.now().toString(36);}
+function getLockout(){try{return JSON.parse(localStorage.getItem('cs_lock')||'{}');}catch(e){return {};}}
+function setLockout(d){localStorage.setItem('cs_lock',JSON.stringify(d));}
+function checkLockout(username){
+  const lk=getLockout(),key=username.toLowerCase();
+  if(!lk[key])return false;
+  const now=Date.now();
+  if(lk[key].until&&now<lk[key].until){return Math.ceil((lk[key].until-now)/60000);}
+  if(lk[key].until&&now>=lk[key].until){delete lk[key];setLockout(lk);}
+  return false;
+}
+function recordFail(username){
+  const lk=getLockout(),key=username.toLowerCase();
+  if(!lk[key])lk[key]={count:0};
+  lk[key].count=(lk[key].count||0)+1;
+  if(lk[key].count>=MAX_ATTEMPTS){lk[key].until=Date.now()+(LOCKOUT_MIN*60*1000);lk[key].count=0;}
+  setLockout(lk);
+  return Math.max(0,MAX_ATTEMPTS-(lk[key].count||0));
+}
+function clearFail(username){const lk=getLockout();delete lk[username.toLowerCase()];setLockout(lk);}
+
 function doLogin(){
   const username=document.getElementById('l-user').value.trim().toLowerCase();
   const password=document.getElementById('l-pass').value.trim();
   const err=document.getElementById('login-err');
+  err.style.background='';err.style.borderColor='';err.style.color='';
+  if(!username||!password){err.textContent='Username aur password daalo!';err.classList.add('show');return;}
+  const locked=checkLockout(username);
+  if(locked){err.textContent='LOCKED: '+locked+' minute baad try karo (zyada galat attempts)';err.classList.add('show');document.getElementById('l-pass').value='';return;}
   loadUsers();
   const user=users.find(u=>u.username.toLowerCase()===username&&u.password===password);
-  if(!user){err.classList.add('show');document.getElementById('l-pass').value='';return;}
-  err.classList.remove('show');currentUser=user;localStorage.setItem('cs_session',JSON.stringify(user));
-  document.getElementById('login-wrap').style.display='none';applyPermissions();addUserBadge();
-  toast('Welcome '+user.name+'! 👋','s');loadUsersFromSheet();setSt('ch');loadSheet();
+  if(!user){
+    const left=recordFail(username);
+    const lockedNow=checkLockout(username);
+    if(lockedNow){err.textContent='LOCKED: Account '+LOCKOUT_MIN+' minute ke liye band ho gaya!';}
+    else{err.textContent='Galat username ya password! ('+left+' attempts baaki)';}
+    err.classList.add('show');document.getElementById('l-pass').value='';return;
+  }
+  clearFail(username);
+  const token=genToken();
+  const sessData={id:user.id,token,expires:Date.now()+(SESSION_HOURS*3600*1000)};
+  err.classList.remove('show');
+  currentUser=user;
+  localStorage.setItem('cs_session',JSON.stringify(sessData));
+  document.getElementById('login-wrap').style.display='none';
+  applyPermissions();addUserBadge();
+  toast('Welcome '+user.name+'!','s');loadUsersFromSheet();setSt('ch');loadSheet();
 }
-async function checkSession(){await loadUsersFromSheet();const session=localStorage.getItem('cs_session');if(session){try{currentUser=JSON.parse(session);const exists=users.find(u=>u.id===currentUser.id&&u.password===currentUser.password);if(exists){currentUser=exists;document.getElementById('login-wrap').style.display='none';applyPermissions();addUserBadge();setSt('ch');loadSheet();return;}}catch(e){}}document.getElementById('login-wrap').style.display='flex';}
-function logout(){localStorage.removeItem('cs_session');currentUser=null;document.getElementById('login-wrap').style.display='flex';document.getElementById('l-user').value='';document.getElementById('l-pass').value='';toast('Logout ho gaye! 👋','i');}
+
+async function checkSession(){
+  await loadUsersFromSheet();
+  const raw=localStorage.getItem('cs_session');
+  if(raw){
+    try{
+      const sess=JSON.parse(raw);
+      if(sess.expires&&Date.now()<sess.expires&&sess.id&&sess.token){
+        const user=users.find(u=>u.id===sess.id);
+        if(user){
+          currentUser=user;
+          sess.expires=Date.now()+(SESSION_HOURS*3600*1000);
+          localStorage.setItem('cs_session',JSON.stringify(sess));
+          document.getElementById('login-wrap').style.display='none';
+          applyPermissions();addUserBadge();setSt('ch');loadSheet();return;
+        }
+      } else if(sess.expires&&Date.now()>sess.expires){
+        localStorage.removeItem('cs_session');
+        showLoginMsg('Session '+SESSION_HOURS+' ghante baad expire ho gaya — dobara login karo');
+        document.getElementById('login-wrap').style.display='flex';return;
+      }
+    }catch(e){}
+  }
+  localStorage.removeItem('cs_session');
+  document.getElementById('login-wrap').style.display='flex';
+}
+
+function showLoginMsg(msg){
+  const err=document.getElementById('login-err');
+  if(err){err.textContent=msg;err.classList.add('show');err.style.background='#fef3cd';err.style.borderColor='#f59e0b';err.style.color='#92400e';}
+}
+
+function logout(){
+  localStorage.removeItem('cs_session');
+  currentUser=null;
+  document.getElementById('login-wrap').style.display='flex';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+  const err=document.getElementById('login-err');
+  if(err){err.classList.remove('show');err.style.background='';err.style.borderColor='';err.style.color='';}
+  toast('Logout ho gaye!','i');
+}
 function addUserBadge(){const hdr=document.querySelector('.hdr-r');const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
 function applyPermissions(){
   const role=currentUser?currentUser.role:'viewer';
