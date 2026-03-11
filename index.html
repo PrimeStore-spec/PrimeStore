@@ -1354,7 +1354,7 @@ function toast(msg,type='i'){
 function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
 
 // ===== AUTH =====
-const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}];
+const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'Mandy@147',role:'admin'}];
 let currentUser=null,users=[],editUserId=null;
 function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
 function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
