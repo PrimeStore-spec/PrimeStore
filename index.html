@@ -241,11 +241,19 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 .login-btn:hover{opacity:0.9;transform:translateY(-1px);}
 .login-err{background:#fef0f0;border:1px solid #fcc8c8;color:#b91c1c;border-radius:6px;padding:9px 12px;font-size:12px;margin-bottom:12px;display:none;}
 .login-err.show{display:block;}
-.pay-row{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px;}
+.pay-row{display:flex;justify-content:space-between;align-items:center;padding:8px 11px;border-bottom:1px solid var(--border);font-size:12px;}
 .pay-row:last-child{border-bottom:none;}
-.pay-badge{background:#e8f5ed;color:#1a7a3c;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600;}
-.pay-total{background:var(--gbg);border:1px solid var(--gb);border-radius:7px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.pay-row:hover{background:var(--s2);}
+.pay-badge{background:#e8f5ed;color:#1a7a3c;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;}
+.pay-total{background:var(--gbg);border:1px solid var(--gb);border-radius:7px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:8px;flex-wrap:wrap;gap:8px;}
 .add-pay-btn{background:#1a7a3c;color:#fff;border:none;border-radius:6px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;}
+.pmb{padding:6px 4px;font-size:11px;font-weight:600;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:var(--s2);color:var(--text2);transition:all 0.15s;}
+.pmb.active{background:#1a5fc8;color:#fff;border-color:#1a5fc8;}
+.pqb{padding:3px 9px;font-size:11px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:var(--s2);color:var(--text2);}
+.pqb:hover{background:#e8f0fd;border-color:#1a5fc8;color:#1a5fc8;}
+.ps-paid{background:#dcfce7;color:#166534;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700;}
+.ps-partial{background:#fef9c3;color:#854d0e;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700;}
+.ps-pending{background:#fee2e2;color:#991b1b;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700;}
 .role-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
 .role-badge.admin{background:#e8f0fd;color:#1a5fc8;border:1px solid #c5d8f8;}
 .role-badge.manager{background:#e8f5ed;color:#1a7a3c;border:1px solid #c8ecd4;}
@@ -266,16 +274,65 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 
 <!-- PAYMENT MODAL -->
 <div class="ov" id="pay-modal" onclick="closeOut(event,'pay-modal')">
-  <div class="modal-box" style="max-width:400px">
-    <div class="mh"><div class="mt">💵 Payment Add Karo</div><button class="mx" onclick="closeM('pay-modal')">✕</button></div>
-    <div class="mb" id="pay-modal-body">
-      <div class="fg2"><label class="flbl">Farmer</label><input class="finp" id="pay-farmer" readonly></div>
-      <div class="fg2" style="margin-top:10px"><label class="flbl">Amount ₹</label><input class="finp" type="number" id="pay-amount" placeholder="Jaise: 50000"></div>
-      <div class="fg2" style="margin-top:10px"><label class="flbl">Tarikh</label><input class="finp" type="date" id="pay-date"></div>
-      <div class="fg2" style="margin-top:10px"><label class="flbl">Note (optional)</label><input class="finp" id="pay-note" placeholder="Jaise: Cash, Online..."></div>
-      <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end">
+  <div class="modal-box" style="max-width:420px;width:min(420px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
+    <div class="mh" style="flex-shrink:0"><div class="mt" id="pay-modal-title">Payment Add Karo</div><button class="mx" onclick="closeM('pay-modal')">✕</button></div>
+    <div class="mb" style="overflow-y:auto;flex:1;padding:14px">
+      <input type="hidden" id="pay-farmer">
+      <input type="hidden" id="pay-edit-id">
+      <!-- Balance Card -->
+      <div style="background:linear-gradient(135deg,#1a3a6b,#1a5fc8);border-radius:9px;padding:12px 14px;margin-bottom:13px;color:#fff">
+        <div style="font-size:11px;opacity:0.75;margin-bottom:2px">Farmer</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;margin-bottom:9px" id="pay-farmer-name">-</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px">
+          <div style="text-align:center;background:rgba(255,255,255,0.15);border-radius:6px;padding:7px 4px">
+            <div style="font-size:9px;opacity:0.8;margin-bottom:2px">Kul Dena</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700" id="pay-info-total">-</div>
+          </div>
+          <div style="text-align:center;background:rgba(255,255,255,0.15);border-radius:6px;padding:7px 4px">
+            <div style="font-size:9px;opacity:0.8;margin-bottom:2px">Diya</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:#86efac" id="pay-info-paid">-</div>
+          </div>
+          <div style="text-align:center;background:rgba(255,255,255,0.15);border-radius:6px;padding:7px 4px">
+            <div style="font-size:9px;opacity:0.8;margin-bottom:2px">Baaki</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:#fca5a5" id="pay-info-bal">-</div>
+          </div>
+        </div>
+      </div>
+      <!-- Payment Mode -->
+      <div style="margin-bottom:11px">
+        <label class="flbl">Payment Mode</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-top:5px">
+          <button class="pmb active" id="pmb-Cash" onclick="setPayMode('Cash')">Cash</button>
+          <button class="pmb" id="pmb-Online" onclick="setPayMode('Online')">Online</button>
+          <button class="pmb" id="pmb-Cheque" onclick="setPayMode('Cheque')">Cheque</button>
+          <button class="pmb" id="pmb-Other" onclick="setPayMode('Other')">Other</button>
+        </div>
+        <input type="hidden" id="pay-mode" value="Cash">
+      </div>
+      <!-- Amount -->
+      <div style="margin-bottom:11px">
+        <label class="flbl">Amount ₹</label>
+        <input class="finp" type="number" id="pay-amount" placeholder="Amount daalo" style="margin-top:5px" oninput="updPayPreview()">
+        <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap" id="pay-quick-btns"></div>
+      </div>
+      <!-- Date -->
+      <div style="margin-bottom:11px">
+        <label class="flbl">Tarikh</label>
+        <input class="finp" type="date" id="pay-date" style="margin-top:5px">
+      </div>
+      <!-- Note -->
+      <div style="margin-bottom:11px">
+        <label class="flbl">Note (optional)</label>
+        <input class="finp" id="pay-note" placeholder="Jaise: RC-001 ka payment, UPI..." style="margin-top:5px">
+      </div>
+      <!-- Preview -->
+      <div id="pay-preview" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:7px;padding:9px 12px;margin-bottom:11px">
+        <div style="font-size:11px;color:#166534;font-weight:600">Payment ke baad baaki rahega:</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700" id="pay-after-bal" style="color:#166534">-</div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
         <button class="btn btn-ghost" onclick="closeM('pay-modal')">Cancel</button>
-        <button class="btn" onclick="savePayment()" style="background:#1a7a3c;color:#fff">💵 Save Payment</button>
+        <button class="btn" id="pay-save-btn" onclick="savePayment()" style="background:#1a7a3c;color:#fff">Save Payment</button>
       </div>
     </div>
   </div>
@@ -1377,21 +1434,31 @@ function showJD(name){
         ${currentUser&&currentUser.role!=='viewer'?`<button class='add-pay-btn' onclick="openPayModal('${name}')">+ Payment</button>`:''}
       </div>
       <div style='background:var(--s2);border:1px solid var(--border);border-radius:7px;overflow:hidden'>
-        ${farmerPays.length?farmerPays.sort((a,b)=>b.date.localeCompare(a.date)).map(p=>`
-          <div class='pay-row'>
-            <div><span class='pay-badge'>₹${fmt(p.amount)}</span> <span style='margin-left:6px;color:var(--text2)'>${p.note||'Cash'}</span></div>
-            <div style='display:flex;align-items:center;gap:8px'>
-              <span style='font-size:11px;color:#8a95a8'>${p.date}</span>
-              ${currentUser&&currentUser.role!=='viewer'?`<button onclick="deletePayment('${p.id}','${name}')" style='background:none;border:none;cursor:pointer;color:#e74c3c;font-size:14px'>✕</button>`:''}
+        ${farmerPays.length?farmerPays.sort((a,b)=>a.date.localeCompare(b.date)).map((p,i)=>{
+          const runBal=netPay-farmerPays.slice(0,i+1).reduce((s,x)=>s+x.amount,0);
+          return `<div class='pay-row'>
+            <div style='display:flex;flex-direction:column;gap:2px'>
+              <div style='display:flex;align-items:center;gap:6px'>
+                <span class='pay-badge'>₹${fmt(p.amount)}</span>
+                <span style='font-size:10px;background:#e8f0fd;color:#1a5fc8;border-radius:3px;padding:1px 6px;font-weight:600'>${p.mode||'Cash'}</span>
+              </div>
+              <div style='font-size:11px;color:var(--text3)'>${p.note||''}</div>
             </div>
-          </div>`).join(''):'<div style="padding:12px;text-align:center;color:#8a95a8;font-size:12px">Koi payment nahi abhi tak</div>'}
+            <div style='display:flex;flex-direction:column;align-items:flex-end;gap:3px'>
+              <span style='font-size:11px;color:#8a95a8'>${p.date}</span>
+              <span style='font-size:10px;font-family:Rajdhani,sans-serif;font-weight:700;color:${runBal<=0?"#166534":"#dc2626"}'>Baaki: ₹${fmt(Math.abs(runBal))}</span>
+              ${currentUser&&currentUser.role!=='viewer'?`<div style='display:flex;gap:4px;margin-top:2px'>
+                <button onclick="editPayment('${p.id}','${name}')" style='font-size:10px;padding:2px 6px;background:#e8f0fd;color:#1a5fc8;border:1px solid #1a5fc8;border-radius:3px;cursor:pointer'>Edit</button>
+                <button onclick="deletePayment('${p.id}','${name}')" style='font-size:10px;padding:2px 6px;background:#fee2e2;color:#dc2626;border:1px solid #dc2626;border-radius:3px;cursor:pointer'>Del</button>
+              </div>`:''}
+            </div>
+          </div>`;
+        }).join(''):'<div style="padding:14px;text-align:center;color:#8a95a8;font-size:12px">Koi payment nahi abhi tak</div>'}
       </div>
       <div class='pay-total'>
-        <div><div style='font-size:11px;color:var(--text3)'>💰 Kul Dena</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:var(--green)'>₹${fmt(netPay)}</div></div>
-        <div style='font-size:20px;color:#8a95a8'>−</div>
-        <div><div style='font-size:11px;color:var(--text3)'>✅ Diya</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:#1a7a3c'>₹${fmt(totalPaid)}</div></div>
-        <div style='font-size:20px;color:#8a95a8'>=</div>
-        <div><div style='font-size:11px;color:var(--text3)'>⚖️ Baaki</div><div style='font-family:Rajdhani,sans-serif;font-size:18px;font-weight:700;color:${balance<=0?"#1a7a3c":"var(--red)"}'>${balance<=0?"✅":"⚠️"} ₹${fmt(Math.abs(balance))}</div></div>
+        <div><div style='font-size:11px;color:var(--text3)'>Kul Dena</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:var(--green)'>₹${fmt(netPay)}</div></div>
+        <div><div style='font-size:11px;color:var(--text3)'>Diya</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:#1a7a3c'>₹${fmt(totalPaid)}</div></div>
+        <div><div style='font-size:11px;color:var(--text3)'>Baaki</div><div style='font-family:Rajdhani,sans-serif;font-size:18px;font-weight:700;color:${balance<=0?"#166534":"#dc2626"}'>₹${fmt(Math.abs(balance))} ${balance<=0?'<span class="ps-paid">Clear</span>':totalPaid>0?'<span class="ps-partial">Partial</span>':'<span class="ps-pending">Pending</span>'}</div></div>
       </div>
     </div>
   `;
@@ -1643,43 +1710,155 @@ function deleteUser(id){if(id===currentUser.id){toast('Apna account delete nahi 
 function renderUsers(){const grid=document.getElementById('users-grid');if(!grid)return;if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};grid.innerHTML=users.map(u=>{const isMe=u.id===currentUser.id;return`<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${u.role}">${u.role}</span></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;}).join('');}
 
 // ===== PAYMENTS =====
-let payments = [];
-function loadPayments(){const s=localStorage.getItem('cs_payments');payments=s?JSON.parse(s):[];}
-function savePayments(){localStorage.setItem('cs_payments',JSON.stringify(payments));}
+let payments=[];
+
+// Firebase se payments load
+async function loadPayments(){
+  // pehle localStorage se load (instant)
+  const s=localStorage.getItem('cs_payments');
+  if(s)payments=JSON.parse(s);
+  // phir Firebase se sync
+  if(typeof FB_DB!=='undefined'&&FB_DB){
+    try{
+      const snap=await FB_DB.ref('cs/payments').once('value');
+      const val=snap.val();
+      if(val){
+        payments=Object.values(val).filter(Boolean);
+        localStorage.setItem('cs_payments',JSON.stringify(payments));
+      }
+      // Real-time listener
+      FB_DB.ref('cs/payments').on('value',snap2=>{
+        const v=snap2.val();
+        payments=v?Object.values(v).filter(Boolean):[];
+        localStorage.setItem('cs_payments',JSON.stringify(payments));
+        updFarm();
+      });
+    }catch(e){console.log('Pay load err:',e);}
+  }
+}
+
+async function savePaymentFB(pay,action){
+  // Firebase save
+  if(typeof FB_DB!=='undefined'&&FB_DB){
+    try{
+      if(action==='delete'){await FB_DB.ref('cs/payments/'+pay.id).remove();}
+      else{await FB_DB.ref('cs/payments/'+pay.id).set(pay);}
+    }catch(e){console.log('Pay FB err:',e);}
+  }
+  // localStorage backup
+  localStorage.setItem('cs_payments',JSON.stringify(payments));
+  // Sheet backup
+  if(SHEET_URL&&SHEET_URL!=='YOUR_SHEET_URL_HERE'){
+    const p={action:'payment_'+action,id:pay.id||'',farmer:pay.farmer||'',amount:pay.amount||0,date:pay.date||'',note:pay.note||'',mode:pay.mode||'Cash'};
+    const img=new Image();
+    img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify(p));
+  }
+}
+
 function openPayModal(farmerName){
+  const farmerRecs=recs.filter(r=>r.farmer===farmerName);
+  const netPay=farmerRecs.reduce((s,r)=>s+(r.netPay||0),0);
+  const farmerPays=payments.filter(p=>p.farmer===farmerName);
+  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
+  const balance=netPay-totalPaid;
+  // Info card
   document.getElementById('pay-farmer').value=farmerName;
+  document.getElementById('pay-edit-id').value='';
+  document.getElementById('pay-farmer-name').textContent=farmerName;
+  document.getElementById('pay-info-total').textContent='₹'+fmt(netPay);
+  document.getElementById('pay-info-paid').textContent='₹'+fmt(totalPaid);
+  document.getElementById('pay-info-bal').textContent='₹'+fmt(balance);
+  document.getElementById('pay-modal-title').textContent='Payment Add Karo';
+  document.getElementById('pay-save-btn').textContent='Save Payment';
+  // Reset fields
   document.getElementById('pay-amount').value='';
   document.getElementById('pay-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('pay-note').value='';
+  document.getElementById('pay-preview').style.display='none';
+  setPayMode('Cash');
+  // Quick amount buttons
+  const qb=document.getElementById('pay-quick-btns');
+  const qtAmts=balance>0?[Math.round(balance/4),Math.round(balance/2),Math.round(balance*3/4),balance].filter(x=>x>0):[10000,25000,50000,100000];
+  qb.innerHTML=qtAmts.map(a=>`<button class='pqb' onclick='document.getElementById("pay-amount").value=${a};updPayPreview()'>₹${fmt(a)}</button>`).join('');
+  if(balance>0){const fullBtn=document.createElement('button');fullBtn.className='pqb';fullBtn.style.background='#dcfce7';fullBtn.style.borderColor='#166534';fullBtn.style.color='#166534';fullBtn.textContent='Full: ₹'+fmt(balance);fullBtn.onclick=()=>{document.getElementById('pay-amount').value=balance;updPayPreview();};qb.appendChild(fullBtn);}
   document.getElementById('pay-modal').classList.add('open');
 }
-function savePayment(){
+
+function setPayMode(mode){
+  document.getElementById('pay-mode').value=mode;
+  ['Cash','Online','Cheque','Other'].forEach(m=>{
+    const btn=document.getElementById('pmb-'+m);
+    if(btn)btn.classList.toggle('active',m===mode);
+  });
+}
+
+function updPayPreview(){
+  const farmer=document.getElementById('pay-farmer').value;
+  const amount=parseFloat(document.getElementById('pay-amount').value)||0;
+  const editId=document.getElementById('pay-edit-id').value;
+  const farmerRecs=recs.filter(r=>r.farmer===farmer);
+  const netPay=farmerRecs.reduce((s,r)=>s+(r.netPay||0),0);
+  const farmerPays=payments.filter(p=>p.farmer===farmer&&p.id!==editId);
+  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
+  const afterBal=netPay-totalPaid-amount;
+  const prev=document.getElementById('pay-preview');
+  const balEl=document.getElementById('pay-after-bal');
+  if(amount>0){
+    prev.style.display='block';
+    prev.style.background=afterBal<=0?'#f0fdf4':'#fef3cd';
+    prev.style.borderColor=afterBal<=0?'#86efac':'#fcd34d';
+    balEl.style.color=afterBal<=0?'#166534':'#b45309';
+    balEl.textContent=(afterBal<0?'Zyada hua: ₹':afterBal===0?'Poora clear: ₹':'Baaki rahega: ₹')+fmt(Math.abs(afterBal));
+  }else{prev.style.display='none';}
+}
+
+async function savePayment(){
   const farmer=document.getElementById('pay-farmer').value;
   const amount=parseFloat(document.getElementById('pay-amount').value)||0;
   const date=document.getElementById('pay-date').value;
   const note=document.getElementById('pay-note').value.trim();
-  if(!amount){toast('Amount daalo!','e');return;}
+  const mode=document.getElementById('pay-mode').value||'Cash';
+  const editId=document.getElementById('pay-edit-id').value;
+  if(!amount||amount<=0){toast('Sahi amount daalo!','e');return;}
   if(!date){toast('Tarikh daalo!','e');return;}
-  const newPay={id:'P'+Date.now(),farmer,amount,date,note};
-  payments.push(newPay);
-  savePayments();
-  savePaymentToSheet(newPay,'add');
+  if(editId){
+    // Edit mode
+    const idx=payments.findIndex(p=>p.id===editId);
+    if(idx>-1){payments[idx]={...payments[idx],amount,date,note,mode};}
+    await savePaymentFB(payments[idx],'update');
+    toast('Payment update ho gayi!','s');
+  } else {
+    // New payment
+    const newPay={id:'P'+Date.now(),farmer,amount,date,note,mode,addedBy:currentUser?currentUser.username:'',addedAt:new Date().toISOString()};
+    payments.push(newPay);
+    await savePaymentFB(newPay,'add');
+    toast('Payment save ho gayi!','s');
+  }
   closeM('pay-modal');
-  toast('✅ Payment save ho gayi!','s');
   updFarm();
   showJD(farmer);
 }
-function savePaymentToSheet(pay,action){
-  if(!SHEET_URL||SHEET_URL==='YOUR_SHEET_URL_HERE')return;
-  const p={action:'payment_'+action,id:pay.id||'',farmer:pay.farmer||'',amount:pay.amount||0,date:pay.date||'',note:pay.note||''};
-  const img=new Image();
-  img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify(p));
+
+function editPayment(id,farmerName){
+  const pay=payments.find(p=>p.id===id);
+  if(!pay)return;
+  openPayModal(farmerName);
+  setTimeout(()=>{
+    document.getElementById('pay-edit-id').value=id;
+    document.getElementById('pay-amount').value=pay.amount;
+    document.getElementById('pay-date').value=pay.date;
+    document.getElementById('pay-note').value=pay.note||'';
+    setPayMode(pay.mode||'Cash');
+    document.getElementById('pay-modal-title').textContent='Payment Edit Karo';
+    document.getElementById('pay-save-btn').textContent='Update Payment';
+    updPayPreview();
+  },50);
 }
-function deletePayment(id,farmerName){
+
+async function deletePayment(id,farmerName){
   if(!confirm('Payment delete karna chahte hain?'))return;
   payments=payments.filter(p=>p.id!==id);
-  savePayments();
-  savePaymentToSheet({id},'delete');
+  await savePaymentFB({id},'delete');
   toast('Payment delete ho gayi','i');
   updFarm();
   showJD(farmerName);
