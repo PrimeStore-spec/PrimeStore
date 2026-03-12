@@ -280,6 +280,40 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     </div>
   </div>
 </div>
+<!-- EXPORT MODAL -->
+<div class="ov" id="exp-modal" onclick="closeOut(event,'exp-modal')">
+  <div class="modal-box" style="max-width:520px">
+    <div class="mh"><div class="mt">Export Report</div><button class="mx" onclick="closeM('exp-modal')">x</button></div>
+    <div class="mb">
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+        <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--blue2);margin-bottom:8px">Date Range</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">From</label><input type="date" class="finp" id="exp-from"></div>
+          <div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">To</label><input type="date" class="finp" id="exp-to"></div>
+        </div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+        <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--blue2);margin-bottom:8px">Farmer (optional)</div>
+        <select class="finp" id="exp-farmer"><option value="">-- Sab Farmers --</option></select>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--blue2)">Fields Select Karo</div>
+          <div style="display:flex;gap:6px">
+            <button onclick="expSelAll(true)" style="font-size:11px;padding:3px 8px;background:var(--blue);color:#fff;border:none;border-radius:4px;cursor:pointer">Sab</button>
+            <button onclick="expSelAll(false)" style="font-size:11px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:4px;cursor:pointer">Koi nahi</button>
+          </div>
+        </div>
+        <div id="exp-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="closeM('exp-modal')">Cancel</button>
+        <button class="btn" onclick="doExport('csv')" style="background:#16a34a;color:#fff">CSV Download</button>
+        <button class="btn" onclick="doExport('pdf')" style="background:#dc2626;color:#fff">PDF Download</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- LOGIN -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-box">
@@ -349,7 +383,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     </div>
     <div class="tw">
       <div class="th2"><div class="ttl">📋 Grading Records <span class="rcnt" id="r-cnt">0</span></div>
-      <div style="display:flex;gap:6px"><button class="btn btn-green" onclick="expCSV()">⬇ CSV</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
+      <div style="display:flex;gap:6px"><button class="btn btn-green" onclick="openExpModal()">Export CSV/PDF</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
       <div class="tsc"><table>
         <thead><tr><th>Sr</th><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th><th>Store A</th><th>Store B</th><th>Store C</th><th>Store D</th><th>Own C</th><th>Own D</th><th>Own A</th><th>Own B</th><th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Labour ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th></tr></thead>
         <tbody id="main-tbody"></tbody>
@@ -423,7 +457,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <button class="btn btn-ghost" onclick="genR('farmer')">👨‍🌾 Farmer-wise</button>
       <button class="btn btn-teal" onclick="genR('store')">🏪 Store Report</button>
       <button class="btn btn-purple" onclick="genR('own')">🛒 Own Purchase</button>
-      <button class="btn btn-green" onclick="expCSV()">⬇ CSV Export</button>
+      <button class="btn btn-green" onclick="openExpModal()">Export CSV/PDF</button>
     </div>
     <div id="r-out"><div class="empty" style="padding:50px"><div class="ei">📊</div><h3>Report select karo</h3></div></div>
   </div>
@@ -1382,15 +1416,108 @@ function genR(type){
   if(type==='own'){updOwn();toast('Own Purchase tab mein jaake dekho!','i');goTab('own');}
 }
 
-// ===== CSV =====
-function expCSV(){
+// ===== EXPORT SYSTEM =====
+const EXP_FIELDS=[
+  {key:'sr',label:'Sr No',fn:(r,i)=>i+1},
+  {key:'receipt',label:'Receipt',fn:r=>r.receipt||''},
+  {key:'date',label:'Tarikh',fn:r=>r.date||''},
+  {key:'farmer',label:'Farmer',fn:r=>r.farmer||''},
+  {key:'mobile',label:'Mobile',fn:r=>r.mobile||''},
+  {key:'village',label:'Gaon',fn:r=>r.village||''},
+  {key:'quality',label:'Quality',fn:r=>r.quality||''},
+  {key:'totalBags',label:'Total Bags',fn:r=>r.totalBags||0},
+  {key:'aBags',label:'A Bags',fn:r=>(r.grading&&r.grading.A&&r.grading.A.bags)||0},
+  {key:'aDest',label:'A Dest',fn:r=>(r.grading&&r.grading.A&&r.grading.A.dest)||''},
+  {key:'aRate',label:'A Rate',fn:r=>(r.grading&&r.grading.A&&r.grading.A.rate)||0},
+  {key:'bBags',label:'B Bags',fn:r=>(r.grading&&r.grading.B&&r.grading.B.bags)||0},
+  {key:'bDest',label:'B Dest',fn:r=>(r.grading&&r.grading.B&&r.grading.B.dest)||''},
+  {key:'bRate',label:'B Rate',fn:r=>(r.grading&&r.grading.B&&r.grading.B.rate)||0},
+  {key:'cBags',label:'C Bags',fn:r=>(r.grading&&r.grading.C&&r.grading.C.bags)||0},
+  {key:'cDest',label:'C Dest',fn:r=>(r.grading&&r.grading.C&&r.grading.C.dest)||''},
+  {key:'cRate',label:'C Rate',fn:r=>(r.grading&&r.grading.C&&r.grading.C.rate)||0},
+  {key:'dBags',label:'D Bags',fn:r=>(r.grading&&r.grading.D&&r.grading.D.bags)||0},
+  {key:'dDest',label:'D Dest',fn:r=>(r.grading&&r.grading.D&&r.grading.D.dest)||''},
+  {key:'dRate',label:'D Rate',fn:r=>(r.grading&&r.grading.D&&r.grading.D.rate)||0},
+  {key:'zeroBags',label:'Zero Bags',fn:r=>r.zeroBags||0},
+  {key:'kaatBags',label:'Kaat Bags',fn:r=>r.kaatBags||0},
+  {key:'storeBags',label:'Store Bags',fn:r=>r.storeBags||0},
+  {key:'ownBags',label:'Own Bags',fn:r=>r.ownBags||0},
+  {key:'gharBags',label:'Ghar Bags',fn:r=>r.gharBags||0},
+  {key:'ownAmt',label:'Own Amount',fn:r=>r.ownAmt||0},
+  {key:'gradingRate',label:'Grading Rate',fn:r=>r.gradingRate||0},
+  {key:'gradingAmt',label:'Grading Amt',fn:r=>r.gradingAmt||0},
+  {key:'bardanaRate',label:'Bardana Rate',fn:r=>r.bardanaRate||0},
+  {key:'bardanaAmt',label:'Bardana Amt',fn:r=>r.bardanaAmt||0},
+  {key:'labourRate',label:'Labour Rate',fn:r=>r.labourRate||0},
+  {key:'labourAmt',label:'Labour Amt',fn:r=>r.labourAmt||0},
+  {key:'netPay',label:'Net Dena',fn:r=>r.netPay||0},
+  {key:'chamber',label:'Chamber',fn:r=>r.chamber||''},
+  {key:'floor',label:'Floor',fn:r=>r.floor||''},
+  {key:'pillar',label:'Pillar',fn:r=>r.pillar||''},
+  {key:'notes',label:'Notes',fn:r=>r.notes||''}
+];
+const EXP_DEFAULT=['receipt','date','farmer','mobile','village','quality','totalBags','storeBags','ownBags','gharBags','zeroBags','kaatBags','ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay','chamber'];
+
+function openExpModal(){
   if(!recs.length){toast('Koi record nahi','e');return;}
-  const h=['Sr','Tarikh','Farmer','Mobile','Gaon','Quality','Receipt','Total Bags','A Bags','A Dest','A Rate','B Bags','B Dest','B Rate','C Bags','C Dest','C Rate','D Bags','D Dest','D Rate','Zero','Kaat','Store Bags','Own Bags','Ghar Bags','Own Amt','Grading Rate','Grading Amt','Bardana Rate','Bardana Amt','Net Dena','Chamber','Floor','Pillar','Notes'];
-  const rows=recs.map((r,i)=>{const g=r.grading||{A:{bags:0,dest:'',rate:0},B:{bags:0,dest:'',rate:0},C:{bags:0,dest:'',rate:0},D:{bags:0,dest:'',rate:0}};return[i+1,r.date,r.farmer,r.mobile||'',r.village||'',r.quality||'',r.receipt,r.totalBags||0,g.A.bags,g.A.dest,g.A.rate,g.B.bags,g.B.dest,g.B.rate,g.C.bags,g.C.dest,g.C.rate,g.D.bags,g.D.dest,g.D.rate,r.zeroBags||0,r.kaatBags||0,r.storeBags||0,r.ownBags||0,r.gharBags||0,r.ownAmt||0,r.gradingRate||0,r.gradingAmt||0,r.bardanaRate||0,r.bardanaAmt||0,r.netPay||0,r.chamber||'',r.floor||'',r.pillar||'',r.notes||''];});
-  const csv=[h,...rows].map(r=>r.join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='ColdStore_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
-  toast('CSV export ho gaya! ⬇','s');
+  const dates=recs.map(r=>r.date).filter(Boolean).sort();
+  document.getElementById('exp-from').value=dates[0]||'';
+  document.getElementById('exp-to').value=dates[dates.length-1]||'';
+  const sel=document.getElementById('exp-farmer');
+  sel.innerHTML='<option value="">-- Sab Farmers --</option>';
+  [...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort().forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=f;sel.appendChild(o);});
+  const fd=document.getElementById('exp-fields');
+  fd.innerHTML=EXP_FIELDS.map(f=>`<label style="display:flex;align-items:center;gap:5px;cursor:pointer;padding:3px 6px;border-radius:4px;background:var(--s1);border:1px solid var(--border)"><input type="checkbox" id="expf-${f.key}" ${EXP_DEFAULT.includes(f.key)?'checked':''}> ${f.label}</label>`).join('');
+  document.getElementById('exp-modal').classList.add('open');
 }
+
+function expSelAll(v){EXP_FIELDS.forEach(f=>{const el=document.getElementById('expf-'+f.key);if(el)el.checked=v;});}
+
+function getExpData(){
+  const from=document.getElementById('exp-from').value;
+  const to=document.getElementById('exp-to').value;
+  const farmer=document.getElementById('exp-farmer').value;
+  const selFields=EXP_FIELDS.filter(f=>{const el=document.getElementById('expf-'+f.key);return el&&el.checked;});
+  if(!selFields.length){toast('Koi field select nahi!','e');return null;}
+  let data=recs.filter(r=>{
+    if(from&&r.date<from)return false;
+    if(to&&r.date>to)return false;
+    if(farmer&&r.farmer!==farmer)return false;
+    return true;
+  }).sort((a,b)=>{const na=parseInt((a.receipt||'').replace(/[^0-9]/g,''))||0;const nb=parseInt((b.receipt||'').replace(/[^0-9]/g,''))||0;return na-nb;});
+  if(!data.length){toast('Is range mein koi record nahi!','e');return null;}
+  return{data,selFields,from,to,farmer};
+}
+
+function doExport(type){
+  const res=getExpData();
+  if(!res)return;
+  const{data,selFields,from,to,farmer}=res;
+  const fname='ColdStore'+(farmer?'_'+farmer:'')+(from?'_'+from:'')+(to&&to!==from?'_to_'+to:'');
+  if(type==='csv'){
+    const h=selFields.map(f=>f.label);
+    const rows=data.map((r,i)=>selFields.map(f=>String(f.fn(r,i)).replace(/,/g,' ')));
+    const csv=[h,...rows].map(r=>r.join(',')).join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download=fname+'.csv';a.click();
+    toast('CSV download ho rahi hai!','s');closeM('exp-modal');
+  } else {
+    expPDF(data,selFields,fname,from,to,farmer);
+  }
+}
+
+function expPDF(data,selFields,fname,from,to,farmer){
+  const win=window.open('','_blank','width=1000,height=700');
+  const totKeys=['totalBags','storeBags','ownBags','gharBags','zeroBags','kaatBags','ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay'];
+  const tot={}; totKeys.forEach(k=>{tot[k]=data.reduce((s,r)=>s+(r[k]||0),0);});
+  const headers=selFields.map(f=>`<th>${f.label}</th>`).join('');
+  const rows=data.map((r,i)=>`<tr>${selFields.map(f=>`<td>${f.fn(r,i)}</td>`).join('')}</tr>`).join('');
+  const totRow=selFields.map(f=>tot[f.key]!==undefined?`<td><strong>${tot[f.key].toLocaleString('en-IN')}</strong></td>`:`<td></td>`).join('');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset='UTF-8'><title>${fname}</title><style>body{font-family:Arial,sans-serif;font-size:11px;margin:15px;color:#1a2332}h2{color:#1a3a6b;margin-bottom:4px;font-size:16px}.info{font-size:11px;color:#64748b;margin-bottom:12px}table{width:100%;border-collapse:collapse}th{background:#1a3a6b;color:#fff;padding:6px 8px;text-align:left;font-size:10px;white-space:nowrap}td{padding:5px 8px;border-bottom:1px solid #e5e7eb;white-space:nowrap}tr:nth-child(even){background:#f8fafc}.tf td{background:#1a3a6b;color:#fff;font-weight:bold;padding:6px 8px}.prtbtn{background:#1a3a6b;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;margin-bottom:12px;font-size:12px}@media print{.prtbtn{display:none}}</style></head><body><h2>Prime ColdStore Pro</h2><div class='info'>Period: ${from||'Start'} to ${to||'End'} | ${farmer||'Sab Farmers'} | Records: ${data.length}</div><button class='prtbtn' onclick='window.print()'>Print / Save PDF</button><table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody><tfoot><tr class='tf'>${totRow}</tr></tfoot></table></body></html>`);
+  win.document.close();
+  toast('PDF window khul gayi! Print karo ya Save as PDF','s');
+  closeM('exp-modal');
+}
+function expCSV(){openExpModal();}
 
 // ===== TOAST =====
 function toast(msg,type='i'){
