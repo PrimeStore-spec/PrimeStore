@@ -273,7 +273,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 <body>
 
 <!-- PAYMENT MODAL -->
-<div class="ov" id="pay-modal" onclick="closeOut(event,'pay-modal')" style="z-index:500">
+<div class="ov" id="pay-modal" onclick="closeOut(event,'pay-modal')">
   <div class="modal-box" style="max-width:420px;width:min(420px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
     <div class="mh" style="flex-shrink:0"><div class="mt" id="pay-modal-title">Payment Add Karo</div><button class="mx" onclick="closeM('pay-modal')">✕</button></div>
     <div class="mb" style="overflow-y:auto;flex:1;padding:14px">
@@ -333,6 +333,36 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div style="display:flex;gap:8px;justify-content:flex-end">
         <button class="btn btn-ghost" onclick="closeM('pay-modal')">Cancel</button>
         <button class="btn" id="pay-save-btn" onclick="savePayment()" style="background:#1a7a3c;color:#fff">Save Payment</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- IMPORT MODAL -->
+<div class="ov" id="imp-modal" onclick="closeOut(event,'imp-modal')">
+  <div class="modal-box" style="max-width:520px;width:min(520px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
+    <div class="mh" style="flex-shrink:0"><div class="mt">CSV Import</div><button class="mx" onclick="closeM('imp-modal')">✕</button></div>
+    <div class="mb" style="overflow-y:auto;flex:1;padding:14px">
+      <!-- Step 1: File Upload -->
+      <div id="imp-step1">
+        <div style="background:#f5f0ff;border:2px dashed #7c3aed;border-radius:10px;padding:20px;text-align:center;margin-bottom:14px;cursor:pointer" onclick="document.getElementById('imp-file').click()">
+          <div style="font-size:28px;margin-bottom:6px">📂</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;color:#7c3aed;font-size:15px">CSV File Select Karo</div>
+          <div style="font-size:11px;color:#8a95a8;margin-top:4px">Google Sheet se download ki CSV file yahan upload karo</div>
+          <input type="file" id="imp-file" accept=".csv" style="display:none" onchange="parseImpCSV(this)">
+        </div>
+        <div style="background:#fef3cd;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;font-size:11px;color:#854d0e">
+          <strong>Zaruri:</strong> Google Sheet se File → Download → CSV format mein download karo, phir yahan upload karo.
+        </div>
+      </div>
+      <!-- Step 2: Preview -->
+      <div id="imp-step2" style="display:none">
+        <div id="imp-summary" style="background:#f0fdf4;border:1px solid #86efac;border-radius:7px;padding:10px 12px;margin-bottom:12px;font-size:12px"></div>
+        <div id="imp-preview-table" style="overflow-x:auto;max-height:250px;overflow-y:auto;border:1px solid var(--border);border-radius:7px;font-size:11px"></div>
+        <div id="imp-warn" style="display:none;background:#fef3cd;border:1px solid #fcd34d;border-radius:7px;padding:9px 12px;margin-top:10px;font-size:11px;color:#854d0e"></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button class="btn btn-ghost" onclick="impReset()">Cancel</button>
+          <button class="btn" id="imp-confirm-btn" onclick="doImport()" style="background:#7c3aed;color:#fff">Firebase mein Import Karo</button>
+        </div>
       </div>
     </div>
   </div>
@@ -440,7 +470,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     </div>
     <div class="tw">
       <div class="th2"><div class="ttl">📋 Grading Records <span class="rcnt" id="r-cnt">0</span></div>
-      <div style="display:flex;gap:6px"><button class="btn btn-green" onclick="openExpModal()">Export CSV/PDF</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
+      <div style="display:flex;gap:6px"><button class="btn" onclick="openImportModal()" style="background:#7c3aed;color:#fff">Import CSV</button><button class="btn btn-green" onclick="openExpModal()">Export CSV/PDF</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
       <div class="tsc"><table>
         <thead><tr><th>Sr</th><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th><th>Store A</th><th>Store B</th><th>Store C</th><th>Store D</th><th>Own C</th><th>Own D</th><th>Own A</th><th>Own B</th><th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Labour ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th></tr></thead>
         <tbody id="main-tbody"></tbody>
@@ -766,7 +796,6 @@ async function loadSheet(){
         localStorage.setItem('cs_r',JSON.stringify(recs));
         setSt('ok');updAll();applyF();
         toast('Firebase se '+recs.length+' records load!','s');
-        loadPayments();
         startAR();return;
       } else {
         toast('Pehli baar - Sheet se data la raha hai...','i');
@@ -1586,6 +1615,120 @@ function expPDF(data,selFields,fname,from,to,farmer){
   closeM('exp-modal');
 }
 function expCSV(){openExpModal();}
+// ===== CSV IMPORT =====
+let impRows=[];
+function openImportModal(){
+  impReset();
+  document.getElementById('imp-modal').classList.add('open');
+}
+function impReset(){
+  impRows=[];
+  document.getElementById('imp-file').value='';
+  document.getElementById('imp-step1').style.display='block';
+  document.getElementById('imp-step2').style.display='none';
+}
+function parseImpCSV(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const lines=e.target.result.split(/\r?\n/).filter(l=>l.trim());
+    if(lines.length<2){toast('CSV mein koi data nahi!','e');return;}
+    impRows=[];
+    const warns=[];
+    for(let i=1;i<lines.length;i++){
+      const vals=lines[i].split(',');
+      const get=(idx)=>(vals[idx]||'').trim();
+      if(!get(2)&&!get(6))continue;
+      const existId=get(44);
+      const rec={
+        id:existId||'IMP'+Date.now()+'_'+i,
+        date:get(1),
+        farmer:get(2),
+        mobile:get(3),
+        village:get(4),
+        quality:get(5),
+        receipt:get(6),
+        grading:{
+          A:{bags:parseInt(get(7))||0,dest:get(8),rate:parseFloat(get(9))||0},
+          B:{bags:parseInt(get(11))||0,dest:get(12),rate:parseFloat(get(13))||0},
+          C:{bags:parseInt(get(15))||0,dest:get(16),rate:parseFloat(get(17))||0},
+          D:{bags:parseInt(get(19))||0,dest:get(20),rate:parseFloat(get(21))||0}
+        },
+        zeroBags:parseInt(get(23))||0,
+        kaatBags:parseInt(get(24))||0,
+        gradingBags:parseInt(get(25))||0,
+        gradingRate:parseFloat(get(26))||0,
+        gradingAmt:parseFloat(get(27))||0,
+        bardanaBags:parseInt(get(28))||0,
+        bardanaRate:parseFloat(get(29))||0,
+        bardanaAmt:parseFloat(get(30))||0,
+        labourBags:parseInt(get(31))||0,
+        labourRate:parseFloat(get(32))||0,
+        labourAmt:parseFloat(get(33))||0,
+        totalBags:parseInt(get(34))||0,
+        storeBags:parseInt(get(35))||0,
+        ownBags:parseInt(get(36))||0,
+        gharBags:parseInt(get(37))||0,
+        ownAmt:parseFloat(get(38))||0,
+        netPay:parseFloat(get(39))||0,
+        chamber:get(40),
+        floor:get(41),
+        pillar:get(42),
+        notes:get(43)
+      };
+      if(recs.find(r=>r.receipt===rec.receipt&&rec.receipt)){
+        warns.push(rec.receipt);
+      } else {
+        impRows.push(rec);
+      }
+    }
+    document.getElementById('imp-step1').style.display='none';
+    document.getElementById('imp-step2').style.display='block';
+    document.getElementById('imp-summary').innerHTML=
+      '<strong style="color:#166534">'+impRows.length+' records ready hain import ke liye</strong>'+
+      (warns.length?' <span style="color:#b45309">('+warns.length+' duplicate skip honge)</span>':'');
+    const tbl='<table style="width:100%;border-collapse:collapse">'+
+      '<thead><tr style="background:#f0f4fc;position:sticky;top:0">'+
+      ['Receipt','Tarikh','Farmer','Total Bags','Net Dena'].map(h=>'<th style="padding:5px 8px;font-size:10px;text-align:left;border-bottom:2px solid #dae4f8">'+h+'</th>').join('')+
+      '</tr></thead><tbody>'+
+      impRows.map(r=>'<tr style="border-bottom:1px solid #f0f0f0">'+
+        '<td style="padding:5px 8px;font-size:11px">'+r.receipt+'</td>'+
+        '<td style="padding:5px 8px;font-size:11px">'+r.date+'</td>'+
+        '<td style="padding:5px 8px;font-size:11px">'+r.farmer+'</td>'+
+        '<td style="padding:5px 8px;font-size:11px;text-align:right">'+r.totalBags+'</td>'+
+        '<td style="padding:5px 8px;font-size:11px;text-align:right;font-weight:700;color:#166534">Rs.'+fmt(r.netPay)+'</td>'+
+      '</tr>').join('')+
+      '</tbody></table>';
+    document.getElementById('imp-preview-table').innerHTML=tbl;
+    if(warns.length){
+      document.getElementById('imp-warn').style.display='block';
+      document.getElementById('imp-warn').innerHTML='<strong>Duplicate skip:</strong> '+warns.join(', ');
+    }
+  };
+  reader.readAsText(file,'utf-8');
+}
+async function doImport(){
+  if(!impRows.length){toast('Koi record nahi!','e');return;}
+  const btn=document.getElementById('imp-confirm-btn');
+  btn.textContent='Import ho raha hai...';
+  btn.disabled=true;
+  let done=0,fail=0;
+  await loadFB();
+  for(const rec of impRows){
+    try{
+      if(FB_DB){await FB_DB.ref('cs/recs/'+rec.id).set(rec);}
+      done++;
+    }catch(e){console.log('Import err:',rec.receipt,e);fail++;}
+  }
+  await loadSheet();
+  closeM('imp-modal');
+  toast(done+' records import ho gaye!'+(fail?' ('+fail+' fail)':''),'s');
+  impRows=[];
+  btn.textContent='Firebase mein Import Karo';
+  btn.disabled=false;
+}
+
 
 // ===== TOAST =====
 function toast(msg,type='i'){
@@ -1715,29 +1858,27 @@ let payments=[];
 
 // Firebase se payments load
 async function loadPayments(){
+  // pehle localStorage se load (instant)
   const s=localStorage.getItem('cs_payments');
   if(s)payments=JSON.parse(s);
-  try{
-    await loadFB();
-    if(FB_DB){
+  // phir Firebase se sync
+  if(typeof FB_DB!=='undefined'&&FB_DB){
+    try{
       const snap=await FB_DB.ref('cs/payments').once('value');
       const val=snap.val();
       if(val){
         payments=Object.values(val).filter(Boolean);
         localStorage.setItem('cs_payments',JSON.stringify(payments));
-        updFarm();
       }
+      // Real-time listener
       FB_DB.ref('cs/payments').on('value',snap2=>{
         const v=snap2.val();
-        const np=v?Object.values(v).filter(Boolean):[];
-        if(JSON.stringify(np)!==JSON.stringify(payments)){
-          payments=np;
-          localStorage.setItem('cs_payments',JSON.stringify(payments));
-          updFarm();
-        }
+        payments=v?Object.values(v).filter(Boolean):[];
+        localStorage.setItem('cs_payments',JSON.stringify(payments));
+        updFarm();
       });
-    }
-  }catch(e){console.log('Pay err:',e);}
+    }catch(e){console.log('Pay load err:',e);}
+  }
 }
 
 async function savePaymentFB(pay,action){
@@ -1868,8 +2009,8 @@ async function deletePayment(id,farmerName){
 }
 // ===== INIT =====
 loadUsers();
+loadPayments();
 checkSession();
-setTimeout(()=>loadPayments(),800);
 </script>
 </body>
 </html>
