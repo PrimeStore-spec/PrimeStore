@@ -273,7 +273,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 <body>
 
 <!-- PAYMENT MODAL -->
-<div class="ov" id="pay-modal" onclick="closeOut(event,'pay-modal')">
+<div class="ov" id="pay-modal" onclick="closeOut(event,'pay-modal')" style="z-index:500">
   <div class="modal-box" style="max-width:420px;width:min(420px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
     <div class="mh" style="flex-shrink:0"><div class="mt" id="pay-modal-title">Payment Add Karo</div><button class="mx" onclick="closeM('pay-modal')">✕</button></div>
     <div class="mb" style="overflow-y:auto;flex:1;padding:14px">
@@ -766,6 +766,7 @@ async function loadSheet(){
         localStorage.setItem('cs_r',JSON.stringify(recs));
         setSt('ok');updAll();applyF();
         toast('Firebase se '+recs.length+' records load!','s');
+        loadPayments();
         startAR();return;
       } else {
         toast('Pehli baar - Sheet se data la raha hai...','i');
@@ -1714,27 +1715,29 @@ let payments=[];
 
 // Firebase se payments load
 async function loadPayments(){
-  // pehle localStorage se load (instant)
   const s=localStorage.getItem('cs_payments');
   if(s)payments=JSON.parse(s);
-  // phir Firebase se sync
-  if(typeof FB_DB!=='undefined'&&FB_DB){
-    try{
+  try{
+    await loadFB();
+    if(FB_DB){
       const snap=await FB_DB.ref('cs/payments').once('value');
       const val=snap.val();
       if(val){
         payments=Object.values(val).filter(Boolean);
         localStorage.setItem('cs_payments',JSON.stringify(payments));
+        updFarm();
       }
-      // Real-time listener
       FB_DB.ref('cs/payments').on('value',snap2=>{
         const v=snap2.val();
-        payments=v?Object.values(v).filter(Boolean):[];
-        localStorage.setItem('cs_payments',JSON.stringify(payments));
-        updFarm();
+        const np=v?Object.values(v).filter(Boolean):[];
+        if(JSON.stringify(np)!==JSON.stringify(payments)){
+          payments=np;
+          localStorage.setItem('cs_payments',JSON.stringify(payments));
+          updFarm();
+        }
       });
-    }catch(e){console.log('Pay load err:',e);}
-  }
+    }
+  }catch(e){console.log('Pay err:',e);}
 }
 
 async function savePaymentFB(pay,action){
@@ -1865,8 +1868,8 @@ async function deletePayment(id,farmerName){
 }
 // ===== INIT =====
 loadUsers();
-loadPayments();
 checkSession();
+setTimeout(()=>loadPayments(),800);
 </script>
 </body>
 </html>
