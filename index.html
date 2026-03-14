@@ -257,7 +257,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 .role-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
 .role-badge.admin{background:#e8f0fd;color:#1a5fc8;border:1px solid #c5d8f8;}
 .role-badge.manager{background:#e8f5ed;color:#1a7a3c;border:1px solid #c8ecd4;}
-.role-badge.viewer{background:#fef3e2;color:#b45309;border:1px solid #fde8b4;}
+.role-badge.viewer{background:#fef3e2;color:#b45309;border:1px solid #fde8b4;}.perm-lbl{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;background:var(--s1);transition:all 0.15s;}.perm-lbl:hover{background:#e8f0fd;border-color:#1a5fc8;}.perm-lbl input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:#1a5fc8;flex-shrink:0;}.perm-lbl.chk{background:#e8f0fd;border-color:#1a5fc8;color:#1a3a6b;font-weight:600;}
 .users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
 .user-card{background:#fff;border:1px solid #dde1e9;border-radius:8px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
 .user-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -267,7 +267,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 .tpv{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--blue);}
 .tpl{font-size:9px;color:var(--text3);text-transform:uppercase;}
 @media(max-width:900px){.fg{grid-template-columns:1fr 1fr;}.cbars{grid-template-columns:1fr 1fr;}.charts{grid-template-columns:1fr;}.fgrid3,.fgrid4{grid-template-columns:1fr 1fr;}.sum-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:600px){.tsc table{min-width:700px;}.main-wrap{padding:8px;}.modal-box{width:98vw;max-height:95vh;}.fgrid3,.fgrid2{grid-template-columns:1fr;}.charge-row{flex-wrap:wrap;gap:6px;}.stats-grid{grid-template-columns:1fr 1fr;}.fgrid,.fgrid3,.fgrid4{grid-template-columns:1fr;}.cbars{grid-template-columns:1fr 1fr;}main{padding:10px;}header{padding:6px 10px;}.hdr-stat{display:none;}}
+@media(max-width:600px){.tsc table{min-width:700px;}.main-wrap{padding:5px;}.modal-box{width:99vw!important;max-height:96vh!important;border-radius:8px!important;}.modal{width:99vw!important;max-height:96vh!important;}.fgrid3,.fgrid2,.fgrid,.fgrid4{grid-template-columns:1fr!important;}.charge-row{flex-wrap:wrap;gap:6px;}.stats-grid{grid-template-columns:1fr 1fr;}.cbars{grid-template-columns:1fr 1fr;}main{padding:6px;}header{padding:5px 8px;}.hdr-stat{display:none;}.tab-bar{overflow-x:auto;flex-wrap:nowrap;gap:2px;}.tab{padding:6px 10px;font-size:12px;white-space:nowrap;}.btn{padding:6px 10px;font-size:12px;}.sum-grid{grid-template-columns:1fr 1fr!important;}.fg{grid-template-columns:1fr!important;}.pay-total{flex-direction:column;gap:5px;}.hdr-r{gap:4px;}}
 </style>
 </head>
 <body>
@@ -741,18 +741,37 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 </div>
 
 <!-- USER MODAL -->
-<div class="ov" id="user-modal" onclick="closeOut(event,'user-modal')">
-  <div class="modal" style="max-width:420px">
-    <div class="mh"><div class="mt">👤 <span id="um-title">Naya User</span></div><button class="mx" onclick="closeM('user-modal')">✕</button></div>
-    <div class="mb">
-      <div class="fgrid">
+<div class="ov" id="user-modal" onclick="closeOut(event,'user-modal')" style="z-index:600">
+  <div class="modal" style="max-width:460px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
+    <div class="mh" style="flex-shrink:0"><div class="mt">👤 <span id="um-title">Naya User</span></div><button class="mx" onclick="closeM('user-modal')">✕</button></div>
+    <div class="mb" style="overflow-y:auto;flex:1">
+      <div class="fgrid" style="margin-bottom:12px">
         <div class="fg2 full"><label class="flbl">Full Name *</label><input class="finp" id="u-name" placeholder="Jaise: Raam Singh"></div>
         <div class="fg2 full"><label class="flbl">Username *</label><input class="finp" id="u-user" placeholder="Jaise: raam123"></div>
         <div class="fg2 full"><label class="flbl">Password *</label><input type="password" class="finp" id="u-pass" placeholder="Strong password daalo"></div>
-        <div class="fg2 full"><label class="flbl">Role *</label><select class="finp" id="u-role"><option value="admin">👑 Admin</option><option value="manager">🔧 Manager</option><option value="viewer">👁 Viewer</option></select></div>
+      </div>
+      <div>
+        <label class="flbl" style="margin-bottom:8px;display:block">Permissions Select Karo *</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+          <label class="perm-lbl" id="pl-view"><input type="checkbox" id="up-view" onchange="syncPerms()"> View Records</label>
+          <label class="perm-lbl" id="pl-add"><input type="checkbox" id="up-add" onchange="syncPerms()"> Add Record</label>
+          <label class="perm-lbl" id="pl-edit"><input type="checkbox" id="up-edit" onchange="syncPerms()"> Edit Record</label>
+          <label class="perm-lbl" id="pl-delete"><input type="checkbox" id="up-delete" onchange="syncPerms()"> Delete Record</label>
+          <label class="perm-lbl" id="pl-payment"><input type="checkbox" id="up-payment" onchange="syncPerms()"> Payments</label>
+          <label class="perm-lbl" id="pl-export"><input type="checkbox" id="up-export" onchange="syncPerms()"> Export CSV/PDF</label>
+          <label class="perm-lbl" id="pl-import"><input type="checkbox" id="up-import" onchange="syncPerms()"> Import CSV</label>
+          <label class="perm-lbl" id="pl-users"><input type="checkbox" id="up-users" onchange="syncPerms()"> Manage Users</label>
+        </div>
+        <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap">
+          <button onclick="setPreset('admin')" type="button" style="font-size:11px;padding:4px 10px;border:1px solid #1a5fc8;border-radius:4px;cursor:pointer;background:#e8f0fd;color:#1a5fc8">Admin (Sab)</button>
+          <button onclick="setPreset('manager')" type="button" style="font-size:11px;padding:4px 10px;border:1px solid #1a7a3c;border-radius:4px;cursor:pointer;background:#e8f5ed;color:#1a7a3c">Manager</button>
+          <button onclick="setPreset('viewer')" type="button" style="font-size:11px;padding:4px 10px;border:1px solid #b45309;border-radius:4px;cursor:pointer;background:#fef3e2;color:#b45309">Viewer Only</button>
+        </div>
+        <div style="margin-top:7px;padding:6px 10px;background:var(--s2);border-radius:5px;font-size:11px;color:var(--text2)" id="u-role-display">Role: --</div>
+        <input type="hidden" id="u-role" value="viewer">
       </div>
     </div>
-    <div class="mf"><div></div><div style="display:flex;gap:6px"><button class="btn btn-ghost" onclick="closeM('user-modal')">Cancel</button><button class="btn btn-green" onclick="saveUser()">✓ Save</button></div></div>
+    <div class="mf" style="flex-shrink:0"><div></div><div style="display:flex;gap:6px"><button class="btn btn-ghost" onclick="closeM('user-modal')">Cancel</button><button class="btn btn-green" onclick="saveUser()">✓ Save</button></div></div>
   </div>
 </div>
 
@@ -1205,7 +1224,7 @@ function renderT(){
       <td>${r.chamber?`<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">C${r.chamber}${r.floor?' F'+r.floor:''}${r.pillar?' '+r.pillar:''}</span>`:'—'}</td>
       <td><div class="ab">
         <button class="ab2 v" onclick="viewD('${r.id}')">👁</button>
-        ${currentUser&&currentUser.role==='admin'?`<button class="ab2 e" onclick="openM('${r.id}')">✏</button><button class="ab2 d" onclick="delR('${r.id}')">🗑</button>`:''}
+        ${hasPerm('edit')?`<button class="ab2 e" onclick="openM('${r.id}')">✏</button>`:''} ${hasPerm('delete')?`<button class="ab2 d" onclick="delR('${r.id}')">🗑</button>`:''}
       </div></td>
     </tr>`;
   }).join('');
@@ -1262,7 +1281,7 @@ function viewD(id){
     </div>
     ${r.notes?`<div style="margin-top:11px;padding:9px;background:var(--s2);border-radius:6px;font-size:12px;color:var(--text2)">📝 ${r.notes}</div>`:''}
     <div style="margin-top:11px;display:flex;gap:6px;justify-content:flex-end">
-      ${currentUser&&currentUser.role==='admin'?`<button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button><button class="btn btn-red" onclick="delR('${r.id}')">🗑 Delete</button>`:''}
+      ${hasPerm('edit')?`<button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button>`:''} ${hasPerm('delete')?`<button class="btn btn-red" onclick="delR('${r.id}')">🗑 Delete</button>`:''}
     </div>`;
   document.getElementById('d-modal').classList.add('open');
 }
@@ -1461,7 +1480,7 @@ function showJD(name){
     <div style='margin-top:14px'>
       <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px'>
         <div style='font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--blue2)'>💵 Payment Ledger</div>
-        ${currentUser&&currentUser.role!=='viewer'?`<button class='add-pay-btn' onclick="openPayModal('${name}')">+ Payment</button>`:''}
+        ${hasPerm('payment')?`<button class='add-pay-btn' onclick="openPayModal('${name}')">+ Payment</button>`:''}
       </div>
       <div style='background:var(--s2);border:1px solid var(--border);border-radius:7px;overflow:hidden'>
         ${farmerPays.length?farmerPays.sort((a,b)=>a.date.localeCompare(b.date)).map((p,i)=>{
@@ -1477,7 +1496,7 @@ function showJD(name){
             <div style='display:flex;flex-direction:column;align-items:flex-end;gap:3px'>
               <span style='font-size:11px;color:#8a95a8'>${p.date}</span>
               <span style='font-size:10px;font-family:Rajdhani,sans-serif;font-weight:700;color:${runBal<=0?"#166534":"#dc2626"}'>Baaki: ₹${fmt(Math.abs(runBal))}</span>
-              ${currentUser&&currentUser.role!=='viewer'?`<div style='display:flex;gap:4px;margin-top:2px'>
+              ${hasPerm('payment')?`<div style='display:flex;gap:4px;margin-top:2px'>
                 <button onclick="editPayment('${p.id}','${name}')" style='font-size:10px;padding:2px 6px;background:#e8f0fd;color:#1a5fc8;border:1px solid #1a5fc8;border-radius:3px;cursor:pointer'>Edit</button>
                 <button onclick="deletePayment('${p.id}','${name}')" style='font-size:10px;padding:2px 6px;background:#fee2e2;color:#dc2626;border:1px solid #dc2626;border-radius:3px;cursor:pointer'>Del</button>
               </div>`:''}
@@ -1740,273 +1759,103 @@ function toast(msg,type='i'){
 function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
 
 // ===== AUTH =====
-const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}];
-let currentUser=null,users=[],editUserId=null;
-function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
-function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
-async function saveUsersToSheet(){const img=new Image();img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify({action:'saveUsers',users}));}
-async function loadUsersFromSheet(){try{const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];for(let i=0;i<proxies.length;i++){try{const res=await proxies[i]();let txt=await res.text();try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}const data=JSON.parse(txt);if(data.users&&data.users.length>0){users=data.users;localStorage.setItem('cs_users',JSON.stringify(users));return;}}catch(e){}}}catch(e){}loadUsers();}
-// ===== SECURITY CONFIG =====
-const SESSION_HOURS=8;
-const MAX_ATTEMPTS=3;
-const LOCKOUT_MIN=15;
-
-function genToken(){return Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)+Date.now().toString(36);}
-function getLockout(){try{return JSON.parse(localStorage.getItem('cs_lock')||'{}');}catch(e){return {};}}
-function setLockout(d){localStorage.setItem('cs_lock',JSON.stringify(d));}
-function checkLockout(username){
-  const lk=getLockout(),key=username.toLowerCase();
-  if(!lk[key])return false;
-  const now=Date.now();
-  if(lk[key].until&&now<lk[key].until){return Math.ceil((lk[key].until-now)/60000);}
-  if(lk[key].until&&now>=lk[key].until){delete lk[key];setLockout(lk);}
-  return false;
+const PERM_ALL=['view','add','edit','delete','payment','export','import','users'];
+const PERM_PRESET={admin:['view','add','edit','delete','payment','export','import','users'],manager:['view','add','edit','payment','export'],viewer:['view']};
+function getUserPerms(u){if(!u)return[];if(u.permissions&&Array.isArray(u.permissions))return u.permissions;return PERM_PRESET[u.role]||['view'];}
+function hasPerm(p){return currentUser?getUserPerms(currentUser).includes(p):false;}
+function setPreset(role){const perms=PERM_PRESET[role]||['view'];PERM_ALL.forEach(p=>{const el=document.getElementById('up-'+p);if(el)el.checked=perms.includes(p);});syncPerms();}
+function syncPerms(){
+  const checked=PERM_ALL.filter(p=>{const el=document.getElementById('up-'+p);return el&&el.checked;});
+  let role='custom';
+  if(checked.includes('users'))role='admin';
+  else if(checked.includes('add')||checked.includes('edit'))role='manager';
+  else role='viewer';
+  document.getElementById('u-role').value=role;
+  const lmap={admin:'Admin (Sab permissions)',manager:'Manager',viewer:'Viewer (sirf dekh sakta hai)',custom:'Custom'};
+  document.getElementById('u-role-display').textContent='Role: '+lmap[role];
+  PERM_ALL.forEach(p=>{const lbl=document.getElementById('pl-'+p);const el=document.getElementById('up-'+p);if(lbl&&el)lbl.classList.toggle('chk',el.checked);});
 }
-function recordFail(username){
-  const lk=getLockout(),key=username.toLowerCase();
-  if(!lk[key])lk[key]={count:0};
-  lk[key].count=(lk[key].count||0)+1;
-  if(lk[key].count>=MAX_ATTEMPTS){lk[key].until=Date.now()+(LOCKOUT_MIN*60*1000);lk[key].count=0;}
-  setLockout(lk);
-  return Math.max(0,MAX_ATTEMPTS-(lk[key].count||0));
-}
-function clearFail(username){const lk=getLockout();delete lk[username.toLowerCase()];setLockout(lk);}
-
-function doLogin(){
-  const username=document.getElementById('l-user').value.trim().toLowerCase();
-  const password=document.getElementById('l-pass').value.trim();
-  const err=document.getElementById('login-err');
-  err.style.background='';err.style.borderColor='';err.style.color='';
-  if(!username||!password){err.textContent='Username aur password daalo!';err.classList.add('show');return;}
-  const locked=checkLockout(username);
-  if(locked){err.textContent='LOCKED: '+locked+' minute baad try karo (zyada galat attempts)';err.classList.add('show');document.getElementById('l-pass').value='';return;}
-  loadUsers();
-  const user=users.find(u=>u.username.toLowerCase()===username&&u.password===password);
-  if(!user){
-    const left=recordFail(username);
-    const lockedNow=checkLockout(username);
-    if(lockedNow){err.textContent='LOCKED: Account '+LOCKOUT_MIN+' minute ke liye band ho gaya!';}
-    else{err.textContent='Galat username ya password! ('+left+' attempts baaki)';}
-    err.classList.add('show');document.getElementById('l-pass').value='';return;
-  }
-  clearFail(username);
-  const token=genToken();
-  const sessData={id:user.id,token,expires:Date.now()+(SESSION_HOURS*3600*1000)};
-  err.classList.remove('show');
-  currentUser=user;
-  localStorage.setItem('cs_session',JSON.stringify(sessData));
-  document.getElementById('login-wrap').style.display='none';
-  applyPermissions();addUserBadge();
-  toast('Welcome '+user.name+'!','s');loadUsersFromSheet();setSt('ch');loadSheet();
-}
-
-async function checkSession(){
-  await loadUsersFromSheet();
-  const raw=localStorage.getItem('cs_session');
-  if(raw){
-    try{
-      const sess=JSON.parse(raw);
-      if(sess.expires&&Date.now()<sess.expires&&sess.id&&sess.token){
-        const user=users.find(u=>u.id===sess.id);
-        if(user){
-          currentUser=user;
-          sess.expires=Date.now()+(SESSION_HOURS*3600*1000);
-          localStorage.setItem('cs_session',JSON.stringify(sess));
-          document.getElementById('login-wrap').style.display='none';
-          applyPermissions();addUserBadge();setSt('ch');loadSheet();return;
-        }
-      } else if(sess.expires&&Date.now()>sess.expires){
-        localStorage.removeItem('cs_session');
-        showLoginMsg('Session '+SESSION_HOURS+' ghante baad expire ho gaya — dobara login karo');
-        document.getElementById('login-wrap').style.display='flex';return;
-      }
-    }catch(e){}
-  }
-  localStorage.removeItem('cs_session');
-  document.getElementById('login-wrap').style.display='flex';
-}
-
-function showLoginMsg(msg){
-  const err=document.getElementById('login-err');
-  if(err){err.textContent=msg;err.classList.add('show');err.style.background='#fef3cd';err.style.borderColor='#f59e0b';err.style.color='#92400e';}
-}
-
-function logout(){
-  localStorage.removeItem('cs_session');
-  currentUser=null;
-  document.getElementById('login-wrap').style.display='flex';
-  document.getElementById('l-user').value='';
-  document.getElementById('l-pass').value='';
-  const err=document.getElementById('login-err');
-  if(err){err.classList.remove('show');err.style.background='';err.style.borderColor='';err.style.color='';}
-  toast('Logout ho gaye!','i');
-}
-function addUserBadge(){const hdr=document.querySelector('.hdr-r');const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
-function applyPermissions(){
-  const role=currentUser?currentUser.role:'viewer';
-  const addBtn=document.querySelector('.btn-add');if(addBtn)addBtn.style.display=(role==='admin'||role==='manager')?'':'none';
-  const usersTab=document.getElementById('tab-users');if(usersTab)usersTab.style.display=role==='admin'?'':'none';
-  document.querySelectorAll('.ab2.e,.ab2.d').forEach(btn=>btn.style.display=role==='admin'?'':'none');
-}
-function openUserModal(id=null){editUserId=id;document.getElementById('um-title').textContent=id?'User Edit':'Naya User';if(id){const u=users.find(x=>x.id===id);if(u){document.getElementById('u-name').value=u.name;document.getElementById('u-user').value=u.username;document.getElementById('u-pass').value=u.password;document.getElementById('u-role').value=u.role;}}else{['u-name','u-user','u-pass'].forEach(x=>document.getElementById(x).value='');document.getElementById('u-role').value='viewer';}document.getElementById('user-modal').classList.add('open');}
-function saveUser(){const name=document.getElementById('u-name').value.trim();const username=document.getElementById('u-user').value.trim().toLowerCase();const password=document.getElementById('u-pass').value.trim();const role=document.getElementById('u-role').value;if(!name||!username||!password){toast('Sab fields bharo!','e');return;}if(users.find(u=>u.username===username&&u.id!==editUserId)){toast('Username pehle se exists karta hai!','e');return;}if(editUserId){users=users.map(u=>u.id===editUserId?{id:editUserId,name,username,password,role}:u);toast(name+' update ho gaya!','s');}else{users.push({id:Date.now().toString(),name,username,password,role});toast(name+' add ho gaya!','s');}saveUsers();closeM('user-modal');renderUsers();}
-function deleteUser(id){if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}if(!confirm('Delete karna chahte hain?'))return;users=users.filter(u=>u.id!==id);saveUsers();renderUsers();toast('User delete ho gaya','i');}
-function renderUsers(){const grid=document.getElementById('users-grid');if(!grid)return;if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};grid.innerHTML=users.map(u=>{const isMe=u.id===currentUser.id;return`<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${u.role}">${u.role}</span></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;}).join('');}
-
-// ===== PAYMENTS =====
-let payments=[];
-
-// Firebase se payments load
-async function loadPayments(){
-  // pehle localStorage se load (instant)
-  const s=localStorage.getItem('cs_payments');
-  if(s)payments=JSON.parse(s);
-  // phir Firebase se sync
-  if(typeof FB_DB!=='undefined'&&FB_DB){
-    try{
-      const snap=await FB_DB.ref('cs/payments').once('value');
+async function loadUsers(){
+  const s=localStorage.getItem('cs_users');
+  users=s?JSON.parse(s):[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin',permissions:PERM_PRESET.admin}];
+  try{
+    await loadFB();
+    if(FB_DB){
+      const snap=await FB_DB.ref('cs/users').once('value');
       const val=snap.val();
-      if(val){
-        payments=Object.values(val).filter(Boolean);
-        localStorage.setItem('cs_payments',JSON.stringify(payments));
-      }
-      // Real-time listener
-      FB_DB.ref('cs/payments').on('value',snap2=>{
-        const v=snap2.val();
-        payments=v?Object.values(v).filter(Boolean):[];
-        localStorage.setItem('cs_payments',JSON.stringify(payments));
-        updFarm();
-      });
-    }catch(e){console.log('Pay load err:',e);}
-  }
+      if(val&&Object.keys(val).length>0){users=Object.values(val).filter(Boolean);localStorage.setItem('cs_users',JSON.stringify(users));}
+      else{const u={};users.forEach(usr=>{if(usr.id)u['cs/users/'+usr.id]=usr;});FB_DB.ref().update(u);}
+      FB_DB.ref('cs/users').on('value',s2=>{const v=s2.val();if(v){users=Object.values(v).filter(Boolean);localStorage.setItem('cs_users',JSON.stringify(users));}});
+    }
+  }catch(e){console.log('Users err:',e);}
 }
-
-async function savePaymentFB(pay,action){
-  // Firebase save
-  if(typeof FB_DB!=='undefined'&&FB_DB){
-    try{
-      if(action==='delete'){await FB_DB.ref('cs/payments/'+pay.id).remove();}
-      else{await FB_DB.ref('cs/payments/'+pay.id).set(pay);}
-    }catch(e){console.log('Pay FB err:',e);}
-  }
-  // localStorage backup
-  localStorage.setItem('cs_payments',JSON.stringify(payments));
-  // Sheet backup
-  if(SHEET_URL&&SHEET_URL!=='YOUR_SHEET_URL_HERE'){
-    const p={action:'payment_'+action,id:pay.id||'',farmer:pay.farmer||'',amount:pay.amount||0,date:pay.date||'',note:pay.note||'',mode:pay.mode||'Cash'};
-    const img=new Image();
-    img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify(p));
-  }
+async function saveUsers(){
+  localStorage.setItem('cs_users',JSON.stringify(users));
+  try{await loadFB();if(FB_DB){const u={};users.forEach(usr=>{if(usr.id)u['cs/users/'+usr.id]=usr;});await FB_DB.ref().update(u);}}catch(e){}
 }
-
-function openPayModal(farmerName){
-  const farmerRecs=recs.filter(r=>r.farmer===farmerName);
-  const netPay=farmerRecs.reduce((s,r)=>s+(r.netPay||0),0);
-  const farmerPays=payments.filter(p=>p.farmer===farmerName);
-  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
-  const balance=netPay-totalPaid;
-  // Info card
-  document.getElementById('pay-farmer').value=farmerName;
-  document.getElementById('pay-edit-id').value='';
-  document.getElementById('pay-farmer-name').textContent=farmerName;
-  document.getElementById('pay-info-total').textContent='₹'+fmt(netPay);
-  document.getElementById('pay-info-paid').textContent='₹'+fmt(totalPaid);
-  document.getElementById('pay-info-bal').textContent='₹'+fmt(balance);
-  document.getElementById('pay-modal-title').textContent='Payment Add Karo';
-  document.getElementById('pay-save-btn').textContent='Save Payment';
-  // Reset fields
-  document.getElementById('pay-amount').value='';
-  document.getElementById('pay-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('pay-note').value='';
-  document.getElementById('pay-preview').style.display='none';
-  setPayMode('Cash');
-  // Quick amount buttons
-  const qb=document.getElementById('pay-quick-btns');
-  const qtAmts=balance>0?[Math.round(balance/4),Math.round(balance/2),Math.round(balance*3/4),balance].filter(x=>x>0):[10000,25000,50000,100000];
-  qb.innerHTML=qtAmts.map(a=>`<button class='pqb' onclick='document.getElementById("pay-amount").value=${a};updPayPreview()'>₹${fmt(a)}</button>`).join('');
-  if(balance>0){const fullBtn=document.createElement('button');fullBtn.className='pqb';fullBtn.style.background='#dcfce7';fullBtn.style.borderColor='#166534';fullBtn.style.color='#166534';fullBtn.textContent='Full: ₹'+fmt(balance);fullBtn.onclick=()=>{document.getElementById('pay-amount').value=balance;updPayPreview();};qb.appendChild(fullBtn);}
-  document.getElementById('pay-modal').classList.add('open');
+async function saveUsersToSheet(){}
+async function loadUsersFromSheet(){await loadUsers();}
+function openUserModal(id=null){
+  editUserId=id;document.getElementById('um-title').textContent=id?'Edit':'Naya User';
+  if(id){const u=users.find(x=>x.id===id);if(u){document.getElementById('u-name').value=u.name;document.getElementById('u-user').value=u.username;document.getElementById('u-pass').value=u.password;const perms=getUserPerms(u);PERM_ALL.forEach(p=>{const el=document.getElementById('up-'+p);if(el)el.checked=perms.includes(p);});syncPerms();}}
+  else{['u-name','u-user','u-pass'].forEach(x=>document.getElementById(x).value='');setPreset('viewer');}
+  document.getElementById('user-modal').classList.add('open');
 }
-
-function setPayMode(mode){
-  document.getElementById('pay-mode').value=mode;
-  ['Cash','Online','Cheque','Other'].forEach(m=>{
-    const btn=document.getElementById('pmb-'+m);
-    if(btn)btn.classList.toggle('active',m===mode);
-  });
-}
-
-function updPayPreview(){
-  const farmer=document.getElementById('pay-farmer').value;
-  const amount=parseFloat(document.getElementById('pay-amount').value)||0;
-  const editId=document.getElementById('pay-edit-id').value;
-  const farmerRecs=recs.filter(r=>r.farmer===farmer);
-  const netPay=farmerRecs.reduce((s,r)=>s+(r.netPay||0),0);
-  const farmerPays=payments.filter(p=>p.farmer===farmer&&p.id!==editId);
-  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
-  const afterBal=netPay-totalPaid-amount;
-  const prev=document.getElementById('pay-preview');
-  const balEl=document.getElementById('pay-after-bal');
-  if(amount>0){
-    prev.style.display='block';
-    prev.style.background=afterBal<=0?'#f0fdf4':'#fef3cd';
-    prev.style.borderColor=afterBal<=0?'#86efac':'#fcd34d';
-    balEl.style.color=afterBal<=0?'#166534':'#b45309';
-    balEl.textContent=(afterBal<0?'Zyada hua: ₹':afterBal===0?'Poora clear: ₹':'Baaki rahega: ₹')+fmt(Math.abs(afterBal));
-  }else{prev.style.display='none';}
-}
-
-async function savePayment(){
-  const farmer=document.getElementById('pay-farmer').value;
-  const amount=parseFloat(document.getElementById('pay-amount').value)||0;
-  const date=document.getElementById('pay-date').value;
-  const note=document.getElementById('pay-note').value.trim();
-  const mode=document.getElementById('pay-mode').value||'Cash';
-  const editId=document.getElementById('pay-edit-id').value;
-  if(!amount||amount<=0){toast('Sahi amount daalo!','e');return;}
-  if(!date){toast('Tarikh daalo!','e');return;}
-  if(editId){
-    // Edit mode
-    const idx=payments.findIndex(p=>p.id===editId);
-    if(idx>-1){payments[idx]={...payments[idx],amount,date,note,mode};}
-    await savePaymentFB(payments[idx],'update');
-    toast('Payment update ho gayi!','s');
+async function saveUser(){
+  const name=document.getElementById('u-name').value.trim();
+  const username=document.getElementById('u-user').value.trim().toLowerCase();
+  const password=document.getElementById('u-pass').value.trim();
+  const role=document.getElementById('u-role').value;
+  const permissions=PERM_ALL.filter(p=>{const el=document.getElementById('up-'+p);return el&&el.checked;});
+  if(!name||!username||!password){toast('Sab fields bharo!','e');return;}
+  if(!permissions.length){toast('Koi ek permission to do!','e');return;}
+  if(users.find(u=>u.username===username&&u.id!==editUserId)){toast('Username pehle se exists!','e');return;}
+  if(editUserId){
+    users=users.map(u=>u.id===editUserId?{...u,name,username,password,role,permissions}:u);
+    if(currentUser&&currentUser.id===editUserId){currentUser={...currentUser,name,role,permissions};const sess=JSON.parse(localStorage.getItem('cs_session')||'{}');sess.user=currentUser;localStorage.setItem('cs_session',JSON.stringify(sess));}
+    toast(name+' update ho gaya!','s');
   } else {
-    // New payment
-    const newPay={id:'P'+Date.now(),farmer,amount,date,note,mode,addedBy:currentUser?currentUser.username:'',addedAt:new Date().toISOString()};
-    payments.push(newPay);
-    await savePaymentFB(newPay,'add');
-    toast('Payment save ho gayi!','s');
+    users.push({id:Date.now().toString(),name,username,password,role,permissions});
+    toast(name+' add ho gaya!','s');
   }
-  closeM('pay-modal');
-  updFarm();
-  showJD(farmer);
+  await saveUsers();closeM('user-modal');renderUsers();
+}
+async function deleteUser(id){
+  if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}
+  if(!confirm('Delete karna chahte hain?'))return;
+  users=users.filter(u=>u.id!==id);
+  try{await loadFB();if(FB_DB)await FB_DB.ref('cs/users/'+id).remove();}catch(e){}
+  localStorage.setItem('cs_users',JSON.stringify(users));renderUsers();toast('User delete ho gaya','i');
+}
+function renderUsers(){
+  const grid=document.getElementById('users-grid');if(!grid)return;
+  if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}
+  const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2',custom:'#f3e8ff'};
+  const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309',custom:'#7c3aed'};
+  const pl={view:'View',add:'Add',edit:'Edit',delete:'Delete',payment:'Pay',export:'Export',import:'Import',users:'Users'};
+  grid.innerHTML=users.map(u=>{
+    const isMe=u.id===currentUser.id,role=u.role||'viewer',perms=getUserPerms(u);
+    return `<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[role]||'#e8f0fd'};color:${rco[role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${role}">${role}</span></div><div style="display:flex;flex-wrap:wrap;gap:3px;margin:7px 0">${perms.map(p=>`<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:#e8f0fd;color:#1a5fc8;font-weight:600">${pl[p]||p}</span>`).join('')}</div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;
+  }).join('');
+}
+function addUserBadge(){
+  const hdr=document.querySelector('.hdr-r');const existing=document.getElementById('user-badge');if(existing)existing.remove();
+  const badge=document.createElement('div');badge.id='user-badge';
+  badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';
+  badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;
+  badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};
+  hdr.insertBefore(badge,hdr.firstChild);
+}
+function applyPermissions(){
+  if(!currentUser)return;
+  const addBtn=document.querySelector('.btn-add');if(addBtn)addBtn.style.display=hasPerm('add')?'':'none';
+  const usersTab=document.getElementById('tab-users');if(usersTab)usersTab.style.display=hasPerm('users')?'':'none';
+  document.querySelectorAll('.ab2.e').forEach(b=>b.style.display=hasPerm('edit')?'':'none');
+  document.querySelectorAll('.ab2.d').forEach(b=>b.style.display=hasPerm('delete')?'':'none');
+  document.querySelectorAll('[onclick*="openExpModal"]').forEach(b=>b.style.display=hasPerm('export')?'':'none');
+  document.querySelectorAll('[onclick*="openImportModal"]').forEach(b=>b.style.display=hasPerm('import')?'':'none');
 }
 
-function editPayment(id,farmerName){
-  const pay=payments.find(p=>p.id===id);
-  if(!pay)return;
-  openPayModal(farmerName);
-  setTimeout(()=>{
-    document.getElementById('pay-edit-id').value=id;
-    document.getElementById('pay-amount').value=pay.amount;
-    document.getElementById('pay-date').value=pay.date;
-    document.getElementById('pay-note').value=pay.note||'';
-    setPayMode(pay.mode||'Cash');
-    document.getElementById('pay-modal-title').textContent='Payment Edit Karo';
-    document.getElementById('pay-save-btn').textContent='Update Payment';
-    updPayPreview();
-  },50);
-}
-
-async function deletePayment(id,farmerName){
-  if(!confirm('Payment delete karna chahte hain?'))return;
-  payments=payments.filter(p=>p.id!==id);
-  await savePaymentFB({id},'delete');
-  toast('Payment delete ho gayi','i');
-  updFarm();
-  showJD(farmerName);
-}
 // ===== INIT =====
 loadUsers();
 loadPayments();
