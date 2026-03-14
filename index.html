@@ -1794,11 +1794,15 @@ async function saveUsers(){
   try{await loadFB();if(FB_DB){const u={};users.forEach(usr=>{if(usr.id)u['cs/users/'+usr.id]=usr;});await FB_DB.ref().update(u);}}catch(e){}
 }
 async function saveUsersToSheet(){}
-async function loadUsersFromSheet(){await loadUsers();}
+async function loadUsersFromSheet(){try{await loadUsers();}catch(e){}}
 function openUserModal(id=null){
   editUserId=id;document.getElementById('um-title').textContent=id?'Edit':'Naya User';
-  if(id){const u=users.find(x=>x.id===id);if(u){document.getElementById('u-name').value=u.name;document.getElementById('u-user').value=u.username;document.getElementById('u-pass').value=u.password;const perms=getUserPerms(u);PERM_ALL.forEach(p=>{const el=document.getElementById('up-'+p);if(el)el.checked=perms.includes(p);});syncPerms();}}
-  else{['u-name','u-user','u-pass'].forEach(x=>document.getElementById(x).value='');setPreset('viewer');}
+  if(id){
+    const u=users.find(x=>x.id===id);
+    if(u){document.getElementById('u-name').value=u.name;document.getElementById('u-user').value=u.username;document.getElementById('u-pass').value=u.password;const perms=getUserPerms(u);PERM_ALL.forEach(p=>{const el=document.getElementById('up-'+p);if(el)el.checked=perms.includes(p);});syncPerms();}
+  }else{
+    ['u-name','u-user','u-pass'].forEach(x=>document.getElementById(x).value='');setPreset('viewer');
+  }
   document.getElementById('user-modal').classList.add('open');
 }
 async function saveUser(){
@@ -1814,9 +1818,8 @@ async function saveUser(){
     users=users.map(u=>u.id===editUserId?{...u,name,username,password,role,permissions}:u);
     if(currentUser&&currentUser.id===editUserId){currentUser={...currentUser,name,role,permissions};const sess=JSON.parse(localStorage.getItem('cs_session')||'{}');sess.user=currentUser;localStorage.setItem('cs_session',JSON.stringify(sess));}
     toast(name+' update ho gaya!','s');
-  } else {
-    users.push({id:Date.now().toString(),name,username,password,role,permissions});
-    toast(name+' add ho gaya!','s');
+  }else{
+    users.push({id:Date.now().toString(),name,username,password,role,permissions});toast(name+' add ho gaya!','s');
   }
   await saveUsers();closeM('user-modal');renderUsers();
 }
@@ -1835,14 +1838,14 @@ function renderUsers(){
   const pl={view:'View',add:'Add',edit:'Edit',delete:'Delete',payment:'Pay',export:'Export',import:'Import',users:'Users'};
   grid.innerHTML=users.map(u=>{
     const isMe=u.id===currentUser.id,role=u.role||'viewer',perms=getUserPerms(u);
-    return `<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[role]||'#e8f0fd'};color:${rco[role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${role}">${role}</span></div><div style="display:flex;flex-wrap:wrap;gap:3px;margin:7px 0">${perms.map(p=>`<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:#e8f0fd;color:#1a5fc8;font-weight:600">${pl[p]||p}</span>`).join('')}</div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;
+    return '<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:'+(rc[role]||'#e8f0fd')+';color:'+(rco[role]||'#1a5fc8')+'">'+u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)+'</div><div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700">'+u.name+(isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':'')+'</div><div style="font-size:11px;color:#8a95a8">@'+u.username+'</div></div></div><span class="role-badge '+role+'">'+role+'</span></div><div style="display:flex;flex-wrap:wrap;gap:3px;margin:7px 0">'+perms.map(p=>'<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:#e8f0fd;color:#1a5fc8;font-weight:600">'+(pl[p]||p)+'</span>').join('')+'</div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal(''+u.id+'')">✏ Edit</button>'+(isMe?'':'<button class="btn btn-red" onclick="deleteUser(''+u.id+'')">🗑</button>')+'</div></div>';
   }).join('');
 }
 function addUserBadge(){
   const hdr=document.querySelector('.hdr-r');const existing=document.getElementById('user-badge');if(existing)existing.remove();
   const badge=document.createElement('div');badge.id='user-badge';
   badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';
-  badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;
+  badge.innerHTML='<span style="font-size:12px;color:#fff;font-weight:600">'+currentUser.name+'</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">'+currentUser.role+'</span>';
   badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};
   hdr.insertBefore(badge,hdr.firstChild);
 }
@@ -2008,8 +2011,8 @@ async function deletePayment(id,farmerName){
 }
 // ===== INIT =====
 loadUsers();
-loadPayments();
 checkSession();
+setTimeout(()=>loadPayments(),2000);
 </script>
 </body>
 </html>
