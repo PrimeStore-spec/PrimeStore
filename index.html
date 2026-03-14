@@ -1856,6 +1856,156 @@ function applyPermissions(){
   document.querySelectorAll('[onclick*="openImportModal"]').forEach(b=>b.style.display=hasPerm('import')?'':'none');
 }
 
+async function loadPayments(){
+  // pehle localStorage se load (instant)
+  const s=localStorage.getItem('cs_payments');
+  if(s)payments=JSON.parse(s);
+  // phir Firebase se sync
+  if(typeof FB_DB!=='undefined'&&FB_DB){
+    try{
+      const snap=await FB_DB.ref('cs/payments').once('value');
+      const val=snap.val();
+      if(val){
+        payments=Object.values(val).filter(Boolean);
+        localStorage.setItem('cs_payments',JSON.stringify(payments));
+      }
+      // Real-time listener
+      FB_DB.ref('cs/payments').on('value',snap2=>{
+        const v=snap2.val();
+        payments=v?Object.values(v).filter(Boolean):[];
+        localStorage.setItem('cs_payments',JSON.stringify(payments));
+        updFarm();
+      });
+    }catch(e){console.log('Pay load err:',e);}
+  }
+}
+
+async function savePaymentFB(pay,action){
+  // Firebase save
+  if(typeof FB_DB!=='undefined'&&FB_DB){
+    try{
+      if(action==='delete'){await FB_DB.ref('cs/payments/'+pay.id).remove();}
+      else{await FB_DB.ref('cs/payments/'+pay.id).set(pay);}
+    }catch(e){console.log('Pay FB err:',e);}
+  }
+  // localStorage backup
+  localStorage.setItem('cs_payments',JSON.stringify(payments));
+  // Sheet backup
+  if(SHEET_URL&&SHEET_URL!=='YOUR_SHEET_URL_HERE'){
+    const p={action:'payment_'+action,id:pay.id||'',farmer:pay.farmer||'',amount:pay.amount||0,date:pay.date||'',note:pay.note||'',mode:pay.mode||'Cash'};
+    const img=new Image();
+    img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify(p));
+  }
+}
+
+function openPayModal(farmerName){
+  const farmerRecs=recs.filter(r=>r.farmer===farmerName);
+  const netPay=farmerRecs.reduce((s,r)=>s+(r.netPay||0),0);
+  const farmerPays=payments.filter(p=>p.farmer===farmerName);
+  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
+  const balance=netPay-totalPaid;
+  // Info card
+  document.getElementById('pay-farmer').value=farmerName;
+  document.getElementById('pay-edit-id').value='';
+  document.getElementById('pay-farmer-name').textContent=farmerName;
+  document.getElementById('pay-info-total').textContent='₹'+fmt(netPay);
+  document.getElementById('pay-info-paid').textContent='₹'+fmt(totalPaid);
+  document.getElementById('pay-info-bal').textContent='₹'+fmt(balance);
+  document.getElementById('pay-modal-title').textContent='Payment Add Karo';
+  document.getElementById('pay-save-btn').textContent='Save Payment';
+  // Reset fields
+  document.getElementById('pay-amount').value='';
+  document.getElementById('pay-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('pay-note').value='';
+  document.getElementById('pay-preview').style.display='none';
+  setPayMode('Cash');
+  // Quick amount buttons
+  const qb=document.getElementById('pay-quick-btns');
+  const qtAmts=balance>0?[Math.round(balance/4),Math.round(balance/2),Math.round(balance*3/4),balance].filter(x=>x>0):[10000,25000,50000,100000];
+  qb.innerHTML=qtAmts.map(a=>`<button class='pqb' onclick='document.getElementById("pay-amount").value=${a};updPayPreview()'>₹${fmt(a)}</button>`).join('');
+  if(balance>0){const fullBtn=document.createElement('button');fullBtn.className='pqb';fullBtn.style.background='#dcfce7';fullBtn.style.borderColor='#166534';fullBtn.style.color='#166534';fullBtn.textContent='Full: ₹'+fmt(balance);fullBtn.onclick=()=>{document.getElementById('pay-amount').value=balance;updPayPreview();};qb.appendChild(fullBtn);}
+  document.getElementById('pay-modal').classList.add('open');
+}
+
+function setPayMode(mode){
+  document.getElementById('pay-mode').value=mode;
+  ['Cash','Online','Cheque','Other'].forEach(m=>{
+    const btn=document.getElementById('pmb-'+m);
+    if(btn)btn.classList.toggle('active',m===mode);
+  });
+}
+
+function updPayPreview(){
+  const farmer=document.getElementById('pay-farmer').value;
+  const amount=parseFloat(document.getElementById('pay-amount').value)||0;
+  const editId=document.getElementById('pay-edit-id').value;
+  const farmerRecs=recs.filter(r=>r.farmer===farmer);
+  const netPay=farmerRecs.reduce((s,r)=>s+(r.netPay||0),0);
+  const farmerPays=payments.filter(p=>p.farmer===farmer&&p.id!==editId);
+  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
+  const afterBal=netPay-totalPaid-amount;
+  const prev=document.getElementById('pay-preview');
+  const balEl=document.getElementById('pay-after-bal');
+  if(amount>0){
+    prev.style.display='block';
+    prev.style.background=afterBal<=0?'#f0fdf4':'#fef3cd';
+    prev.style.borderColor=afterBal<=0?'#86efac':'#fcd34d';
+    balEl.style.color=afterBal<=0?'#166534':'#b45309';
+    balEl.textContent=(afterBal<0?'Zyada hua: ₹':afterBal===0?'Poora clear: ₹':'Baaki rahega: ₹')+fmt(Math.abs(afterBal));
+  }else{prev.style.display='none';}
+}
+
+async function savePayment(){
+  const farmer=document.getElementById('pay-farmer').value;
+  const amount=parseFloat(document.getElementById('pay-amount').value)||0;
+  const date=document.getElementById('pay-date').value;
+  const note=document.getElementById('pay-note').value.trim();
+  const mode=document.getElementById('pay-mode').value||'Cash';
+  const editId=document.getElementById('pay-edit-id').value;
+  if(!amount||amount<=0){toast('Sahi amount daalo!','e');return;}
+  if(!date){toast('Tarikh daalo!','e');return;}
+  if(editId){
+    // Edit mode
+    const idx=payments.findIndex(p=>p.id===editId);
+    if(idx>-1){payments[idx]={...payments[idx],amount,date,note,mode};}
+    await savePaymentFB(payments[idx],'update');
+    toast('Payment update ho gayi!','s');
+  } else {
+    // New payment
+    const newPay={id:'P'+Date.now(),farmer,amount,date,note,mode,addedBy:currentUser?currentUser.username:'',addedAt:new Date().toISOString()};
+    payments.push(newPay);
+    await savePaymentFB(newPay,'add');
+    toast('Payment save ho gayi!','s');
+  }
+  closeM('pay-modal');
+  updFarm();
+  showJD(farmer);
+}
+
+function editPayment(id,farmerName){
+  const pay=payments.find(p=>p.id===id);
+  if(!pay)return;
+  openPayModal(farmerName);
+  setTimeout(()=>{
+    document.getElementById('pay-edit-id').value=id;
+    document.getElementById('pay-amount').value=pay.amount;
+    document.getElementById('pay-date').value=pay.date;
+    document.getElementById('pay-note').value=pay.note||'';
+    setPayMode(pay.mode||'Cash');
+    document.getElementById('pay-modal-title').textContent='Payment Edit Karo';
+    document.getElementById('pay-save-btn').textContent='Update Payment';
+    updPayPreview();
+  },50);
+}
+
+async function deletePayment(id,farmerName){
+  if(!confirm('Payment delete karna chahte hain?'))return;
+  payments=payments.filter(p=>p.id!==id);
+  await savePaymentFB({id},'delete');
+  toast('Payment delete ho gayi','i');
+  updFarm();
+  showJD(farmerName);
+}
 // ===== INIT =====
 loadUsers();
 loadPayments();
