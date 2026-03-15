@@ -1861,11 +1861,26 @@ function logout(){
   toast('Logout ho gaye!','i');
 }
 function addUserBadge(){const hdr=document.querySelector('.hdr-r');const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
+function hasPerm(p){
+  if(!currentUser)return false;
+  const perms=currentUser.permissions||({'admin':['view','add','edit','delete','payment','export','import','users'],'manager':['view','add','edit','payment','export'],'viewer':['view']}[currentUser.role]||['view']);
+  return perms.includes(p);
+}
 function applyPermissions(){
-  const role=currentUser?currentUser.role:'viewer';
-  const addBtn=document.querySelector('.btn-add');if(addBtn)addBtn.style.display=(role==='admin'||role==='manager')?'':'none';
-  const usersTab=document.getElementById('tab-users');if(usersTab)usersTab.style.display=role==='admin'?'':'none';
-  document.querySelectorAll('.ab2.e,.ab2.d').forEach(btn=>btn.style.display=role==='admin'?'':'none');
+  if(!currentUser)return;
+  // Naya Entry button
+  document.querySelectorAll('.btn-add,[onclick*="openM()"]').forEach(b=>b.style.display=hasPerm('add')?'':'none');
+  // Import button
+  document.querySelectorAll('[onclick*="openImportModal"]').forEach(b=>b.style.display=hasPerm('import')?'':'none');
+  // Export button
+  document.querySelectorAll('[onclick*="openExpModal"]').forEach(b=>b.style.display=hasPerm('export')?'':'none');
+  // Users tab
+  const usersTab=document.getElementById('tab-users');if(usersTab)usersTab.style.display=hasPerm('users')?'':'none';
+  // Edit/Delete buttons in table
+  document.querySelectorAll('.ab2.e').forEach(b=>b.style.display=hasPerm('edit')?'':'none');
+  document.querySelectorAll('.ab2.d').forEach(b=>b.style.display=hasPerm('delete')?'':'none');
+  // Naya User button
+  document.querySelectorAll('[onclick*="openUserModal()"]').forEach(b=>b.style.display=hasPerm('users')?'':'none');
 }
 function openUserModal(id=null){
   editUserId=id;
