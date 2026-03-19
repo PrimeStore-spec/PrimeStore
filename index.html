@@ -272,6 +272,42 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 </head>
 <body>
 
+<!-- BULK DELETE MODAL -->
+<div class="ov" id="bulk-del-modal" onclick="closeOut(event,'bulk-del-modal')" style="z-index:500">
+  <div class="modal-box" style="max-width:480px;width:min(480px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
+    <div class="mh" style="flex-shrink:0;background:linear-gradient(135deg,#991b1b,#dc2626)">
+      <div class="mt">🗑 Bulk Delete Records</div>
+      <button class="mx" onclick="closeM('bulk-del-modal')">✕</button>
+    </div>
+    <div class="mb" style="overflow-y:auto;flex:1;padding:14px">
+      <!-- Filter options -->
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px;margin-bottom:12px">
+        <div style="font-size:12px;font-weight:700;color:#991b1b;margin-bottom:10px">⚠️ Sirf Admin ke liye — Permanently delete hoga!</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div><label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px">From Date</label><input type="date" class="finp" id="bd-from"></div>
+          <div><label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px">To Date</label><input type="date" class="finp" id="bd-to"></div>
+        </div>
+        <div style="margin-bottom:10px">
+          <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px">Farmer (optional)</label>
+          <select class="finp" id="bd-farmer"><option value="">-- Sab Farmers --</option></select>
+        </div>
+        <button onclick="previewBulkDel()" style="width:100%;padding:8px;background:#dc2626;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px">🔍 Preview Karo</button>
+      </div>
+      <!-- Preview results -->
+      <div id="bd-preview" style="display:none">
+        <div id="bd-summary" style="padding:10px 12px;border-radius:7px;margin-bottom:10px;font-size:12px;font-weight:600"></div>
+        <div id="bd-list" style="background:var(--s2);border:1px solid var(--border);border-radius:7px;max-height:200px;overflow-y:auto;font-size:11px"></div>
+        <div style="margin-top:12px;padding:10px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:7px;font-size:11px;color:#991b1b">
+          <strong>Confirm:</strong> Yeh records hamesha ke liye delete ho jayenge!
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+          <button class="btn btn-ghost" onclick="closeM('bulk-del-modal')">Cancel</button>
+          <button id="bd-confirm-btn" onclick="doBulkDelete()" style="background:#dc2626;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;font-weight:600">🗑 Delete Karo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- PAYMENT MODAL -->
 <div class="ov" id="pay-modal" onclick="closeOut(event,'pay-modal')">
   <div class="modal-box" style="max-width:420px;width:min(420px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
@@ -470,7 +506,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     </div>
     <div class="tw">
       <div class="th2"><div class="ttl">📋 Grading Records <span class="rcnt" id="r-cnt">0</span></div>
-      <div style="display:flex;gap:6px"><button class="btn" onclick="openImportModal()" style="background:#7c3aed;color:#fff">Import CSV</button><button class="btn btn-green" onclick="openExpModal()">Export CSV/PDF</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
+      <div style="display:flex;gap:6px"><button class="btn" onclick="openBulkDel()" style="background:#dc2626;color:#fff">🗑 Bulk Delete</button><button class="btn" onclick="openImportModal()" style="background:#7c3aed;color:#fff">Import CSV</button><button class="btn btn-green" onclick="openExpModal()">Export CSV/PDF</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
       <div class="tsc"><table>
         <thead><tr><th>Sr</th><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th><th>Store A</th><th>Store B</th><th>Store C</th><th>Store D</th><th>Own C</th><th>Own D</th><th>Own A</th><th>Own B</th><th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Labour ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th></tr></thead>
         <tbody id="main-tbody"></tbody>
@@ -1122,6 +1158,81 @@ function delR(id){
   if(rec)saveToSheet(rec,'delete');
   toast('Record delete ho gaya','i');
   closeM('d-modal');
+}
+
+// ===== BULK DELETE =====
+function openBulkDel(){
+  if(!hasPerm('delete')){toast('Permission nahi hai!','e');return;}
+  // Date defaults
+  const dates=recs.map(r=>r.date).filter(Boolean).sort();
+  document.getElementById('bd-from').value=dates[0]||'';
+  document.getElementById('bd-to').value=dates[dates.length-1]||'';
+  // Farmer dropdown
+  const sel=document.getElementById('bd-farmer');
+  sel.innerHTML='<option value="">-- Sab Farmers --</option>';
+  [...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort().forEach(f=>{
+    const o=document.createElement('option');o.value=f;o.textContent=f;sel.appendChild(o);
+  });
+  document.getElementById('bd-preview').style.display='none';
+  document.getElementById('bulk-del-modal').classList.add('open');
+}
+
+let bulkDelIds=[];
+function previewBulkDel(){
+  const from=document.getElementById('bd-from').value;
+  const to=document.getElementById('bd-to').value;
+  const farmer=document.getElementById('bd-farmer').value;
+  if(!from&&!to&&!farmer){toast('Koi ek filter to lagao!','e');return;}
+  const toDelete=recs.filter(r=>{
+    if(from&&r.date<from)return false;
+    if(to&&r.date>to)return false;
+    if(farmer&&r.farmer!==farmer)return false;
+    return true;
+  });
+  bulkDelIds=toDelete.map(r=>r.id);
+  const prev=document.getElementById('bd-preview');
+  const sumEl=document.getElementById('bd-summary');
+  const listEl=document.getElementById('bd-list');
+  if(!bulkDelIds.length){
+    sumEl.style.background='#f0fdf4';sumEl.style.color='#166534';
+    sumEl.textContent='Is range mein koi record nahi mila!';
+    listEl.innerHTML='';
+    prev.style.display='block';
+    document.getElementById('bd-confirm-btn').style.display='none';
+    return;
+  }
+  sumEl.style.background='#fef2f2';sumEl.style.color='#991b1b';
+  sumEl.textContent='⚠️ '+bulkDelIds.length+' records delete honge!';
+  listEl.innerHTML=toDelete.sort((a,b)=>{
+    const na=parseInt((a.receipt||'').replace(/[^0-9]/g,''))||0;
+    const nb=parseInt((b.receipt||'').replace(/[^0-9]/g,''))||0;
+    return na-nb;
+  }).map(r=>'<div style="display:flex;justify-content:space-between;padding:6px 10px;border-bottom:1px solid var(--border)">'
+    +'<span style="font-weight:600">'+( r.receipt||'—')+'</span>'
+    +'<span style="color:var(--text2)">'+r.farmer+'</span>'
+    +'<span style="color:var(--text3)">'+r.date+'</span>'
+    +'<span style="color:#dc2626;font-weight:600">₹'+fmt(r.netPay||0)+'</span>'
+    +'</div>').join('');
+  document.getElementById('bd-confirm-btn').style.display='block';
+  prev.style.display='block';
+}
+
+async function doBulkDelete(){
+  if(!bulkDelIds.length)return;
+  const btn=document.getElementById('bd-confirm-btn');
+  btn.textContent='Delete ho raha hai...';btn.disabled=true;
+  let done=0;
+  for(const id of bulkDelIds){
+    const rec=recs.find(r=>r.id===id);
+    recs=recs.filter(r=>r.id!==id);
+    if(rec)await saveToSheet(rec,'delete');
+    done++;
+  }
+  saveL();updAll();applyF();
+  closeM('bulk-del-modal');
+  toast(done+' records delete ho gaye!','s');
+  bulkDelIds=[];
+  btn.textContent='🗑 Delete Karo';btn.disabled=false;
 }
 
 // ===== DROPDOWNS =====
@@ -1870,6 +1981,7 @@ function applyPermissions(){
   if(!currentUser)return;
   // Naya Entry button
   document.querySelectorAll('.btn-add,[onclick*="openM()"]').forEach(b=>b.style.display=hasPerm('add')?'':'none');
+  document.querySelectorAll('[onclick*="openBulkDel"]').forEach(b=>b.style.display=hasPerm('delete')?'':'none');
   // Import button
   document.querySelectorAll('[onclick*="openImportModal"]').forEach(b=>b.style.display=hasPerm('import')?'':'none');
   // Export button
