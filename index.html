@@ -818,6 +818,7 @@ const SHEET_URL='https://script.google.com/macros/s/AKfycbxUZz_ewOxzIpRNQqxg6Iof
 const FB_CFG={apiKey:'AIzaSyBhvCmZLVSOKflr7Ub_Vjhw_1CBlV2PaAI',authDomain:'primecoldstore-439ab.firebaseapp.com',databaseURL:'https://primecoldstore-439ab-default-rtdb.asia-southeast1.firebasedatabase.app',projectId:'primecoldstore-439ab',storageBucket:'primecoldstore-439ab.firebasestorage.app',messagingSenderId:'848383603685',appId:'1:848383603685:web:7c9b45a123aa25e153f50c'};
 let FB_DB=null,FB_ON=false;
 function loadFB(){return new Promise(res=>{if(FB_ON){res();return;}const s1=document.createElement('script');s1.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';s1.onload=()=>{const s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';s2.onload=()=>{try{if(!firebase.apps.length)firebase.initializeApp(FB_CFG);FB_DB=firebase.database();FB_ON=true;}catch(e){console.log('FB err:',e);}res();};document.head.appendChild(s2);};document.head.appendChild(s1);});}
+const FB_USERS_PATH='cs/users';
 let recs=[],filtered=[],editId=null,pg=1;
 const PP=15;
 let sField='date',sDir='desc',autoTimer=null;
@@ -830,6 +831,7 @@ function gc(n){if(!FCM[n])FCM[n]=FC[fci++%FC.length];return FCM[n];}
 function ini(n){return(n||'').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';}
 function fmt(n){return(n||0).toLocaleString('en-IN');}
 function fmtS(n){return String(Math.round(n||0));}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 
 // ===== STATUS =====
 function setSt(s){
@@ -1870,12 +1872,142 @@ function toast(msg,type='i'){
 function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
 
 // ===== AUTH =====
-const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}];
+const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin',active:true}];
 let currentUser=null,users=[],editUserId=null;
-function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
-function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
+
+function normalizeUsers(){
+  if(!Array.isArray(users)) users=[];
+  users = users.map(u=>({
+    id: String(u.id||Date.now()),
+    name: String(u.name||'').trim() || 'User',
+    username: String(u.username||'').trim().toLowerCase(),
+    role: String(u.role||'viewer'),
+    permissions: Array.isArray(u.permissions) ? u.permissions : undefined,
+    active: (u.active !== false),
+    deactivatedAt: u.deactivatedAt || null,
+    passwordHash: u.passwordHash || null,
+    passwordSalt: u.passwordSalt || null,
+    password: u.password || ''
+  })).filter(u=>u.username);
+  if(!users.length) users=[...DEFAULT_USERS];
+}
+
+function loadUsers(){
+  const s=localStorage.getItem('cs_users');
+  users=s?JSON.parse(s):[...DEFAULT_USERS];
+  normalizeUsers();
+}
+
 async function saveUsersToSheet(){const img=new Image();img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify({action:'saveUsers',users}));}
-async function loadUsersFromSheet(){try{const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];for(let i=0;i<proxies.length;i++){try{const res=await proxies[i]();let txt=await res.text();try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}const data=JSON.parse(txt);if(data.users&&data.users.length>0){users=data.users;localStorage.setItem('cs_users',JSON.stringify(users));return;}}catch(e){}}}catch(e){}loadUsers();}
+
+async function loadUsersFromFirebase(){
+  await loadFB();
+  if(!(FB_ON && FB_DB)) return false;
+  try{
+    const snap = await FB_DB.ref(FB_USERS_PATH).once('value');
+    const val = snap.val();
+    if(val && typeof val === 'object'){
+      const arr = Object.values(val).filter(Boolean);
+      if(arr.length){
+        users = arr;
+        normalizeUsers();
+        localStorage.setItem('cs_users',JSON.stringify(users));
+        return true;
+      }
+    }
+  }catch(e){ console.log('FB users load err:', e.message); }
+  return false;
+}
+
+async function saveUsersToFirebase(){
+  try{
+    await loadFB();
+    if(!(FB_ON && FB_DB)) return;
+    const obj = {};
+    (users||[]).forEach(u=>{ if(u && u.id) obj[u.id]=u; });
+    await FB_DB.ref(FB_USERS_PATH).set(obj);
+  }catch(e){ console.log('FB users save err:', e.message); }
+}
+
+function attachUsersRealtime(){
+  if(!(FB_ON && FB_DB)) return;
+  try{
+    FB_DB.ref(FB_USERS_PATH).on('value', snap=>{
+      const v = snap.val();
+      if(v && typeof v === 'object'){
+        const arr = Object.values(v).filter(Boolean);
+        if(arr.length){
+          users = arr;
+          normalizeUsers();
+          localStorage.setItem('cs_users',JSON.stringify(users));
+          if(currentUser){
+            const fresh = users.find(x=>x.id===currentUser.id);
+            if(fresh && fresh.active===false){
+              showLoginMsg('Account deactivate hai — admin se contact karo');
+              logout();
+            }
+          }
+          try{ renderUsers(); }catch(e){}
+        }
+      }
+    });
+  }catch(e){}
+}
+
+async function loadUsersFromSheet(){
+  try{
+    const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];
+    for(let i=0;i<proxies.length;i++){
+      try{
+        const res=await proxies[i]();
+        let txt=await res.text();
+        try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
+        const data=JSON.parse(txt);
+        if(data.users&&data.users.length>0){
+          users=data.users;
+          normalizeUsers();
+          localStorage.setItem('cs_users',JSON.stringify(users));
+          return true;
+        }
+      }catch(e){}
+    }
+  }catch(e){}
+  loadUsers();
+  return false;
+}
+
+function saveUsers(){
+  normalizeUsers();
+  localStorage.setItem('cs_users',JSON.stringify(users));
+  saveUsersToFirebase();
+  saveUsersToSheet();
+}
+
+function randSalt(){
+  const a = new Uint8Array(16);
+  crypto.getRandomValues(a);
+  return Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function sha256Hex(s){
+  const enc = new TextEncoder().encode(s);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function ensureUserHasHash(u){
+  if(u.passwordHash && u.passwordSalt) return u;
+  if(!u.password) return u;
+  u.passwordSalt = u.passwordSalt || randSalt();
+  u.passwordHash = await sha256Hex(u.passwordSalt + '|' + u.password);
+  u.password = '';
+  return u;
+}
+async function verifyUserPassword(u, inputPass){
+  if(u.passwordHash && u.passwordSalt){
+    const h = await sha256Hex(u.passwordSalt + '|' + inputPass);
+    return h === u.passwordHash;
+  }
+  return String(u.password||'') === String(inputPass||'');
+}
 // ===== SECURITY CONFIG =====
 const SESSION_HOURS=8;
 const MAX_ATTEMPTS=3;
@@ -1902,7 +2034,7 @@ function recordFail(username){
 }
 function clearFail(username){const lk=getLockout();delete lk[username.toLowerCase()];setLockout(lk);}
 
-function doLogin(){
+async function doLogin(){
   const username=document.getElementById('l-user').value.trim().toLowerCase();
   const password=document.getElementById('l-pass').value.trim();
   const err=document.getElementById('login-err');
@@ -1910,9 +2042,16 @@ function doLogin(){
   if(!username||!password){err.textContent='Username aur password daalo!';err.classList.add('show');return;}
   const locked=checkLockout(username);
   if(locked){err.textContent='LOCKED: '+locked+' minute baad try karo (zyada galat attempts)';err.classList.add('show');document.getElementById('l-pass').value='';return;}
-  loadUsers();
-  const user=users.find(u=>u.username.toLowerCase()===username&&u.password===password);
-  if(!user){
+  const gotFb = await loadUsersFromFirebase();
+  if(gotFb){ attachUsersRealtime(); }
+  else { await loadUsersFromSheet(); }
+  const user=users.find(u=>String(u.username||'').toLowerCase()===username);
+  if(user && user.active===false){
+    err.textContent='Account deactivate hai — admin se contact karo';
+    err.classList.add('show');document.getElementById('l-pass').value='';return;
+  }
+  const ok = user ? await verifyUserPassword(user, password) : false;
+  if(!user || !ok){
     const left=recordFail(username);
     const lockedNow=checkLockout(username);
     if(lockedNow){err.textContent='LOCKED: Account '+LOCKOUT_MIN+' minute ke liye band ho gaya!';}
@@ -1924,6 +2063,11 @@ function doLogin(){
   const sessData={id:user.id,token,expires:Date.now()+(SESSION_HOURS*3600*1000)};
   err.classList.remove('show');
   currentUser=user;
+  try{
+    await ensureUserHasHash(currentUser);
+    users = users.map(u=>u.id===currentUser.id?currentUser:u);
+    saveUsers();
+  }catch(e){}
   localStorage.setItem('cs_session',JSON.stringify(sessData));
   document.getElementById('login-wrap').style.display='none';
   applyPermissions();addUserBadge();
@@ -1931,7 +2075,9 @@ function doLogin(){
 }
 
 async function checkSession(){
-  await loadUsersFromSheet();
+  const gotFb = await loadUsersFromFirebase();
+  if(gotFb){ attachUsersRealtime(); }
+  else { await loadUsersFromSheet(); }
   const raw=localStorage.getItem('cs_session');
   if(raw){
     try{
@@ -1939,6 +2085,11 @@ async function checkSession(){
       if(sess.expires&&Date.now()<sess.expires&&sess.id&&sess.token){
         const user=users.find(u=>u.id===sess.id);
         if(user){
+          if(user.active===false){
+            localStorage.removeItem('cs_session');
+            showLoginMsg('Account deactivate hai — admin se contact karo');
+            document.getElementById('login-wrap').style.display='flex';return;
+          }
           currentUser=user;
           sess.expires=Date.now()+(SESSION_HOURS*3600*1000);
           localStorage.setItem('cs_session',JSON.stringify(sess));
@@ -2004,7 +2155,8 @@ function openUserModal(id=null){
     if(u){
       document.getElementById('u-name').value=u.name;
       document.getElementById('u-user').value=u.username;
-      document.getElementById('u-pass').value=u.password;
+      // Password hash is stored; for edit, keep blank unless resetting
+      document.getElementById('u-pass').value='';
       const perms=u.permissions||PPRE[u.role]||['view'];
       PALL.forEach(p=>{const el=document.getElementById('up-'+p);if(el)el.checked=perms.includes(p);});
       syncPerms();
@@ -2022,20 +2174,79 @@ function saveUser(){
   const role=document.getElementById('u-role').value;
   const PALL=['view','add','edit','delete','payment','export','import','users'];
   const permissions=PALL.filter(p=>{const el=document.getElementById('up-'+p);return el&&el.checked;});
-  if(!name||!username||!password){toast('Sab fields bharo!','e');return;}
+  if(!name||!username){toast('Sab fields bharo!','e');return;}
   if(!permissions.length){toast('Koi ek permission to do!','e');return;}
   if(users.find(u=>u.username===username&&u.id!==editUserId)){toast('Username pehle se exists!','e');return;}
   if(editUserId){
-    users=users.map(u=>u.id===editUserId?{...u,name,username,password,role,permissions}:u);
+    users=users.map(u=>{
+      if(u.id!==editUserId) return u;
+      // If password blank during edit, keep existing hash/password
+      if(!password){
+        return {...u,name,username,role,permissions,active:(u.active!==false)};
+      }
+      return {...u,name,username,password,role,permissions,active:(u.active!==false),passwordHash:null,passwordSalt:null};
+    });
     toast(name+' update ho gaya!','s');
   }else{
-    users.push({id:Date.now().toString(),name,username,password,role,permissions});
+    if(!password){toast('Password zaroori hai','e');return;}
+    users.push({id:Date.now().toString(),name,username,password,role,permissions,active:true});
     toast(name+' add ho gaya!','s');
   }
-  saveUsers();closeM('user-modal');renderUsers();
+  (async ()=>{
+    for(const u of users){ await ensureUserHasHash(u); }
+    saveUsers();closeM('user-modal');renderUsers();
+  })();
 }
 function deleteUser(id){if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}if(!confirm('Delete karna chahte hain?'))return;users=users.filter(u=>u.id!==id);saveUsers();renderUsers();toast('User delete ho gaya','i');}
-function renderUsers(){const grid=document.getElementById('users-grid');if(!grid)return;if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};grid.innerHTML=users.map(u=>{const isMe=u.id===currentUser.id;return`<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${u.role}">${u.role}</span></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;}).join('');}
+function toggleUserActive(id){
+  if(!currentUser || !hasPerm('users')){toast('Permission nahi hai!','e');return;}
+  const u = users.find(x=>x.id===id);
+  if(!u){toast('User nahi mila','e');return;}
+  if(currentUser && currentUser.id===id){toast('Apna account deactivate nahi kar sakte!','e');return;}
+  u.active = (u.active===false) ? true : false;
+  u.deactivatedAt = u.active ? null : Date.now();
+  users = users.map(x=>x.id===id?u:x);
+  saveUsers();
+  renderUsers();
+  toast(u.active ? 'User activate ho gaya' : 'User deactivate ho gaya','i');
+}
+
+function renderUsers(){
+  const grid=document.getElementById('users-grid');if(!grid)return;
+  if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}
+  const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};
+  grid.innerHTML=users.map(u=>{
+    const isMe=currentUser&&u.id===currentUser.id;
+    const active = (u.active !== false);
+    const statusPill = active
+      ? `<span style="font-size:10px;background:#dcfce7;border:1px solid #86efac;color:#166534;padding:2px 7px;border-radius:999px;font-weight:700">ACTIVE</span>`
+      : `<span style="font-size:10px;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:2px 7px;border-radius:999px;font-weight:700">DEACTIVATED</span>`;
+    const canManage = currentUser && hasPerm('users');
+    const actBtn = (canManage && !isMe)
+      ? `<button class="btn ${active?'btn-red':'btn-green'}" onclick="toggleUserActive('${u.id}')">${active?'Deactivate':'Activate'}</button>`
+      : '';
+    return `<div class="user-card" style="${active?'':'opacity:0.75'}">
+      <div class="user-card-hdr">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${ini(u.name)}</div>
+          <div>
+            <div style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">${esc(u.name)}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div>
+            <div style="font-size:11px;color:#8a95a8">@${esc(u.username)}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${statusPill}
+          <span class="role-badge ${esc(u.role)}">${esc(u.role)}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap">
+        ${canManage?`<button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>`:''}
+        ${actBtn}
+        ${(!isMe && canManage)?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
 
 // ===== PAYMENTS =====
 let payments=[];
