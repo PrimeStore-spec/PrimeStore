@@ -32,6 +32,7 @@ header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a3a
 .hdr-stat .v{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:#fff;}
 .hdr-stat .l{font-size:8px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:1px;}
 #ss{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:11px;min-width:140px;text-align:center;white-space:nowrap;}
+#us{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:11px;min-width:140px;text-align:center;white-space:nowrap;}
 .btn-w{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px;transition:all 0.2s;}
 .btn-w:hover{background:rgba(255,255,255,0.28);}
 .btn-add{background:#fff;color:var(--blue2);border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
@@ -455,6 +456,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <div class="hdr-stat"><div class="v" id="h-store">0</div><div class="l">Store Bags</div></div>
     <div class="hdr-stat"><div class="v" id="h-own">0</div><div class="l">Own Purchase</div></div>
     <div id="ss">⟳ Connect ho raha...</div>
+    <div id="us">👥 Users: ⟳</div>
     <button class="btn-w" onclick="loadSheet()">🔄 Refresh</button>
     <button class="btn-add" onclick="openM()">＋ Naya Entry</button>
   </div>
@@ -818,6 +820,7 @@ const SHEET_URL='https://script.google.com/macros/s/AKfycbxUZz_ewOxzIpRNQqxg6Iof
 const FB_CFG={apiKey:'AIzaSyBhvCmZLVSOKflr7Ub_Vjhw_1CBlV2PaAI',authDomain:'primecoldstore-439ab.firebaseapp.com',databaseURL:'https://primecoldstore-439ab-default-rtdb.asia-southeast1.firebasedatabase.app',projectId:'primecoldstore-439ab',storageBucket:'primecoldstore-439ab.firebasestorage.app',messagingSenderId:'848383603685',appId:'1:848383603685:web:7c9b45a123aa25e153f50c'};
 let FB_DB=null,FB_ON=false;
 function loadFB(){return new Promise(res=>{if(FB_ON){res();return;}const s1=document.createElement('script');s1.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';s1.onload=()=>{const s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';s2.onload=()=>{try{if(!firebase.apps.length)firebase.initializeApp(FB_CFG);FB_DB=firebase.database();FB_ON=true;}catch(e){console.log('FB err:',e);}res();};document.head.appendChild(s2);};document.head.appendChild(s1);});}
+const FB_USERS_PATH='cs/users';
 let recs=[],filtered=[],editId=null,pg=1;
 const PP=15;
 let sField='date',sDir='desc',autoTimer=null;
@@ -830,12 +833,25 @@ function gc(n){if(!FCM[n])FCM[n]=FC[fci++%FC.length];return FCM[n];}
 function ini(n){return(n||'').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';}
 function fmt(n){return(n||0).toLocaleString('en-IN');}
 function fmtS(n){return String(Math.round(n||0));}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 
 // ===== STATUS =====
 function setSt(s){
   const el=document.getElementById('ss');if(!el)return;
   const m={ok:'<span style="color:#4ade80;font-weight:600">● Sheet Connected ✓</span>',sync:'<span style="color:#fbbf24">⟳ Sync ho raha...</span>',load:'<span style="color:#fbbf24">⟳ Data load ho raha...</span>',err:'<span style="color:#f87171">● Error — Retry...</span>',ch:'<span style="color:rgba(255,255,255,0.6)">⟳ Check ho raha...</span>'};
   el.innerHTML=m[s]||m.ch;
+}
+
+function setUserSt(state, detail){
+  const el=document.getElementById('us');if(!el)return;
+  const d = detail ? (' <span style="opacity:.7">('+esc(detail)+')</span>') : '';
+  const m={
+    ok:`<span style="color:#4ade80;font-weight:600">👥 Users: ● Firebase ✓</span>${d}`,
+    sync:`<span style="color:#fbbf24;font-weight:600">👥 Users: ⟳ Sync...</span>${d}`,
+    off:`<span style="color:#fbbf24;font-weight:600">👥 Users: ● Offline</span>${d}`,
+    err:`<span style="color:#f87171;font-weight:600">👥 Users: ● Error</span>${d}`
+  };
+  el.innerHTML=m[state]||m.off;
 }
 
 // ===== LOAD SHEET =====
@@ -1870,12 +1886,163 @@ function toast(msg,type='i'){
 function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
 
 // ===== AUTH =====
-const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'Mandy@147',role:'admin'}];
+const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin',active:true}];
 let currentUser=null,users=[],editUserId=null;
-function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
-function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
+
+function normalizeUsers(){
+  if(!Array.isArray(users)) users=[];
+  users = users.map(u=>({
+    id: String(u.id||Date.now()),
+    name: String(u.name||'').trim() || 'User',
+    username: String(u.username||'').trim().toLowerCase(),
+    role: String(u.role||'viewer'),
+    // RTDB does not allow `undefined` anywhere
+    permissions: Array.isArray(u.permissions) ? u.permissions : [],
+    active: (u.active !== false),
+    deactivatedAt: u.deactivatedAt || null,
+    passwordHash: u.passwordHash || null,
+    passwordSalt: u.passwordSalt || null,
+    password: u.password || ''
+  })).filter(u=>u.username);
+  if(!users.length) users=[...DEFAULT_USERS];
+}
+
+function loadUsers(){
+  const s=localStorage.getItem('cs_users');
+  users=s?JSON.parse(s):[...DEFAULT_USERS];
+  normalizeUsers();
+}
+
 async function saveUsersToSheet(){const img=new Image();img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify({action:'saveUsers',users}));}
-async function loadUsersFromSheet(){try{const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];for(let i=0;i<proxies.length;i++){try{const res=await proxies[i]();let txt=await res.text();try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}const data=JSON.parse(txt);if(data.users&&data.users.length>0){users=data.users;localStorage.setItem('cs_users',JSON.stringify(users));return;}}catch(e){}}}catch(e){}loadUsers();}
+
+async function loadUsersFromFirebase(){
+  await loadFB();
+  if(!(FB_ON && FB_DB)){ setUserSt('off','sdk'); return false; }
+  try{
+    setUserSt('sync');
+    const snap = await FB_DB.ref(FB_USERS_PATH).once('value');
+    const val = snap.val();
+    if(val && typeof val === 'object'){
+      const arr = Object.values(val).filter(Boolean);
+      if(arr.length){
+        users = arr;
+        normalizeUsers();
+        localStorage.setItem('cs_users',JSON.stringify(users));
+        setUserSt('ok', users.length+'');
+        return true;
+      }
+    }
+    setUserSt('err','empty');
+  }catch(e){
+    console.log('FB users load err:', e.message);
+    setUserSt('err', e.message||'load');
+  }
+  return false;
+}
+
+async function saveUsersToFirebase(){
+  try{
+    await loadFB();
+    if(!(FB_ON && FB_DB)){ setUserSt('off','sdk'); return false; }
+    const obj = {};
+    (users||[]).forEach(u=>{ if(u && u.id) obj[u.id]=u; });
+    setUserSt('sync');
+    await FB_DB.ref(FB_USERS_PATH).set(obj);
+    setUserSt('ok', (users||[]).length+'');
+    return true;
+  }catch(e){
+    const msg = (e && (e.message || e.code)) ? (e.message || e.code) : String(e);
+    console.log('FB users save err:', msg, e);
+    try{ window.__lastUserSyncErr = msg; }catch(_){}
+    setUserSt('err', msg);
+    return false;
+  }
+}
+
+function attachUsersRealtime(){
+  if(!(FB_ON && FB_DB)) return;
+  try{
+    FB_DB.ref(FB_USERS_PATH).on('value', snap=>{
+      const v = snap.val();
+      if(v && typeof v === 'object'){
+        const arr = Object.values(v).filter(Boolean);
+        if(arr.length){
+          users = arr;
+          normalizeUsers();
+          localStorage.setItem('cs_users',JSON.stringify(users));
+          if(currentUser){
+            const fresh = users.find(x=>x.id===currentUser.id);
+            if(fresh && fresh.active===false){
+              showLoginMsg('Account deactivate hai — admin se contact karo');
+              logout();
+            }
+          }
+          try{ renderUsers(); }catch(e){}
+        }
+      }
+    });
+  }catch(e){}
+}
+
+async function loadUsersFromSheet(){
+  try{
+    const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];
+    for(let i=0;i<proxies.length;i++){
+      try{
+        const res=await proxies[i]();
+        let txt=await res.text();
+        try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
+        const data=JSON.parse(txt);
+        if(data.users&&data.users.length>0){
+          users=data.users;
+          normalizeUsers();
+          localStorage.setItem('cs_users',JSON.stringify(users));
+          return true;
+        }
+      }catch(e){}
+    }
+  }catch(e){}
+  loadUsers();
+  return false;
+}
+
+async function saveUsers(){
+  normalizeUsers();
+  localStorage.setItem('cs_users',JSON.stringify(users));
+  const ok = await saveUsersToFirebase();
+  if(!ok){
+    const reason = (typeof window!=='undefined' && window.__lastUserSyncErr) ? (' ('+window.__lastUserSyncErr+')') : '';
+    toast('Firebase user sync fail — local save ok'+reason,'e');
+  }
+  else toast('Users Firebase sync ok','s');
+  saveUsersToSheet();
+}
+
+function randSalt(){
+  const a = new Uint8Array(16);
+  crypto.getRandomValues(a);
+  return Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function sha256Hex(s){
+  const enc = new TextEncoder().encode(s);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function ensureUserHasHash(u){
+  if(u.passwordHash && u.passwordSalt) return u;
+  if(!u.password) return u;
+  u.passwordSalt = u.passwordSalt || randSalt();
+  u.passwordHash = await sha256Hex(u.passwordSalt + '|' + u.password);
+  u.password = '';
+  return u;
+}
+async function verifyUserPassword(u, inputPass){
+  if(u.passwordHash && u.passwordSalt){
+    const h = await sha256Hex(u.passwordSalt + '|' + inputPass);
+    return h === u.passwordHash;
+  }
+  return String(u.password||'') === String(inputPass||'');
+}
 // ===== SECURITY CONFIG =====
 const SESSION_HOURS=8;
 const MAX_ATTEMPTS=3;
@@ -1902,36 +2069,21 @@ function recordFail(username){
 }
 function clearFail(username){const lk=getLockout();delete lk[username.toLowerCase()];setLockout(lk);}
 
-function doLogin(){
-  const username=document.getElementById('l-user').value.trim().toLowerCase();
-  const password=document.getElementById('l-pass').value.trim();
-  const err=document.getElementById('login-err');
-  err.style.background='';err.style.borderColor='';err.style.color='';
-  if(!username||!password){err.textContent='Username aur password daalo!';err.classList.add('show');return;}
-  const locked=checkLockout(username);
-  if(locked){err.textContent='LOCKED: '+locked+' minute baad try karo (zyada galat attempts)';err.classList.add('show');document.getElementById('l-pass').value='';return;}
-  loadUsers();
-  const user=users.find(u=>u.username.toLowerCase()===username&&u.password===password);
-  if(!user){
-    const left=recordFail(username);
-    const lockedNow=checkLockout(username);
-    if(lockedNow){err.textContent='LOCKED: Account '+LOCKOUT_MIN+' minute ke liye band ho gaya!';}
-    else{err.textContent='Galat username ya password! ('+left+' attempts baaki)';}
-    err.classList.add('show');document.getElementById('l-pass').value='';return;
-  }
-  clearFail(username);
-  const token=genToken();
-  const sessData={id:user.id,token,expires:Date.now()+(SESSION_HOURS*3600*1000)};
-  err.classList.remove('show');
-  currentUser=user;
-  localStorage.setItem('cs_session',JSON.stringify(sessData));
-  document.getElementById('login-wrap').style.display='none';
-  applyPermissions();addUserBadge();
-  toast('Welcome '+user.name+'!','s');loadUsersFromSheet();setSt('ch');loadSheet();
+async function doLogin(){
+  // No-login mode: keep UI button harmless
+  const lw=document.getElementById('login-wrap'); if(lw) lw.style.display='none';
+  toast('Login disabled (no-login mode)','i');
 }
 
 async function checkSession(){
-  await loadUsersFromSheet();
+  const gotFb = await loadUsersFromFirebase();
+  if(!gotFb){
+    localStorage.removeItem('cs_session');
+    showLoginMsg('Firebase users connect nahi ho rahe — login possible nahi');
+    document.getElementById('login-wrap').style.display='flex';
+    return;
+  }
+  attachUsersRealtime();
   const raw=localStorage.getItem('cs_session');
   if(raw){
     try{
@@ -1939,6 +2091,11 @@ async function checkSession(){
       if(sess.expires&&Date.now()<sess.expires&&sess.id&&sess.token){
         const user=users.find(u=>u.id===sess.id);
         if(user){
+          if(user.active===false){
+            localStorage.removeItem('cs_session');
+            showLoginMsg('Account deactivate hai — admin se contact karo');
+            document.getElementById('login-wrap').style.display='flex';return;
+          }
           currentUser=user;
           sess.expires=Date.now()+(SESSION_HOURS*3600*1000);
           localStorage.setItem('cs_session',JSON.stringify(sess));
@@ -1974,7 +2131,10 @@ function logout(){
 function addUserBadge(){const hdr=document.querySelector('.hdr-r');const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
 function hasPerm(p){
   if(!currentUser)return false;
-  const perms=currentUser.permissions||({'admin':['view','add','edit','delete','payment','export','import','users'],'manager':['view','add','edit','payment','export'],'viewer':['view']}[currentUser.role]||['view']);
+  const rolePerms={'admin':['view','add','edit','delete','payment','export','import','users'],'manager':['view','add','edit','payment','export'],'viewer':['view']};
+  const perms=(Array.isArray(currentUser.permissions)&&currentUser.permissions.length)
+    ? currentUser.permissions
+    : (rolePerms[currentUser.role]||['view']);
   return perms.includes(p);
 }
 function applyPermissions(){
@@ -2004,7 +2164,8 @@ function openUserModal(id=null){
     if(u){
       document.getElementById('u-name').value=u.name;
       document.getElementById('u-user').value=u.username;
-      document.getElementById('u-pass').value=u.password;
+      // Password hash is stored; for edit, keep blank unless resetting
+      document.getElementById('u-pass').value='';
       const perms=u.permissions||PPRE[u.role]||['view'];
       PALL.forEach(p=>{const el=document.getElementById('up-'+p);if(el)el.checked=perms.includes(p);});
       syncPerms();
@@ -2022,20 +2183,79 @@ function saveUser(){
   const role=document.getElementById('u-role').value;
   const PALL=['view','add','edit','delete','payment','export','import','users'];
   const permissions=PALL.filter(p=>{const el=document.getElementById('up-'+p);return el&&el.checked;});
-  if(!name||!username||!password){toast('Sab fields bharo!','e');return;}
+  if(!name||!username){toast('Sab fields bharo!','e');return;}
   if(!permissions.length){toast('Koi ek permission to do!','e');return;}
   if(users.find(u=>u.username===username&&u.id!==editUserId)){toast('Username pehle se exists!','e');return;}
   if(editUserId){
-    users=users.map(u=>u.id===editUserId?{...u,name,username,password,role,permissions}:u);
+    users=users.map(u=>{
+      if(u.id!==editUserId) return u;
+      // If password blank during edit, keep existing hash/password
+      if(!password){
+        return {...u,name,username,role,permissions,active:(u.active!==false)};
+      }
+      return {...u,name,username,password,role,permissions,active:(u.active!==false),passwordHash:null,passwordSalt:null};
+    });
     toast(name+' update ho gaya!','s');
   }else{
-    users.push({id:Date.now().toString(),name,username,password,role,permissions});
+    if(!password){toast('Password zaroori hai','e');return;}
+    users.push({id:Date.now().toString(),name,username,password,role,permissions,active:true});
     toast(name+' add ho gaya!','s');
   }
-  saveUsers();closeM('user-modal');renderUsers();
+  (async ()=>{
+    for(const u of users){ await ensureUserHasHash(u); }
+    saveUsers();closeM('user-modal');renderUsers();
+  })();
 }
 function deleteUser(id){if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}if(!confirm('Delete karna chahte hain?'))return;users=users.filter(u=>u.id!==id);saveUsers();renderUsers();toast('User delete ho gaya','i');}
-function renderUsers(){const grid=document.getElementById('users-grid');if(!grid)return;if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};grid.innerHTML=users.map(u=>{const isMe=u.id===currentUser.id;return`<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${u.role}">${u.role}</span></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;}).join('');}
+function toggleUserActive(id){
+  if(!currentUser || !hasPerm('users')){toast('Permission nahi hai!','e');return;}
+  const u = users.find(x=>x.id===id);
+  if(!u){toast('User nahi mila','e');return;}
+  if(currentUser && currentUser.id===id){toast('Apna account deactivate nahi kar sakte!','e');return;}
+  u.active = (u.active===false) ? true : false;
+  u.deactivatedAt = u.active ? null : Date.now();
+  users = users.map(x=>x.id===id?u:x);
+  saveUsers();
+  renderUsers();
+  toast(u.active ? 'User activate ho gaya' : 'User deactivate ho gaya','i');
+}
+
+function renderUsers(){
+  const grid=document.getElementById('users-grid');if(!grid)return;
+  if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}
+  const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};
+  grid.innerHTML=users.map(u=>{
+    const isMe=currentUser&&u.id===currentUser.id;
+    const active = (u.active !== false);
+    const statusPill = active
+      ? `<span style="font-size:10px;background:#dcfce7;border:1px solid #86efac;color:#166534;padding:2px 7px;border-radius:999px;font-weight:700">ACTIVE</span>`
+      : `<span style="font-size:10px;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:2px 7px;border-radius:999px;font-weight:700">DEACTIVATED</span>`;
+    const canManage = currentUser && hasPerm('users');
+    const actBtn = (canManage && !isMe)
+      ? `<button class="btn ${active?'btn-red':'btn-green'}" onclick="toggleUserActive('${u.id}')">${active?'Deactivate':'Activate'}</button>`
+      : '';
+    return `<div class="user-card" style="${active?'':'opacity:0.75'}">
+      <div class="user-card-hdr">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${ini(u.name)}</div>
+          <div>
+            <div style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">${esc(u.name)}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div>
+            <div style="font-size:11px;color:#8a95a8">@${esc(u.username)}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${statusPill}
+          <span class="role-badge ${esc(u.role)}">${esc(u.role)}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap">
+        ${canManage?`<button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>`:''}
+        ${actBtn}
+        ${(!isMe && canManage)?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
 
 // ===== PAYMENTS =====
 let payments=[];
@@ -2217,7 +2437,14 @@ function syncPerms(){
 // ===== INIT =====
 loadUsers();
 loadPayments();
-checkSession();
+// NO-LOGIN MODE (admin panel removed)
+try{
+  currentUser={id:'local_admin',name:'Admin',username:'admin',role:'admin',permissions:['view','add','edit','delete','payment','export','import','users'],active:true};
+  const lw=document.getElementById('login-wrap'); if(lw) lw.style.display='none';
+  applyPermissions(); addUserBadge();
+  setSt('ch');
+  loadSheet(); // auto-connect records on startup
+}catch(e){}
 </script>
 </body>
 </html>
