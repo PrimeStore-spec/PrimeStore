@@ -700,14 +700,69 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 
       <div class="div"></div>
 
-      <!-- SECTION 3: Storage Location (Store wale ke liye) -->
-      <div class="sec-title">🏠 Storage Location <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(Store mein rakhe bags ke liye)</span></div>
-      <div class="loc-box">
-        <div class="fgrid3" style="margin-bottom:0">
-          <div class="fg2"><label class="flbl">Chamber Number</label><input class="finp" id="fi-cham" placeholder="Jaise: 1, 2, 3..."></div>
-          <div class="fg2"><label class="flbl">Floor</label><input class="finp" id="fi-floor" placeholder="Ground, 1st, 2nd..."></div>
-          <div class="fg2"><label class="flbl">Pillar No.</label><input class="finp" id="fi-pillar" placeholder="P-1, P-2..."></div>
+      <!-- SECTION 3: Storage Location (Har class ka alag) -->
+      <div class="sec-title">🏠 Storage Location <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(Sirf Store wali class ke liye — har class alag)</span></div>
+      <div class="loc-box" id="loc-box-all">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:var(--bluebg);border-radius:5px;">ℹ️ Sirf Store destination wali class dikhegi — jaise Class A Store mein hai toh A ka location bharein</div>
+        <!-- Class A Location -->
+        <div id="loc-A" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--green)">
+          <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px">CLASS A — Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-a" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-a" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-a" placeholder="P-1..."></div>
+          </div>
         </div>
+        <!-- Class B Location -->
+        <div id="loc-B" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--yellow)">
+          <div style="font-size:11px;font-weight:700;color:var(--yellow);margin-bottom:8px">CLASS B — Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-b" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-b" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-b" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Class C Location -->
+        <div id="loc-C" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--orange)">
+          <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:8px">CLASS C — Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-c" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-c" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-c" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Class D Location -->
+        <div id="loc-D" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--red)">
+          <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px">CLASS D — Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-d" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-d" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-d" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Zero Location -->
+        <div id="loc-Z" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid #64748b">
+          <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:8px">ZERO — Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-z" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-z" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-z" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Kaat Location -->
+        <div id="loc-K" style="display:none;margin-bottom:0;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid #7c3aed">
+          <div style="font-size:11px;font-weight:700;color:#7c3aed;margin-bottom:8px">KAAT — Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-k" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-k" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-k" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Hidden compat fields -->
+        <input type="hidden" id="fi-cham">
+        <input type="hidden" id="fi-floor">
+        <input type="hidden" id="fi-pillar">
+        <div id="loc-none" style="display:none;padding:10px;text-align:center;color:var(--text3);font-size:12px">Koi class Store mein nahi rakhi — location bharni zaroori nahi</div>
       </div>
 
       <div class="div"></div>
@@ -818,7 +873,6 @@ const SHEET_URL='https://script.google.com/macros/s/AKfycbxUZz_ewOxzIpRNQqxg6Iof
 const FB_CFG={apiKey:'AIzaSyBhvCmZLVSOKflr7Ub_Vjhw_1CBlV2PaAI',authDomain:'primecoldstore-439ab.firebaseapp.com',databaseURL:'https://primecoldstore-439ab-default-rtdb.asia-southeast1.firebasedatabase.app',projectId:'primecoldstore-439ab',storageBucket:'primecoldstore-439ab.firebasestorage.app',messagingSenderId:'848383603685',appId:'1:848383603685:web:7c9b45a123aa25e153f50c'};
 let FB_DB=null,FB_ON=false;
 function loadFB(){return new Promise(res=>{if(FB_ON){res();return;}const s1=document.createElement('script');s1.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';s1.onload=()=>{const s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';s2.onload=()=>{try{if(!firebase.apps.length)firebase.initializeApp(FB_CFG);FB_DB=firebase.database();FB_ON=true;}catch(e){console.log('FB err:',e);}res();};document.head.appendChild(s2);};document.head.appendChild(s1);});}
-const FB_USERS_PATH='cs/users';
 let recs=[],filtered=[],editId=null,pg=1;
 const PP=15;
 let sField='date',sDir='desc',autoTimer=null;
@@ -831,7 +885,6 @@ function gc(n){if(!FCM[n])FCM[n]=FC[fci++%FC.length];return FCM[n];}
 function ini(n){return(n||'').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';}
 function fmt(n){return(n||0).toLocaleString('en-IN');}
 function fmtS(n){return String(Math.round(n||0));}
-function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 
 // ===== STATUS =====
 function setSt(s){
@@ -971,7 +1024,22 @@ function setDest(cls,dest){
   // Rate input show/hide
   const rateInp=document.getElementById('g-'+lc+'-rate');
   if(rateInp)rateInp.style.display=dest==='own'?'block':'none';
+  // Location box show/hide — sirf store wale ke liye
+  updLocBoxes();
   calcEntry();
+}
+function updLocBoxes(){
+  const classes=['A','B','C','D','Z','K'];
+  let anyStore=false;
+  classes.forEach(cls=>{
+    const box=document.getElementById('loc-'+cls);
+    if(!box)return;
+    const isStore=dests[cls]==='store';
+    box.style.display=isStore?'block':'none';
+    if(isStore)anyStore=true;
+  });
+  const noneEl=document.getElementById('loc-none');
+  if(noneEl)noneEl.style.display=anyStore?'none':'block';
 }
 
 // ===== CALC =====
@@ -1049,6 +1117,19 @@ function openM(id=null){
       document.getElementById('fi-cham').value=r.chamber||'';
       document.getElementById('fi-floor').value=r.floor||'';
       document.getElementById('fi-pillar').value=r.pillar||'';
+      // Per-class locations fill karo
+      const locs=r.locations||{};
+      ['A','B','C','D','Z','K'].forEach(cls=>{
+        const lc=cls.toLowerCase();
+        const loc=locs[cls]||{};
+        const chamEl=document.getElementById('fi-cham-'+lc);
+        const floorEl=document.getElementById('fi-floor-'+lc);
+        const pillarEl=document.getElementById('fi-pillar-'+lc);
+        if(chamEl)chamEl.value=loc.chamber||'';
+        if(floorEl)floorEl.value=loc.floor||'';
+        if(pillarEl)pillarEl.value=loc.pillar||'';
+      });
+      setTimeout(updLocBoxes,50);
       document.getElementById('fi-grate').value=r.gradingRate||'';
       document.getElementById('fi-brate').value=r.bardanaRate||'';
       if(r.labourRate&&document.getElementById('fi-lrate'))document.getElementById('fi-lrate').value=r.labourRate;
@@ -1069,7 +1150,7 @@ function openM(id=null){
       if(r.grading&&r.grading['K'])setDest('K',r.grading['K'].dest||'');
     }
   }else{
-    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
+    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate','fi-cham-a','fi-floor-a','fi-pillar-a','fi-cham-b','fi-floor-b','fi-pillar-b','fi-cham-c','fi-floor-c','fi-pillar-c','fi-cham-d','fi-floor-d','fi-pillar-d','fi-cham-z','fi-floor-z','fi-pillar-z','fi-cham-k','fi-floor-k','fi-pillar-k'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
     ['g-a-bags','g-b-bags','g-c-bags','g-d-bags','g-z-bags','g-k-bags','g-a-rate','g-b-rate','g-c-rate','g-d-rate','g-z-rate','g-k-rate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
     ['fi-gbags','fi-bbags','fi-lbags'].forEach(x=>{const el=document.getElementById(x);if(el){el.value='';delete el.dataset.m;}});
     document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
@@ -1134,9 +1215,17 @@ function saveR(){
     quality:document.getElementById('fi-q').value.trim(),
     receipt:document.getElementById('fi-r').value.trim()||'RC-'+String(recs.length+1).padStart(3,'0'),
     notes:document.getElementById('fi-n').value.trim(),
-    chamber:document.getElementById('fi-cham').value.trim(),
-    floor:document.getElementById('fi-floor').value.trim(),
-    pillar:document.getElementById('fi-pillar').value.trim(),
+    chamber:document.getElementById('fi-cham-a').value.trim()||document.getElementById('fi-cham').value.trim(),
+    floor:document.getElementById('fi-floor-a').value.trim()||document.getElementById('fi-floor').value.trim(),
+    pillar:document.getElementById('fi-pillar-a').value.trim()||document.getElementById('fi-pillar').value.trim(),
+    locations:{
+      A:{chamber:document.getElementById('fi-cham-a').value.trim(),floor:document.getElementById('fi-floor-a').value.trim(),pillar:document.getElementById('fi-pillar-a').value.trim()},
+      B:{chamber:document.getElementById('fi-cham-b').value.trim(),floor:document.getElementById('fi-floor-b').value.trim(),pillar:document.getElementById('fi-pillar-b').value.trim()},
+      C:{chamber:document.getElementById('fi-cham-c').value.trim(),floor:document.getElementById('fi-floor-c').value.trim(),pillar:document.getElementById('fi-pillar-c').value.trim()},
+      D:{chamber:document.getElementById('fi-cham-d').value.trim(),floor:document.getElementById('fi-floor-d').value.trim(),pillar:document.getElementById('fi-pillar-d').value.trim()},
+      Z:{chamber:document.getElementById('fi-cham-z').value.trim(),floor:document.getElementById('fi-floor-z').value.trim(),pillar:document.getElementById('fi-pillar-z').value.trim()},
+      K:{chamber:document.getElementById('fi-cham-k').value.trim(),floor:document.getElementById('fi-floor-k').value.trim(),pillar:document.getElementById('fi-pillar-k').value.trim()}
+    },
     grading,zeroBags,kaatBags,
     gradingRate,bardanaRate,labourRate,
     gradingBags,bardanaBags,labourBags,
@@ -1370,7 +1459,26 @@ function viewD(id){
         ${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600">🥔 ${r.quality}</span>`:''}
       </div>
     </div>
-    ${r.chamber?`<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px;font-size:12px">🏠 Chamber: <strong>C-${r.chamber}</strong> | Floor: <strong>${r.floor||'—'}</strong> | Pillar: <strong>${r.pillar||'—'}</strong></div>`:''}
+    ${(()=>{
+  const locs=r.locations||{};
+  const hasLocs=Object.keys(locs).some(k=>locs[k]&&locs[k].chamber);
+  if(hasLocs){
+    const clsColors={A:'var(--green)',B:'var(--yellow)',C:'var(--orange)',D:'var(--red)',Z:'#64748b',K:'#7c3aed'};
+    return '<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px">'
+      +'<div style="font-size:11px;font-weight:700;color:var(--blue2);margin-bottom:7px">🏠 Storage Locations</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px">'
+      +Object.keys(locs).filter(k=>locs[k]&&locs[k].chamber).map(k=>{
+        const loc=locs[k];
+        return '<div style="background:#fff;border:1px solid #c5d8f8;border-radius:5px;padding:5px 9px;font-size:11px">'
+          +'<span style="font-weight:700;color:'+( clsColors[k]||'#1a5fc8')+'">'+k+'</span> '
+          +'C-'+loc.chamber+(loc.floor?' F'+loc.floor:'')+(loc.pillar?' '+loc.pillar:'')
+          +'</div>';
+      }).join('')
+      +'</div></div>';
+  }
+  if(r.chamber)return '<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px;font-size:12px">🏠 Chamber: <strong>C-'+r.chamber+'</strong> | Floor: <strong>'+(r.floor||'—')+'</strong> | Pillar: <strong>'+(r.pillar||'—')+'</strong></div>';
+  return '';
+})()}
     <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
       <thead><tr style="background:#f0f4fc"><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Class</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Bags</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Destination</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Rate</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Amount</th></tr></thead>
       <tbody>
@@ -1872,142 +1980,12 @@ function toast(msg,type='i'){
 function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
 
 // ===== AUTH =====
-const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin',active:true}];
+const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}];
 let currentUser=null,users=[],editUserId=null;
-
-function normalizeUsers(){
-  if(!Array.isArray(users)) users=[];
-  users = users.map(u=>({
-    id: String(u.id||Date.now()),
-    name: String(u.name||'').trim() || 'User',
-    username: String(u.username||'').trim().toLowerCase(),
-    role: String(u.role||'viewer'),
-    permissions: Array.isArray(u.permissions) ? u.permissions : undefined,
-    active: (u.active !== false),
-    deactivatedAt: u.deactivatedAt || null,
-    passwordHash: u.passwordHash || null,
-    passwordSalt: u.passwordSalt || null,
-    password: u.password || ''
-  })).filter(u=>u.username);
-  if(!users.length) users=[...DEFAULT_USERS];
-}
-
-function loadUsers(){
-  const s=localStorage.getItem('cs_users');
-  users=s?JSON.parse(s):[...DEFAULT_USERS];
-  normalizeUsers();
-}
-
+function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
+function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
 async function saveUsersToSheet(){const img=new Image();img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify({action:'saveUsers',users}));}
-
-async function loadUsersFromFirebase(){
-  await loadFB();
-  if(!(FB_ON && FB_DB)) return false;
-  try{
-    const snap = await FB_DB.ref(FB_USERS_PATH).once('value');
-    const val = snap.val();
-    if(val && typeof val === 'object'){
-      const arr = Object.values(val).filter(Boolean);
-      if(arr.length){
-        users = arr;
-        normalizeUsers();
-        localStorage.setItem('cs_users',JSON.stringify(users));
-        return true;
-      }
-    }
-  }catch(e){ console.log('FB users load err:', e.message); }
-  return false;
-}
-
-async function saveUsersToFirebase(){
-  try{
-    await loadFB();
-    if(!(FB_ON && FB_DB)) return;
-    const obj = {};
-    (users||[]).forEach(u=>{ if(u && u.id) obj[u.id]=u; });
-    await FB_DB.ref(FB_USERS_PATH).set(obj);
-  }catch(e){ console.log('FB users save err:', e.message); }
-}
-
-function attachUsersRealtime(){
-  if(!(FB_ON && FB_DB)) return;
-  try{
-    FB_DB.ref(FB_USERS_PATH).on('value', snap=>{
-      const v = snap.val();
-      if(v && typeof v === 'object'){
-        const arr = Object.values(v).filter(Boolean);
-        if(arr.length){
-          users = arr;
-          normalizeUsers();
-          localStorage.setItem('cs_users',JSON.stringify(users));
-          if(currentUser){
-            const fresh = users.find(x=>x.id===currentUser.id);
-            if(fresh && fresh.active===false){
-              showLoginMsg('Account deactivate hai — admin se contact karo');
-              logout();
-            }
-          }
-          try{ renderUsers(); }catch(e){}
-        }
-      }
-    });
-  }catch(e){}
-}
-
-async function loadUsersFromSheet(){
-  try{
-    const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];
-    for(let i=0;i<proxies.length;i++){
-      try{
-        const res=await proxies[i]();
-        let txt=await res.text();
-        try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
-        const data=JSON.parse(txt);
-        if(data.users&&data.users.length>0){
-          users=data.users;
-          normalizeUsers();
-          localStorage.setItem('cs_users',JSON.stringify(users));
-          return true;
-        }
-      }catch(e){}
-    }
-  }catch(e){}
-  loadUsers();
-  return false;
-}
-
-function saveUsers(){
-  normalizeUsers();
-  localStorage.setItem('cs_users',JSON.stringify(users));
-  saveUsersToFirebase();
-  saveUsersToSheet();
-}
-
-function randSalt(){
-  const a = new Uint8Array(16);
-  crypto.getRandomValues(a);
-  return Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function sha256Hex(s){
-  const enc = new TextEncoder().encode(s);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function ensureUserHasHash(u){
-  if(u.passwordHash && u.passwordSalt) return u;
-  if(!u.password) return u;
-  u.passwordSalt = u.passwordSalt || randSalt();
-  u.passwordHash = await sha256Hex(u.passwordSalt + '|' + u.password);
-  u.password = '';
-  return u;
-}
-async function verifyUserPassword(u, inputPass){
-  if(u.passwordHash && u.passwordSalt){
-    const h = await sha256Hex(u.passwordSalt + '|' + inputPass);
-    return h === u.passwordHash;
-  }
-  return String(u.password||'') === String(inputPass||'');
-}
+async function loadUsersFromSheet(){try{const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];for(let i=0;i<proxies.length;i++){try{const res=await proxies[i]();let txt=await res.text();try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}const data=JSON.parse(txt);if(data.users&&data.users.length>0){users=data.users;localStorage.setItem('cs_users',JSON.stringify(users));return;}}catch(e){}}}catch(e){}loadUsers();}
 // ===== SECURITY CONFIG =====
 const SESSION_HOURS=8;
 const MAX_ATTEMPTS=3;
@@ -2034,7 +2012,7 @@ function recordFail(username){
 }
 function clearFail(username){const lk=getLockout();delete lk[username.toLowerCase()];setLockout(lk);}
 
-async function doLogin(){
+function doLogin(){
   const username=document.getElementById('l-user').value.trim().toLowerCase();
   const password=document.getElementById('l-pass').value.trim();
   const err=document.getElementById('login-err');
@@ -2042,16 +2020,9 @@ async function doLogin(){
   if(!username||!password){err.textContent='Username aur password daalo!';err.classList.add('show');return;}
   const locked=checkLockout(username);
   if(locked){err.textContent='LOCKED: '+locked+' minute baad try karo (zyada galat attempts)';err.classList.add('show');document.getElementById('l-pass').value='';return;}
-  const gotFb = await loadUsersFromFirebase();
-  if(gotFb){ attachUsersRealtime(); }
-  else { await loadUsersFromSheet(); }
-  const user=users.find(u=>String(u.username||'').toLowerCase()===username);
-  if(user && user.active===false){
-    err.textContent='Account deactivate hai — admin se contact karo';
-    err.classList.add('show');document.getElementById('l-pass').value='';return;
-  }
-  const ok = user ? await verifyUserPassword(user, password) : false;
-  if(!user || !ok){
+  loadUsers();
+  const user=users.find(u=>u.username.toLowerCase()===username&&u.password===password);
+  if(!user){
     const left=recordFail(username);
     const lockedNow=checkLockout(username);
     if(lockedNow){err.textContent='LOCKED: Account '+LOCKOUT_MIN+' minute ke liye band ho gaya!';}
@@ -2063,11 +2034,6 @@ async function doLogin(){
   const sessData={id:user.id,token,expires:Date.now()+(SESSION_HOURS*3600*1000)};
   err.classList.remove('show');
   currentUser=user;
-  try{
-    await ensureUserHasHash(currentUser);
-    users = users.map(u=>u.id===currentUser.id?currentUser:u);
-    saveUsers();
-  }catch(e){}
   localStorage.setItem('cs_session',JSON.stringify(sessData));
   document.getElementById('login-wrap').style.display='none';
   applyPermissions();addUserBadge();
@@ -2075,9 +2041,7 @@ async function doLogin(){
 }
 
 async function checkSession(){
-  const gotFb = await loadUsersFromFirebase();
-  if(gotFb){ attachUsersRealtime(); }
-  else { await loadUsersFromSheet(); }
+  await loadUsersFromSheet();
   const raw=localStorage.getItem('cs_session');
   if(raw){
     try{
@@ -2085,11 +2049,6 @@ async function checkSession(){
       if(sess.expires&&Date.now()<sess.expires&&sess.id&&sess.token){
         const user=users.find(u=>u.id===sess.id);
         if(user){
-          if(user.active===false){
-            localStorage.removeItem('cs_session');
-            showLoginMsg('Account deactivate hai — admin se contact karo');
-            document.getElementById('login-wrap').style.display='flex';return;
-          }
           currentUser=user;
           sess.expires=Date.now()+(SESSION_HOURS*3600*1000);
           localStorage.setItem('cs_session',JSON.stringify(sess));
@@ -2155,8 +2114,7 @@ function openUserModal(id=null){
     if(u){
       document.getElementById('u-name').value=u.name;
       document.getElementById('u-user').value=u.username;
-      // Password hash is stored; for edit, keep blank unless resetting
-      document.getElementById('u-pass').value='';
+      document.getElementById('u-pass').value=u.password;
       const perms=u.permissions||PPRE[u.role]||['view'];
       PALL.forEach(p=>{const el=document.getElementById('up-'+p);if(el)el.checked=perms.includes(p);});
       syncPerms();
@@ -2174,79 +2132,20 @@ function saveUser(){
   const role=document.getElementById('u-role').value;
   const PALL=['view','add','edit','delete','payment','export','import','users'];
   const permissions=PALL.filter(p=>{const el=document.getElementById('up-'+p);return el&&el.checked;});
-  if(!name||!username){toast('Sab fields bharo!','e');return;}
+  if(!name||!username||!password){toast('Sab fields bharo!','e');return;}
   if(!permissions.length){toast('Koi ek permission to do!','e');return;}
   if(users.find(u=>u.username===username&&u.id!==editUserId)){toast('Username pehle se exists!','e');return;}
   if(editUserId){
-    users=users.map(u=>{
-      if(u.id!==editUserId) return u;
-      // If password blank during edit, keep existing hash/password
-      if(!password){
-        return {...u,name,username,role,permissions,active:(u.active!==false)};
-      }
-      return {...u,name,username,password,role,permissions,active:(u.active!==false),passwordHash:null,passwordSalt:null};
-    });
+    users=users.map(u=>u.id===editUserId?{...u,name,username,password,role,permissions}:u);
     toast(name+' update ho gaya!','s');
   }else{
-    if(!password){toast('Password zaroori hai','e');return;}
-    users.push({id:Date.now().toString(),name,username,password,role,permissions,active:true});
+    users.push({id:Date.now().toString(),name,username,password,role,permissions});
     toast(name+' add ho gaya!','s');
   }
-  (async ()=>{
-    for(const u of users){ await ensureUserHasHash(u); }
-    saveUsers();closeM('user-modal');renderUsers();
-  })();
+  saveUsers();closeM('user-modal');renderUsers();
 }
 function deleteUser(id){if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}if(!confirm('Delete karna chahte hain?'))return;users=users.filter(u=>u.id!==id);saveUsers();renderUsers();toast('User delete ho gaya','i');}
-function toggleUserActive(id){
-  if(!currentUser || !hasPerm('users')){toast('Permission nahi hai!','e');return;}
-  const u = users.find(x=>x.id===id);
-  if(!u){toast('User nahi mila','e');return;}
-  if(currentUser && currentUser.id===id){toast('Apna account deactivate nahi kar sakte!','e');return;}
-  u.active = (u.active===false) ? true : false;
-  u.deactivatedAt = u.active ? null : Date.now();
-  users = users.map(x=>x.id===id?u:x);
-  saveUsers();
-  renderUsers();
-  toast(u.active ? 'User activate ho gaya' : 'User deactivate ho gaya','i');
-}
-
-function renderUsers(){
-  const grid=document.getElementById('users-grid');if(!grid)return;
-  if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}
-  const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};
-  grid.innerHTML=users.map(u=>{
-    const isMe=currentUser&&u.id===currentUser.id;
-    const active = (u.active !== false);
-    const statusPill = active
-      ? `<span style="font-size:10px;background:#dcfce7;border:1px solid #86efac;color:#166534;padding:2px 7px;border-radius:999px;font-weight:700">ACTIVE</span>`
-      : `<span style="font-size:10px;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:2px 7px;border-radius:999px;font-weight:700">DEACTIVATED</span>`;
-    const canManage = currentUser && hasPerm('users');
-    const actBtn = (canManage && !isMe)
-      ? `<button class="btn ${active?'btn-red':'btn-green'}" onclick="toggleUserActive('${u.id}')">${active?'Deactivate':'Activate'}</button>`
-      : '';
-    return `<div class="user-card" style="${active?'':'opacity:0.75'}">
-      <div class="user-card-hdr">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${ini(u.name)}</div>
-          <div>
-            <div style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">${esc(u.name)}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div>
-            <div style="font-size:11px;color:#8a95a8">@${esc(u.username)}</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          ${statusPill}
-          <span class="role-badge ${esc(u.role)}">${esc(u.role)}</span>
-        </div>
-      </div>
-      <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap">
-        ${canManage?`<button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>`:''}
-        ${actBtn}
-        ${(!isMe && canManage)?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}
-      </div>
-    </div>`;
-  }).join('');
-}
+function renderUsers(){const grid=document.getElementById('users-grid');if(!grid)return;if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};grid.innerHTML=users.map(u=>{const isMe=u.id===currentUser.id;return`<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${u.role}">${u.role}</span></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;}).join('');}
 
 // ===== PAYMENTS =====
 let payments=[];
