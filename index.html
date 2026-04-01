@@ -700,69 +700,14 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 
       <div class="div"></div>
 
-      <!-- SECTION 3: Storage Location (Har class ka alag) -->
-      <div class="sec-title">🏠 Storage Location <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(Sirf Store wali class ke liye — har class alag)</span></div>
-      <div class="loc-box" id="loc-box-all">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:var(--bluebg);border-radius:5px;">ℹ️ Sirf Store destination wali class dikhegi — jaise Class A Store mein hai toh A ka location bharein</div>
-        <!-- Class A Location -->
-        <div id="loc-A" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--green)">
-          <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px">CLASS A — Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-a" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-a" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-a" placeholder="P-1..."></div>
-          </div>
+      <!-- SECTION 3: Storage Location (Store wale ke liye) -->
+      <div class="sec-title">🏠 Storage Location <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(Store mein rakhe bags ke liye)</span></div>
+      <div class="loc-box">
+        <div class="fgrid3" style="margin-bottom:0">
+          <div class="fg2"><label class="flbl">Chamber Number</label><input class="finp" id="fi-cham" placeholder="Jaise: 1, 2, 3..."></div>
+          <div class="fg2"><label class="flbl">Floor</label><input class="finp" id="fi-floor" placeholder="Ground, 1st, 2nd..."></div>
+          <div class="fg2"><label class="flbl">Pillar No.</label><input class="finp" id="fi-pillar" placeholder="P-1, P-2..."></div>
         </div>
-        <!-- Class B Location -->
-        <div id="loc-B" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--yellow)">
-          <div style="font-size:11px;font-weight:700;color:var(--yellow);margin-bottom:8px">CLASS B — Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-b" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-b" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-b" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Class C Location -->
-        <div id="loc-C" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--orange)">
-          <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:8px">CLASS C — Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-c" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-c" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-c" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Class D Location -->
-        <div id="loc-D" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--red)">
-          <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px">CLASS D — Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-d" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-d" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-d" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Zero Location -->
-        <div id="loc-Z" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid #64748b">
-          <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:8px">ZERO — Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-z" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-z" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-z" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Kaat Location -->
-        <div id="loc-K" style="display:none;margin-bottom:0;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid #7c3aed">
-          <div style="font-size:11px;font-weight:700;color:#7c3aed;margin-bottom:8px">KAAT — Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-k" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-k" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-k" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Hidden compat fields -->
-        <input type="hidden" id="fi-cham">
-        <input type="hidden" id="fi-floor">
-        <input type="hidden" id="fi-pillar">
-        <div id="loc-none" style="display:none;padding:10px;text-align:center;color:var(--text3);font-size:12px">Koi class Store mein nahi rakhi — location bharni zaroori nahi</div>
       </div>
 
       <div class="div"></div>
@@ -1024,22 +969,7 @@ function setDest(cls,dest){
   // Rate input show/hide
   const rateInp=document.getElementById('g-'+lc+'-rate');
   if(rateInp)rateInp.style.display=dest==='own'?'block':'none';
-  // Location box show/hide — sirf store wale ke liye
-  updLocBoxes();
   calcEntry();
-}
-function updLocBoxes(){
-  const classes=['A','B','C','D','Z','K'];
-  let anyStore=false;
-  classes.forEach(cls=>{
-    const box=document.getElementById('loc-'+cls);
-    if(!box)return;
-    const isStore=dests[cls]==='store';
-    box.style.display=isStore?'block':'none';
-    if(isStore)anyStore=true;
-  });
-  const noneEl=document.getElementById('loc-none');
-  if(noneEl)noneEl.style.display=anyStore?'none':'block';
 }
 
 // ===== CALC =====
@@ -1117,19 +1047,6 @@ function openM(id=null){
       document.getElementById('fi-cham').value=r.chamber||'';
       document.getElementById('fi-floor').value=r.floor||'';
       document.getElementById('fi-pillar').value=r.pillar||'';
-      // Per-class locations fill karo
-      const locs=r.locations||{};
-      ['A','B','C','D','Z','K'].forEach(cls=>{
-        const lc=cls.toLowerCase();
-        const loc=locs[cls]||{};
-        const chamEl=document.getElementById('fi-cham-'+lc);
-        const floorEl=document.getElementById('fi-floor-'+lc);
-        const pillarEl=document.getElementById('fi-pillar-'+lc);
-        if(chamEl)chamEl.value=loc.chamber||'';
-        if(floorEl)floorEl.value=loc.floor||'';
-        if(pillarEl)pillarEl.value=loc.pillar||'';
-      });
-      setTimeout(updLocBoxes,50);
       document.getElementById('fi-grate').value=r.gradingRate||'';
       document.getElementById('fi-brate').value=r.bardanaRate||'';
       if(r.labourRate&&document.getElementById('fi-lrate'))document.getElementById('fi-lrate').value=r.labourRate;
@@ -1150,7 +1067,7 @@ function openM(id=null){
       if(r.grading&&r.grading['K'])setDest('K',r.grading['K'].dest||'');
     }
   }else{
-    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate','fi-cham-a','fi-floor-a','fi-pillar-a','fi-cham-b','fi-floor-b','fi-pillar-b','fi-cham-c','fi-floor-c','fi-pillar-c','fi-cham-d','fi-floor-d','fi-pillar-d','fi-cham-z','fi-floor-z','fi-pillar-z','fi-cham-k','fi-floor-k','fi-pillar-k'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
+    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
     ['g-a-bags','g-b-bags','g-c-bags','g-d-bags','g-z-bags','g-k-bags','g-a-rate','g-b-rate','g-c-rate','g-d-rate','g-z-rate','g-k-rate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
     ['fi-gbags','fi-bbags','fi-lbags'].forEach(x=>{const el=document.getElementById(x);if(el){el.value='';delete el.dataset.m;}});
     document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
@@ -1215,17 +1132,9 @@ function saveR(){
     quality:document.getElementById('fi-q').value.trim(),
     receipt:document.getElementById('fi-r').value.trim()||'RC-'+String(recs.length+1).padStart(3,'0'),
     notes:document.getElementById('fi-n').value.trim(),
-    chamber:document.getElementById('fi-cham-a').value.trim()||document.getElementById('fi-cham').value.trim(),
-    floor:document.getElementById('fi-floor-a').value.trim()||document.getElementById('fi-floor').value.trim(),
-    pillar:document.getElementById('fi-pillar-a').value.trim()||document.getElementById('fi-pillar').value.trim(),
-    locations:{
-      A:{chamber:document.getElementById('fi-cham-a').value.trim(),floor:document.getElementById('fi-floor-a').value.trim(),pillar:document.getElementById('fi-pillar-a').value.trim()},
-      B:{chamber:document.getElementById('fi-cham-b').value.trim(),floor:document.getElementById('fi-floor-b').value.trim(),pillar:document.getElementById('fi-pillar-b').value.trim()},
-      C:{chamber:document.getElementById('fi-cham-c').value.trim(),floor:document.getElementById('fi-floor-c').value.trim(),pillar:document.getElementById('fi-pillar-c').value.trim()},
-      D:{chamber:document.getElementById('fi-cham-d').value.trim(),floor:document.getElementById('fi-floor-d').value.trim(),pillar:document.getElementById('fi-pillar-d').value.trim()},
-      Z:{chamber:document.getElementById('fi-cham-z').value.trim(),floor:document.getElementById('fi-floor-z').value.trim(),pillar:document.getElementById('fi-pillar-z').value.trim()},
-      K:{chamber:document.getElementById('fi-cham-k').value.trim(),floor:document.getElementById('fi-floor-k').value.trim(),pillar:document.getElementById('fi-pillar-k').value.trim()}
-    },
+    chamber:document.getElementById('fi-cham').value.trim(),
+    floor:document.getElementById('fi-floor').value.trim(),
+    pillar:document.getElementById('fi-pillar').value.trim(),
     grading,zeroBags,kaatBags,
     gradingRate,bardanaRate,labourRate,
     gradingBags,bardanaBags,labourBags,
@@ -1459,26 +1368,7 @@ function viewD(id){
         ${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600">🥔 ${r.quality}</span>`:''}
       </div>
     </div>
-    ${(()=>{
-  const locs=r.locations||{};
-  const hasLocs=Object.keys(locs).some(k=>locs[k]&&locs[k].chamber);
-  if(hasLocs){
-    const clsColors={A:'var(--green)',B:'var(--yellow)',C:'var(--orange)',D:'var(--red)',Z:'#64748b',K:'#7c3aed'};
-    return '<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px">'
-      +'<div style="font-size:11px;font-weight:700;color:var(--blue2);margin-bottom:7px">🏠 Storage Locations</div>'
-      +'<div style="display:flex;flex-wrap:wrap;gap:6px">'
-      +Object.keys(locs).filter(k=>locs[k]&&locs[k].chamber).map(k=>{
-        const loc=locs[k];
-        return '<div style="background:#fff;border:1px solid #c5d8f8;border-radius:5px;padding:5px 9px;font-size:11px">'
-          +'<span style="font-weight:700;color:'+( clsColors[k]||'#1a5fc8')+'">'+k+'</span> '
-          +'C-'+loc.chamber+(loc.floor?' F'+loc.floor:'')+(loc.pillar?' '+loc.pillar:'')
-          +'</div>';
-      }).join('')
-      +'</div></div>';
-  }
-  if(r.chamber)return '<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px;font-size:12px">🏠 Chamber: <strong>C-'+r.chamber+'</strong> | Floor: <strong>'+(r.floor||'—')+'</strong> | Pillar: <strong>'+(r.pillar||'—')+'</strong></div>';
-  return '';
-})()}
+    ${r.chamber?`<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px;font-size:12px">🏠 Chamber: <strong>C-${r.chamber}</strong> | Floor: <strong>${r.floor||'—'}</strong> | Pillar: <strong>${r.pillar||'—'}</strong></div>`:''}
     <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
       <thead><tr style="background:#f0f4fc"><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Class</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Bags</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Destination</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Rate</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Amount</th></tr></thead>
       <tbody>
@@ -1980,7 +1870,7 @@ function toast(msg,type='i'){
 function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
 
 // ===== AUTH =====
-const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}];
+const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'Mandy@147',role:'admin'}];
 let currentUser=null,users=[],editUserId=null;
 function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
 function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
