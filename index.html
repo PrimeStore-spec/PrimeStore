@@ -32,7 +32,6 @@ header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a3a
 .hdr-stat .v{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:#fff;}
 .hdr-stat .l{font-size:8px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:1px;}
 #ss{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:11px;min-width:140px;text-align:center;white-space:nowrap;}
-#us{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:11px;min-width:140px;text-align:center;white-space:nowrap;}
 .btn-w{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12px;transition:all 0.2s;}
 .btn-w:hover{background:rgba(255,255,255,0.28);}
 .btn-add{background:#fff;color:var(--blue2);border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
@@ -228,7 +227,8 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--s3);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
-.login-wrap{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-wrap{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);display:none;align-items:center;justify-content:center;z-index:9999;}
+.login-wrap.show-login{display:flex;}
 .login-box{background:#fff;border-radius:12px;padding:36px 32px;width:min(380px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.3);}
 .login-logo{text-align:center;margin-bottom:24px;}
 .login-logo .icon{font-size:40px;display:block;margin-bottom:8px;}
@@ -456,7 +456,6 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <div class="hdr-stat"><div class="v" id="h-store">0</div><div class="l">Store Bags</div></div>
     <div class="hdr-stat"><div class="v" id="h-own">0</div><div class="l">Own Purchase</div></div>
     <div id="ss">⟳ Connect ho raha...</div>
-    <div id="us">👥 Users: ⟳</div>
     <button class="btn-w" onclick="loadSheet()">🔄 Refresh</button>
     <button class="btn-add" onclick="openM()">＋ Naya Entry</button>
   </div>
@@ -542,7 +541,31 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge D">CLASS D</span><span id="store-pct-d" style="font-size:11px;color:#8a95a8">0%</span></div><div id="store-bags-d" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--red)">0 bags</div><div class="pb"><div class="pf" id="store-bar-d" style="background:var(--red);width:0%"></div></div></div>
     </div>
     <div class="tw">
-      <div class="th2"><div class="ttl">🏪 Store Records</div></div>
+      <div class="th2">
+        <div class="ttl">🏪 Store Records <span class="rcnt" id="store-cnt">0</span></div>
+      </div>
+      <!-- Store Filters -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding:10px 0 6px 0;align-items:center">
+        <input class="fi" id="sf-s" placeholder="🔍 Farmer, Receipt, Chamber..." oninput="applyStoreFilter()" style="flex:1;min-width:160px">
+        <input type="date" class="fi" id="sf-from" oninput="applyStoreFilter()" title="From Date" style="width:130px">
+        <input type="date" class="fi" id="sf-to" oninput="applyStoreFilter()" title="To Date" style="width:130px">
+        <select class="fi" id="sf-q" onchange="applyStoreFilter()" style="width:120px">
+          <option value="">All Quality</option>
+          <option value="LR">LR</option>
+          <option value="DR">DR</option>
+          <option value="FR">FR</option>
+        </select>
+        <select class="fi" id="sf-cls" onchange="applyStoreFilter()" style="width:110px">
+          <option value="">All Class</option>
+          <option value="A">Class A</option>
+          <option value="B">Class B</option>
+          <option value="C">Class C</option>
+          <option value="D">Class D</option>
+          <option value="Z">Zero</option>
+          <option value="K">Kaat</option>
+        </select>
+        <button class="btn btn-ghost" onclick="clearStoreFilter()" style="padding:6px 10px;font-size:12px">✕ Clear</button>
+      </div>
       <div class="tsc"><table>
         <thead><tr><th>Farmer</th><th>Tarikh</th><th>Quality</th><th>A Bags</th><th>B Bags</th><th>C Bags</th><th>D Bags</th><th>Total Store</th><th>Chamber</th><th>Floor</th><th>Pillar</th></tr></thead>
         <tbody id="store-tbody"></tbody>
@@ -566,7 +589,29 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge D">CLASS D</span><span id="own-pct-d" style="font-size:11px;color:#8a95a8">0%</span></div><div id="own-bags-d" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--red)">0 bags</div><div class="pb"><div class="pf" id="own-bar-d" style="background:var(--red);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span id="own-avg-d" style="color:var(--red);font-weight:600">₹0</span></div></div>
     </div>
     <div class="tw">
-      <div class="th2"><div class="ttl">🛒 Own Purchase Records</div></div>
+      <div class="th2">
+        <div class="ttl">🛒 Own Purchase Records <span class="rcnt" id="own-cnt">0</span></div>
+      </div>
+      <!-- Own Filters -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding:10px 0 6px 0;align-items:center">
+        <input class="fi" id="of-s" placeholder="🔍 Farmer, Receipt, Quality..." oninput="applyOwnFilter()" style="flex:1;min-width:160px">
+        <input type="date" class="fi" id="of-from" oninput="applyOwnFilter()" title="From Date" style="width:130px">
+        <input type="date" class="fi" id="of-to" oninput="applyOwnFilter()" title="To Date" style="width:130px">
+        <select class="fi" id="of-q" onchange="applyOwnFilter()" style="width:120px">
+          <option value="">All Quality</option>
+          <option value="LR">LR</option>
+          <option value="DR">DR</option>
+          <option value="FR">FR</option>
+        </select>
+        <select class="fi" id="of-cls" onchange="applyOwnFilter()" style="width:110px">
+          <option value="">All Class</option>
+          <option value="A">Class A</option>
+          <option value="B">Class B</option>
+          <option value="C">Class C</option>
+          <option value="D">Class D</option>
+        </select>
+        <button class="btn btn-ghost" onclick="clearOwnFilter()" style="padding:6px 10px;font-size:12px">✕ Clear</button>
+      </div>
       <div class="tsc"><table>
         <thead><tr><th>Farmer</th><th>Tarikh</th><th>Quality</th><th>A Bags</th><th>A Rate</th><th>A Amt</th><th>B Bags</th><th>B Rate</th><th>B Amt</th><th>C Bags</th><th>C Rate</th><th>C Amt</th><th>D Bags</th><th>D Rate</th><th>D Amt</th><th>Total Bags</th><th>Total Amount</th></tr></thead>
         <tbody id="own-tbody"></tbody>
@@ -577,12 +622,23 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
   <!-- REPORTS -->
   <div id="p-rep" class="hidden">
     <div class="stl">📈 Reports & <span>Analytics</span></div>
-    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
       <button class="btn btn-blue" onclick="genR('monthly')">📅 Monthly</button>
       <button class="btn btn-ghost" onclick="genR('farmer')">👨‍🌾 Farmer-wise</button>
       <button class="btn btn-teal" onclick="genR('store')">🏪 Store Report</button>
       <button class="btn btn-purple" onclick="genR('own')">🛒 Own Purchase</button>
       <button class="btn btn-green" onclick="openExpModal()">Export CSV/PDF</button>
+      <span style="font-size:10px;color:var(--text3);max-width:120px;line-height:1.3">Poori entry records</span>
+      <button class="btn" style="background:#047857;color:#fff" onclick="exportViewReportCSV()" title="Niche jo table dikh rahi hai wahi">📥 Isi report → CSV</button>
+      <button class="btn" style="background:#b91c1c;color:#fff" onclick="exportViewReportPDF()">📄 Isi report → PDF</button>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">📍 Chamber / Floor / Pillar / Grade — Store + Own</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn" style="background:#0f766e;color:#fff" onclick="genR('loc_detail')" title="Har farmer ka rate + chamber/floor/pillar">📍 Farmer · Rate · Location</button>
+      <button class="btn" style="background:#1d4ed8;color:#fff" onclick="genR('by_chamber')">🏛 Chamber-wise</button>
+      <button class="btn" style="background:#7c3aed;color:#fff" onclick="genR('by_floor')">🏢 Floor-wise</button>
+      <button class="btn" style="background:#c2410c;color:#fff" onclick="genR('by_pillar')">🏛 Pillar-wise</button>
+      <button class="btn" style="background:#15803d;color:#fff" onclick="genR('by_grade')">🔤 Grade A–D (Full)</button>
     </div>
     <div id="r-out"><div class="empty" style="padding:50px"><div class="ei">📊</div><h3>Report select karo</h3></div></div>
   </div>
@@ -702,14 +758,68 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 
       <div class="div"></div>
 
-      <!-- SECTION 3: Storage Location (Store wale ke liye) -->
-      <div class="sec-title">🏠 Storage Location <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(Store mein rakhe bags ke liye)</span></div>
-      <div class="loc-box">
-        <div class="fgrid3" style="margin-bottom:0">
-          <div class="fg2"><label class="flbl">Chamber Number</label><input class="finp" id="fi-cham" placeholder="Jaise: 1, 2, 3..."></div>
-          <div class="fg2"><label class="flbl">Floor</label><input class="finp" id="fi-floor" placeholder="Ground, 1st, 2nd..."></div>
-          <div class="fg2"><label class="flbl">Pillar No.</label><input class="finp" id="fi-pillar" placeholder="P-1, P-2..."></div>
+      <!-- SECTION 3: Storage Location -->
+      <div class="sec-title">🏠 Storage Location <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(Store aur Own Purchase — har class ka alag location)</span></div>
+      <div class="loc-box" id="loc-box-all">
+        <!-- Class A Location -->
+        <div id="loc-A" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--green)">
+          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px">CLASS A — Store Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-a" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-a" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-a" placeholder="P-1..."></div>
+          </div>
         </div>
+        <!-- Class B Location -->
+        <div id="loc-B" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--yellow)">
+          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:var(--yellow);margin-bottom:8px">CLASS B — Store Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-b" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-b" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-b" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Class C Location -->
+        <div id="loc-C" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--orange)">
+          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:8px">CLASS C — Store Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-c" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-c" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-c" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Class D Location -->
+        <div id="loc-D" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--red)">
+          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px">CLASS D — Store Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-d" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-d" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-d" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Zero Location -->
+        <div id="loc-Z" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid #64748b">
+          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:8px">ZERO — Store Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-z" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-z" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-z" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Kaat Location -->
+        <div id="loc-K" style="display:none;margin-bottom:0;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid #7c3aed">
+          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:#7c3aed;margin-bottom:8px">KAAT — Store Location</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-k" placeholder="1, 2, 3..."></div>
+            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-k" placeholder="Ground..."></div>
+            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-k" placeholder="P-1..."></div>
+          </div>
+        </div>
+        <!-- Hidden compat fields -->
+        <input type="hidden" id="fi-cham">
+        <input type="hidden" id="fi-floor">
+        <input type="hidden" id="fi-pillar">
+        <div id="loc-none" style="display:none;padding:10px;text-align:center;color:var(--text3);font-size:12px">Koi class Store ya Own Purchase mein nahi rakhi — location optional hai</div>
       </div>
 
       <div class="div"></div>
@@ -820,7 +930,6 @@ const SHEET_URL='https://script.google.com/macros/s/AKfycbxUZz_ewOxzIpRNQqxg6Iof
 const FB_CFG={apiKey:'AIzaSyBhvCmZLVSOKflr7Ub_Vjhw_1CBlV2PaAI',authDomain:'primecoldstore-439ab.firebaseapp.com',databaseURL:'https://primecoldstore-439ab-default-rtdb.asia-southeast1.firebasedatabase.app',projectId:'primecoldstore-439ab',storageBucket:'primecoldstore-439ab.firebasestorage.app',messagingSenderId:'848383603685',appId:'1:848383603685:web:7c9b45a123aa25e153f50c'};
 let FB_DB=null,FB_ON=false;
 function loadFB(){return new Promise(res=>{if(FB_ON){res();return;}const s1=document.createElement('script');s1.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';s1.onload=()=>{const s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';s2.onload=()=>{try{if(!firebase.apps.length)firebase.initializeApp(FB_CFG);FB_DB=firebase.database();FB_ON=true;}catch(e){console.log('FB err:',e);}res();};document.head.appendChild(s2);};document.head.appendChild(s1);});}
-const FB_USERS_PATH='cs/users';
 let recs=[],filtered=[],editId=null,pg=1;
 const PP=15;
 let sField='date',sDir='desc',autoTimer=null;
@@ -833,25 +942,12 @@ function gc(n){if(!FCM[n])FCM[n]=FC[fci++%FC.length];return FCM[n];}
 function ini(n){return(n||'').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';}
 function fmt(n){return(n||0).toLocaleString('en-IN');}
 function fmtS(n){return String(Math.round(n||0));}
-function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 
 // ===== STATUS =====
 function setSt(s){
   const el=document.getElementById('ss');if(!el)return;
   const m={ok:'<span style="color:#4ade80;font-weight:600">● Sheet Connected ✓</span>',sync:'<span style="color:#fbbf24">⟳ Sync ho raha...</span>',load:'<span style="color:#fbbf24">⟳ Data load ho raha...</span>',err:'<span style="color:#f87171">● Error — Retry...</span>',ch:'<span style="color:rgba(255,255,255,0.6)">⟳ Check ho raha...</span>'};
   el.innerHTML=m[s]||m.ch;
-}
-
-function setUserSt(state, detail){
-  const el=document.getElementById('us');if(!el)return;
-  const d = detail ? (' <span style="opacity:.7">('+esc(detail)+')</span>') : '';
-  const m={
-    ok:`<span style="color:#4ade80;font-weight:600">👥 Users: ● Firebase ✓</span>${d}`,
-    sync:`<span style="color:#fbbf24;font-weight:600">👥 Users: ⟳ Sync...</span>${d}`,
-    off:`<span style="color:#fbbf24;font-weight:600">👥 Users: ● Offline</span>${d}`,
-    err:`<span style="color:#f87171;font-weight:600">👥 Users: ● Error</span>${d}`
-  };
-  el.innerHTML=m[state]||m.off;
 }
 
 // ===== LOAD SHEET =====
@@ -985,7 +1081,29 @@ function setDest(cls,dest){
   // Rate input show/hide
   const rateInp=document.getElementById('g-'+lc+'-rate');
   if(rateInp)rateInp.style.display=dest==='own'?'block':'none';
+  // Location box show/hide — sirf store wale ke liye
+  updLocBoxes();
   calcEntry();
+}
+function updLocBoxes(){
+  const classes=['A','B','C','D','Z','K'];
+  let anyLoc=false;
+  classes.forEach(cls=>{
+    const box=document.getElementById('loc-'+cls);
+    if(!box)return;
+    const isStore=dests[cls]==='store';
+    const isOwn=dests[cls]==='own';
+    box.style.display=(isStore||isOwn)?'block':'none';
+    if(isStore||isOwn)anyLoc=true;
+    // Label update — Store ya Own
+    const lbl=box.querySelector('.loc-cls-lbl');
+    if(lbl){
+      if(isStore)lbl.textContent='CLASS '+cls+' — Store Location';
+      else if(isOwn)lbl.textContent='CLASS '+cls+' — Own Purchase Location';
+    }
+  });
+  const noneEl=document.getElementById('loc-none');
+  if(noneEl)noneEl.style.display=anyLoc?'none':'block';
 }
 
 // ===== CALC =====
@@ -1063,6 +1181,19 @@ function openM(id=null){
       document.getElementById('fi-cham').value=r.chamber||'';
       document.getElementById('fi-floor').value=r.floor||'';
       document.getElementById('fi-pillar').value=r.pillar||'';
+      // Per-class locations fill karo
+      const locs=r.locations||{};
+      ['A','B','C','D','Z','K'].forEach(cls=>{
+        const lc=cls.toLowerCase();
+        const loc=locs[cls]||{};
+        const chamEl=document.getElementById('fi-cham-'+lc);
+        const floorEl=document.getElementById('fi-floor-'+lc);
+        const pillarEl=document.getElementById('fi-pillar-'+lc);
+        if(chamEl)chamEl.value=loc.chamber||'';
+        if(floorEl)floorEl.value=loc.floor||'';
+        if(pillarEl)pillarEl.value=loc.pillar||'';
+      });
+      setTimeout(updLocBoxes,50);
       document.getElementById('fi-grate').value=r.gradingRate||'';
       document.getElementById('fi-brate').value=r.bardanaRate||'';
       if(r.labourRate&&document.getElementById('fi-lrate'))document.getElementById('fi-lrate').value=r.labourRate;
@@ -1083,7 +1214,7 @@ function openM(id=null){
       if(r.grading&&r.grading['K'])setDest('K',r.grading['K'].dest||'');
     }
   }else{
-    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
+    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate','fi-cham-a','fi-floor-a','fi-pillar-a','fi-cham-b','fi-floor-b','fi-pillar-b','fi-cham-c','fi-floor-c','fi-pillar-c','fi-cham-d','fi-floor-d','fi-pillar-d','fi-cham-z','fi-floor-z','fi-pillar-z','fi-cham-k','fi-floor-k','fi-pillar-k'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
     ['g-a-bags','g-b-bags','g-c-bags','g-d-bags','g-z-bags','g-k-bags','g-a-rate','g-b-rate','g-c-rate','g-d-rate','g-z-rate','g-k-rate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
     ['fi-gbags','fi-bbags','fi-lbags'].forEach(x=>{const el=document.getElementById(x);if(el){el.value='';delete el.dataset.m;}});
     document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
@@ -1148,9 +1279,17 @@ function saveR(){
     quality:document.getElementById('fi-q').value.trim(),
     receipt:document.getElementById('fi-r').value.trim()||'RC-'+String(recs.length+1).padStart(3,'0'),
     notes:document.getElementById('fi-n').value.trim(),
-    chamber:document.getElementById('fi-cham').value.trim(),
-    floor:document.getElementById('fi-floor').value.trim(),
-    pillar:document.getElementById('fi-pillar').value.trim(),
+    chamber:document.getElementById('fi-cham-a').value.trim()||document.getElementById('fi-cham').value.trim(),
+    floor:document.getElementById('fi-floor-a').value.trim()||document.getElementById('fi-floor').value.trim(),
+    pillar:document.getElementById('fi-pillar-a').value.trim()||document.getElementById('fi-pillar').value.trim(),
+    locations:{
+      A:{chamber:document.getElementById('fi-cham-a').value.trim(),floor:document.getElementById('fi-floor-a').value.trim(),pillar:document.getElementById('fi-pillar-a').value.trim()},
+      B:{chamber:document.getElementById('fi-cham-b').value.trim(),floor:document.getElementById('fi-floor-b').value.trim(),pillar:document.getElementById('fi-pillar-b').value.trim()},
+      C:{chamber:document.getElementById('fi-cham-c').value.trim(),floor:document.getElementById('fi-floor-c').value.trim(),pillar:document.getElementById('fi-pillar-c').value.trim()},
+      D:{chamber:document.getElementById('fi-cham-d').value.trim(),floor:document.getElementById('fi-floor-d').value.trim(),pillar:document.getElementById('fi-pillar-d').value.trim()},
+      Z:{chamber:document.getElementById('fi-cham-z').value.trim(),floor:document.getElementById('fi-floor-z').value.trim(),pillar:document.getElementById('fi-pillar-z').value.trim()},
+      K:{chamber:document.getElementById('fi-cham-k').value.trim(),floor:document.getElementById('fi-floor-k').value.trim(),pillar:document.getElementById('fi-pillar-k').value.trim()}
+    },
     grading,zeroBags,kaatBags,
     gradingRate,bardanaRate,labourRate,
     gradingBags,bardanaBags,labourBags,
@@ -1384,7 +1523,26 @@ function viewD(id){
         ${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600">🥔 ${r.quality}</span>`:''}
       </div>
     </div>
-    ${r.chamber?`<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px;font-size:12px">🏠 Chamber: <strong>C-${r.chamber}</strong> | Floor: <strong>${r.floor||'—'}</strong> | Pillar: <strong>${r.pillar||'—'}</strong></div>`:''}
+    ${(()=>{
+  const locs=r.locations||{};
+  const hasLocs=Object.keys(locs).some(k=>locs[k]&&locs[k].chamber);
+  if(hasLocs){
+    const clsColors={A:'var(--green)',B:'var(--yellow)',C:'var(--orange)',D:'var(--red)',Z:'#64748b',K:'#7c3aed'};
+    return '<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px">'
+      +'<div style="font-size:11px;font-weight:700;color:var(--blue2);margin-bottom:7px">🏠 Storage Locations</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px">'
+      +Object.keys(locs).filter(k=>locs[k]&&locs[k].chamber).map(k=>{
+        const loc=locs[k];
+        return '<div style="background:#fff;border:1px solid #c5d8f8;border-radius:5px;padding:5px 9px;font-size:11px">'
+          +'<span style="font-weight:700;color:'+( clsColors[k]||'#1a5fc8')+'">'+k+'</span> '
+          +'C-'+loc.chamber+(loc.floor?' F'+loc.floor:'')+(loc.pillar?' '+loc.pillar:'')
+          +'</div>';
+      }).join('')
+      +'</div></div>';
+  }
+  if(r.chamber)return '<div style="background:var(--bluebg);border:1px solid #c5d8f8;border-radius:7px;padding:9px 13px;margin-bottom:12px;font-size:12px">🏠 Chamber: <strong>C-'+r.chamber+'</strong> | Floor: <strong>'+(r.floor||'—')+'</strong> | Pillar: <strong>'+(r.pillar||'—')+'</strong></div>';
+  return '';
+})()}
     <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
       <thead><tr style="background:#f0f4fc"><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Class</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Bags</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Destination</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Rate</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Amount</th></tr></thead>
       <tbody>
@@ -1453,6 +1611,25 @@ function updDash(){
 }
 
 // ===== STORE DASHBOARD =====
+function applyStoreFilter(){
+  const s=(document.getElementById('sf-s')?.value||'').toLowerCase();
+  const from=document.getElementById('sf-from')?.value||'';
+  const to=document.getElementById('sf-to')?.value||'';
+  const q=(document.getElementById('sf-q')?.value||'');
+  const cls=(document.getElementById('sf-cls')?.value||'');
+  let filtered=recs.filter(r=>r.storeBags>0);
+  if(s)filtered=filtered.filter(r=>(r.farmer||'').toLowerCase().includes(s)||(r.receipt||'').toLowerCase().includes(s)||(r.chamber||'').toLowerCase().includes(s)||(r.quality||'').toLowerCase().includes(s));
+  if(from)filtered=filtered.filter(r=>r.date>=from);
+  if(to)filtered=filtered.filter(r=>r.date<=to);
+  if(q)filtered=filtered.filter(r=>r.quality===q);
+  if(cls){const g_cls=cls;filtered=filtered.filter(r=>{const g=r.grading||{};return g[g_cls]&&g[g_cls].dest==='store'&&g[g_cls].bags>0;});}
+  renderStoreTable(filtered);
+}
+function clearStoreFilter(){
+  ['sf-s','sf-from','sf-to'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['sf-q','sf-cls'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  applyStoreFilter();
+}
 function updStore(){
   const storeRecs=recs.filter(r=>r.storeBags>0);
   const total=storeRecs.reduce((s,r)=>s+(r.storeBags||0),0);
@@ -1474,25 +1651,58 @@ function updStore(){
     document.getElementById('store-bags-'+lc).textContent=cs[cl]+' bags';
   });
 
-  document.getElementById('store-tbody').innerHTML=storeRecs.length?storeRecs.map(r=>{
-    const g=r.grading||{};const c=gc(r.farmer);
+  renderStoreTable(storeRecs);
+  applyStoreFilter();
+}
+function renderStoreTable(rows){
+  const cnt=document.getElementById('store-cnt');if(cnt)cnt.textContent=rows.length;
+  document.getElementById('store-tbody').innerHTML=rows.length?rows.map(r=>{
+    const g=r.grading||{};const col=gc(r.farmer);
+    const locs=r.locations||{};
+    const locStr=(cls)=>{
+      const l=locs[cls]||{};
+      if(l.chamber)return'C-'+l.chamber+(l.floor?' F'+l.floor:'')+(l.pillar?' '+l.pillar:'');
+      if(cls==='A'&&r.chamber)return'C-'+r.chamber+(r.floor?' F'+r.floor:'')+(r.pillar?' '+r.pillar:'');
+      return'—';
+    };
     return`<tr>
-      <td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td>
+      <td><div class="fc2"><div class="fa" style="background:${col}22;color:${col}">${ini(r.farmer)}</div>${r.farmer}</div></td>
       <td class="mono">${r.date}</td>
       <td>${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 6px;font-size:11px">${r.quality}</span>`:''}</td>
-      <td>${g.A&&g.A.dest==='store'?`<span class="ct2 A">${g.A.bags}</span>`:'—'}</td>
-      <td>${g.B&&g.B.dest==='store'?`<span class="ct2 B">${g.B.bags}</span>`:'—'}</td>
-      <td>${g.C&&g.C.dest==='store'?`<span class="ct2 C">${g.C.bags}</span>`:'—'}</td>
-      <td>${g.D&&g.D.dest==='store'?`<span class="ct2 D">${g.D.bags}</span>`:'—'}</td>
+      <td>${g.A&&g.A.dest==='store'?`<span class="ct2 A">${g.A.bags}</span><br><span style="font-size:9px;color:var(--text3)">${locStr('A')}</span>`:'—'}</td>
+      <td>${g.B&&g.B.dest==='store'?`<span class="ct2 B">${g.B.bags}</span><br><span style="font-size:9px;color:var(--text3)">${locStr('B')}</span>`:'—'}</td>
+      <td>${g.C&&g.C.dest==='store'?`<span class="ct2 C">${g.C.bags}</span><br><span style="font-size:9px;color:var(--text3)">${locStr('C')}</span>`:'—'}</td>
+      <td>${g.D&&g.D.dest==='store'?`<span class="ct2 D">${g.D.bags}</span><br><span style="font-size:9px;color:var(--text3)">${locStr('D')}</span>`:'—'}</td>
       <td><strong style="font-family:'Rajdhani',sans-serif">${r.storeBags}</strong></td>
-      <td>${r.chamber?`<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">C-${r.chamber}</span>`:'—'}</td>
-      <td>${r.floor||'—'}</td>
-      <td>${r.pillar||'—'}</td>
+      <td colspan="3">${(()=>{
+        const allLocs=Object.keys(locs).filter(k=>locs[k]&&locs[k].chamber&&(r.grading?.[k]?.dest==='store'));
+        if(allLocs.length)return allLocs.map(k=>'<span style="background:var(--bluebg);color:var(--blue);padding:1px 5px;border-radius:3px;font-size:10px;margin:1px;display:inline-block"><b>'+k+'</b> C-'+locs[k].chamber+(locs[k].floor?' F'+locs[k].floor:'')+(locs[k].pillar?' '+locs[k].pillar:'')+'</span>').join('');
+        return r.chamber?'<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px">C-'+r.chamber+(r.floor?' F'+r.floor:'')+(r.pillar?' '+r.pillar:'')+'</span>':'—';
+      })()}</td>
     </tr>`;
   }).join(''):`<tr><td colspan="11"><div class="empty"><div class="ei">🏪</div><h3>Koi store record nahi</h3></div></td></tr>`;
 }
 
 // ===== OWN PURCHASE DASHBOARD =====
+function applyOwnFilter(){
+  const s=(document.getElementById('of-s')?.value||'').toLowerCase();
+  const from=document.getElementById('of-from')?.value||'';
+  const to=document.getElementById('of-to')?.value||'';
+  const q=document.getElementById('of-q')?.value||'';
+  const cls=document.getElementById('of-cls')?.value||'';
+  let filtered=recs.filter(r=>r.ownBags>0);
+  if(s)filtered=filtered.filter(r=>(r.farmer||'').toLowerCase().includes(s)||(r.receipt||'').toLowerCase().includes(s)||(r.quality||'').toLowerCase().includes(s)||(r.mobile||'').includes(s));
+  if(from)filtered=filtered.filter(r=>r.date>=from);
+  if(to)filtered=filtered.filter(r=>r.date<=to);
+  if(q)filtered=filtered.filter(r=>r.quality===q);
+  if(cls){filtered=filtered.filter(r=>{const g=r.grading||{};return g[cls]&&g[cls].dest==='own'&&g[cls].bags>0;});}
+  renderOwnTable(filtered);
+}
+function clearOwnFilter(){
+  ['of-s','of-from','of-to'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['of-q','of-cls'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  applyOwnFilter();
+}
 function updOwn(){
   const ownRecs=recs.filter(r=>r.ownBags>0);
   const totalBags=ownRecs.reduce((s,r)=>s+(r.ownBags||0),0);
@@ -1516,17 +1726,27 @@ function updOwn(){
     document.getElementById('own-avg-'+lc).textContent='₹'+avg;
   });
 
-  document.getElementById('own-tbody').innerHTML=ownRecs.length?ownRecs.map(r=>{
-    const g=r.grading||{};const c=gc(r.farmer);
+  renderOwnTable(ownRecs);
+  applyOwnFilter();
+}
+function renderOwnTable(rows){
+  const cnt=document.getElementById('own-cnt');if(cnt)cnt.textContent=rows.length;
+  const locs_get=(r,cls)=>{const locs=r.locations||{};const l=locs[cls]||{};if(l.chamber)return'C-'+l.chamber+(l.floor?' F'+l.floor:'')+(l.pillar?' '+l.pillar:'');return'';};
+  document.getElementById('own-tbody').innerHTML=rows.length?rows.map(r=>{
+    const g=r.grading||{};const col=gc(r.farmer);
     return`<tr>
-      <td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${r.farmer}</div></td>
+      <td><div class="fc2"><div class="fa" style="background:${col}22;color:${col}">${ini(r.farmer)}</div>${r.farmer}</div></td>
       <td class="mono">${r.date}</td>
       <td>${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 6px;font-size:11px">${r.quality}</span>`:''}</td>
-      ${['A','B','C','D'].map(cl=>`
-        <td>${g[cl]&&g[cl].dest==='own'?`<span class="ct2 ${cl}">${g[cl].bags}</span>`:'—'}</td>
-        <td style="font-size:11px">${g[cl]&&g[cl].dest==='own'&&g[cl].rate?'₹'+g[cl].rate:''}</td>
-        <td style="color:var(--purple);font-family:'JetBrains Mono',monospace;font-size:11px">${g[cl]&&g[cl].dest==='own'?'₹'+fmt(g[cl].bags*g[cl].rate):''}</td>
-      `).join('')}
+      ${['A','B','C','D'].map(cl=>{
+        const loc=locs_get(r,cl);
+        const bags=g[cl]&&g[cl].dest==='own'?g[cl].bags:0;
+        const rate=g[cl]&&g[cl].dest==='own'?g[cl].rate:0;
+        const bagCell=bags?('<span class="ct2 '+cl+'">'+bags+'</span>'+(loc?'<br><span style="font-size:9px;color:var(--text3)">'+loc+'</span>':'')):'—';
+        return '<td>'+bagCell+'</td>'
+          +'<td style="font-size:11px">'+(rate?'₹'+rate:'')+'</td>'
+          +'<td style="color:var(--purple);font-family:\'JetBrains Mono\',monospace;font-size:11px">'+(bags?'₹'+fmt(bags*rate):'')+'</td>';
+      }).join('')}
       <td><strong style="font-family:'Rajdhani',sans-serif">${r.ownBags}</strong></td>
       <td class="amt">₹${fmt(r.ownAmt||0)}</td>
     </tr>`;
@@ -1642,21 +1862,218 @@ function showJD(name){
 }
 
 // ===== REPORTS =====
+/** Store par pada maal: har class ke liye chamber/floor/pillar */
+function locForClass(r,cl){
+  const locs=r.locations||{};
+  const l=locs[cl]||{};
+  let ch=String(l.chamber||'').trim();
+  let fl=String(l.floor||'').trim();
+  let pi=String(l.pillar||'').trim();
+  if(!ch)ch=String(r.chamber||'').trim();
+  if(!fl)fl=String(r.floor||'').trim();
+  if(!pi)pi=String(r.pillar||'').trim();
+  return{chamber:ch||'—',floor:fl||'—',pillar:pi||'—'};
+}
+/** Store ya Own — class-wise line + rate (own par line amount = bags×rate) */
+function classRowsForDest(dest){
+  const rows=[];
+  recs.forEach(r=>{
+    const g=r.grading||{};
+    const rowOk=dest==='store'?(r.storeBags>0):(r.ownBags>0);
+    if(!rowOk)return;
+    ['A','B','C','D','Z','K'].forEach(cl=>{
+      const gc=g[cl];
+      if(!gc||gc.dest!==dest||!(gc.bags>0))return;
+      const L=locForClass(r,cl);
+      const rate=Number(gc.rate)||0;
+      const bags=gc.bags;
+      rows.push({r,grade:cl,bags,rate,chamber:L.chamber,floor:L.floor,pillar:L.pillar,kind:dest,lineAmt:dest==='own'?bags*rate:0});
+    });
+  });
+  return rows;
+}
+function allLocRows(){return [...classRowsForDest('store'),...classRowsForDest('own')];}
+
+/** Niche #r-out mein jo report dikh rahi hai — usi ka CSV/PDF */
+let VIEW_REPORT_EXPORT=null;
+function clearViewReportExport(){VIEW_REPORT_EXPORT=null;}
+function setViewReportExport(title,fileSlug,sections){
+  VIEW_REPORT_EXPORT={title:title||'Report',fileSlug:String(fileSlug||'report').replace(/[^\w\u0900-\u0C7F\-]+/g,'_').replace(/^_|_$/g,'')||'report',sections:sections||[]};
+}
+function csvEscapeCell(v){
+  const s=String(v==null?'':v).replace(/\r?\n/g,' ');
+  if(/[",]/.test(s))return'"'+s.replace(/"/g,'""')+'"';
+  return s;
+}
+function exportViewReportCSV(){
+  if(!VIEW_REPORT_EXPORT||!VIEW_REPORT_EXPORT.sections||!VIEW_REPORT_EXPORT.sections.length){
+    toast('Pehle koi report button dabao — jab niche table dikhe tab export hoga','e');
+    return;
+  }
+  const lines=[csvEscapeCell(VIEW_REPORT_EXPORT.title)];
+  VIEW_REPORT_EXPORT.sections.forEach(sec=>{
+    if(sec.sectionTitle)lines.push('',csvEscapeCell(sec.sectionTitle));
+    lines.push(sec.headers.map(csvEscapeCell).join(','));
+    (sec.rows||[]).forEach(r=>lines.push(r.map(csvEscapeCell).join(',')));
+  });
+  const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=VIEW_REPORT_EXPORT.fileSlug+'_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Yahi wali report CSV download ho gayi!','s');
+}
+function exportViewReportPDF(){
+  if(!VIEW_REPORT_EXPORT||!VIEW_REPORT_EXPORT.sections||!VIEW_REPORT_EXPORT.sections.length){
+    toast('Pehle koi report kholo (niche table)','e');
+    return;
+  }
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const win=window.open('','_blank','width=1100,height=720');
+  let body='<button style="background:#1a3a6b;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;margin-bottom:12px" onclick="window.print()">Print / Save PDF</button>';
+  body+='<h1 style="font-size:16px;color:#1a3a6b;margin:0 0 14px">'+esc(VIEW_REPORT_EXPORT.title)+'</h1>';
+  VIEW_REPORT_EXPORT.sections.forEach(sec=>{
+    if(sec.sectionTitle)body+='<h2 style="font-size:13px;color:#1d4ed8;margin:16px 0 8px;border-bottom:1px solid #e5e7eb;padding-bottom:4px">'+esc(sec.sectionTitle)+'</h2>';
+    body+='<table style="width:100%;border-collapse:collapse;font-size:10px;margin-bottom:14px"><thead><tr>';
+    sec.headers.forEach(h=>{body+='<th style="background:#1a3a6b;color:#fff;padding:6px 7px;text-align:left">'+esc(h)+'</th>';});
+    body+='</tr></thead><tbody>';
+    (sec.rows||[]).forEach((r,ri)=>{
+      body+='<tr style="background:'+(ri%2?'#f8fafc':'#fff')+'">';
+      r.forEach(c=>{body+='<td style="padding:5px 7px;border-bottom:1px solid #e5e7eb">'+esc(c)+'</td>';});
+      body+='</tr>';
+    });
+    body+='</tbody></table>';
+  });
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(VIEW_REPORT_EXPORT.title)+'</title><style>body{font-family:Segoe UI,Arial,sans-serif;margin:14px;color:#1a2332}@media print{button{display:none}}</style></head><body>'+body+'</body></html>');
+  win.document.close();
+  toast('PDF window — Print ya Save as PDF','s');
+}
+
 function genR(type){
+  clearViewReportExport();
   const out=document.getElementById('r-out');
   if(type==='monthly'){
-    const m={};recs.forEach(r=>{const k=r.date.slice(0,7);if(!m[k])m[k]={entries:0,bags:0,store:0,own:0,ownAmt:0,netPay:0};m[k].entries++;m[k].bags+=(r.totalBags||0);m[k].store+=(r.storeBags||0);m[k].own+=(r.ownBags||0);m[k].ownAmt+=(r.ownAmt||0);m[k].netPay+=(r.netPay||0);});
+    const m={};recs.forEach(r=>{const k=(r.date||'').slice(0,7)||'—';if(!m[k])m[k]={entries:0,bags:0,store:0,own:0,ownAmt:0,netPay:0};m[k].entries++;m[k].bags+=(r.totalBags||0);m[k].store+=(r.storeBags||0);m[k].own+=(r.ownBags||0);m[k].ownAmt+=(r.ownAmt||0);m[k].netPay+=(r.netPay||0);});
     const rows=Object.entries(m).sort((a,b)=>b[0].localeCompare(a[0]));
     if(!rows.length){out.innerHTML='<div class="empty"><div class="ei">📅</div><h3>Koi data nahi</h3></div>';return;}
-    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📅 Monthly Report</div></div><div class="tsc"><table><thead><tr><th>Month</th><th>Entries</th><th>Total Bags</th><th>Store</th><th>Own Purchase</th><th>Own Amount</th><th>Net Dena</th></tr></thead><tbody>${rows.map(([k,d])=>`<tr><td class="mono">${k}</td><td>${d.entries}</td><td><strong style="font-family:'Rajdhani',sans-serif">${d.bags}</strong></td><td style="color:var(--teal)">${d.store}</td><td style="color:var(--purple)">${d.own}</td><td class="amt">₹${fmt(d.ownAmt)}</td><td style="color:var(--green);font-weight:700">₹${fmt(d.netPay)}</td></tr>`).join('')}</tbody></table></div></div>`;
+    const T=rows.reduce((s,[,d])=>({entries:s.entries+d.entries,bags:s.bags+d.bags,store:s.store+d.store,own:s.own+d.own,ownAmt:s.ownAmt+d.ownAmt,netPay:s.netPay+d.netPay}),{entries:0,bags:0,store:0,own:0,ownAmt:0,netPay:0});
+    const hdrM=['Month','Entries','Total Bags','Store','Own Purchase','Own Amount','Net Dena'];
+    const rowM=rows.map(([k,d])=>[k,d.entries,d.bags,d.store,d.own,'₹'+fmt(d.ownAmt),'₹'+fmt(d.netPay)]);
+    rowM.push(['TOTAL',T.entries,T.bags,T.store,T.own,'₹'+fmt(T.ownAmt),'₹'+fmt(T.netPay)]);
+    setViewReportExport('📅 Monthly Report','Monthly',[{sectionTitle:null,headers:hdrM,rows:rowM}]);
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📅 Monthly Report</div></div><div class="tsc"><table><thead><tr><th>Month</th><th>Entries</th><th>Total Bags</th><th>Store</th><th>Own Purchase</th><th>Own Amount</th><th>Net Dena</th></tr></thead><tbody>${rows.map(([k,d])=>`<tr><td class="mono">${k}</td><td>${d.entries}</td><td><strong style="font-family:'Rajdhani',sans-serif">${d.bags}</strong></td><td style="color:var(--teal)">${d.store}</td><td style="color:var(--purple)">${d.own}</td><td class="amt">₹${fmt(d.ownAmt)}</td><td style="color:var(--green);font-weight:700">₹${fmt(d.netPay)}</td></tr>`).join('')}</tbody><tfoot><tr style="background:var(--s2);font-weight:700"><td>TOTAL</td><td>${T.entries}</td><td>${T.bags}</td><td style="color:var(--teal)">${T.store}</td><td style="color:var(--purple)">${T.own}</td><td class="amt">₹${fmt(T.ownAmt)}</td><td style="color:var(--green)">₹${fmt(T.netPay)}</td></tr></tfoot></table></div></div>`;
   }
   if(type==='farmer'){
     const fm={};recs.forEach(r=>{if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,entries:0,store:0,own:0,ownAmt:0,netPay:0};fm[r.farmer].entries++;fm[r.farmer].store+=(r.storeBags||0);fm[r.farmer].own+=(r.ownBags||0);fm[r.farmer].ownAmt+=(r.ownAmt||0);fm[r.farmer].netPay+=(r.netPay||0);});
     const sorted=Object.values(fm).sort((a,b)=>b.netPay-a.netPay);
-    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">👨‍🌾 Farmer Report</div></div><div class="tsc"><table><thead><tr><th>Rank</th><th>Farmer</th><th>Entries</th><th>Store Bags</th><th>Own Bags</th><th>Own Amount</th><th>Net Dena</th></tr></thead><tbody>${sorted.map((f,i)=>{const c=gc(f.name);return`<tr><td style="color:#8a95a8">#${i+1}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(f.name)}</div>${f.name}</div></td><td>${f.entries}</td><td style="color:var(--teal)">${f.store}</td><td style="color:var(--purple)">${f.own}</td><td class="amt">₹${fmt(f.ownAmt)}</td><td style="color:var(--green);font-weight:700">₹${fmt(f.netPay)}</td></tr>`;}).join('')}</tbody></table></div></div>`;
+    const TF=sorted.reduce((s,f)=>({entries:s.entries+f.entries,store:s.store+f.store,own:s.own+f.own,ownAmt:s.ownAmt+f.ownAmt,netPay:s.netPay+f.netPay}),{entries:0,store:0,own:0,ownAmt:0,netPay:0});
+    const hdrF=['Rank','Farmer','Entries','Store Bags','Own Bags','Own Amount','Net Dena'];
+    const rowF=sorted.map((f,i)=>['#'+(i+1),f.name,f.entries,f.store,f.own,'₹'+fmt(f.ownAmt),'₹'+fmt(f.netPay)]);
+    rowF.push(['TOTAL ('+sorted.length+' farmers)','',TF.entries,TF.store,TF.own,'₹'+fmt(TF.ownAmt),'₹'+fmt(TF.netPay)]);
+    setViewReportExport('👨‍🌾 Farmer Report','Farmer',[{sectionTitle:null,headers:hdrF,rows:rowF}]);
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">👨‍🌾 Farmer Report</div></div><div class="tsc"><table><thead><tr><th>Rank</th><th>Farmer</th><th>Entries</th><th>Store Bags</th><th>Own Bags</th><th>Own Amount</th><th>Net Dena</th></tr></thead><tbody>${sorted.map((f,i)=>{const c=gc(f.name);return`<tr><td style="color:#8a95a8">#${i+1}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(f.name)}</div>${f.name}</div></td><td>${f.entries}</td><td style="color:var(--teal)">${f.store}</td><td style="color:var(--purple)">${f.own}</td><td class="amt">₹${fmt(f.ownAmt)}</td><td style="color:var(--green);font-weight:700">₹${fmt(f.netPay)}</td></tr>`;}).join('')}</tbody><tfoot><tr style="background:var(--s2);font-weight:700"><td colspan="2">TOTAL (${sorted.length} farmers)</td><td>${TF.entries}</td><td style="color:var(--teal)">${TF.store}</td><td style="color:var(--purple)">${TF.own}</td><td class="amt">₹${fmt(TF.ownAmt)}</td><td style="color:var(--green)">₹${fmt(TF.netPay)}</td></tr></tfoot></table></div></div>`;
   }
-  if(type==='store'){updStore();toast('Store tab mein jaake dekho!','i');goTab('store');}
-  if(type==='own'){updOwn();toast('Own Purchase tab mein jaake dekho!','i');goTab('own');}
+  if(type==='store'){updStore();toast('Store tab mein jaake dekho!','i');goTab('store');return;}
+  if(type==='own'){updOwn();toast('Own Purchase tab mein jaake dekho!','i');goTab('own');return;}
+
+  const locRows=allLocRows();
+  const emptyLoc='<div class="empty" style="padding:40px"><div class="ei">📍</div><h3>Store / Own par koi class-wise line nahi</h3><p style="font-size:12px;color:var(--text3);max-width:460px;margin:8px auto 0">Entry mein class <b>Store</b> ya <b>Own Purchase</b> rakho, bags daalo; Own par <b>rate ₹/bag</b> zaroor bharein. Chamber / Floor / Pillar optional.</p></div>';
+  const typeBadge=x=>x.kind==='store'?'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:#0d9488;color:#fff;font-weight:700">Store</span>':'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:#7c3aed;color:#fff;font-weight:700">Own</span>';
+  if(type==='loc_detail'){
+    if(!locRows.length){out.innerHTML=emptyLoc;return;}
+    const sorted=locRows.slice().sort((a,b)=>{const fa=(a.r.farmer||'').localeCompare(b.r.farmer||'');if(fa)return fa;if(a.kind!==b.kind)return a.kind==='store'?-1:1;return a.grade.localeCompare(b.grade);});
+    const tb=sorted.map(x=>{
+      const c=gc(x.r.farmer);
+      const rateShow=x.kind==='own'||x.rate?('₹'+fmt(x.rate)):'—';
+      const lineShow=x.kind==='own'&&x.lineAmt?('₹'+fmt(x.lineAmt)):'—';
+      return`<tr><td>${typeBadge(x)}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${x.r.farmer}</div></td><td><span class="ct2 ${x.grade}">${x.grade}</span></td><td><strong>${x.bags}</strong></td><td class="mono" style="font-weight:700;color:${x.kind==='own'?'var(--purple)':'inherit'}">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${x.chamber}</td><td>${x.floor}</td><td>${x.pillar}</td><td class="mono" style="font-size:11px">${x.r.receipt||'—'}</td><td class="mono" style="font-size:11px">${x.r.date||'—'}</td><td>${x.r.quality||'—'}</td></tr>`;
+    }).join('');
+    const totStore=sorted.filter(x=>x.kind==='store').reduce((s,x)=>s+x.bags,0);
+    const totOwnB=sorted.filter(x=>x.kind==='own').reduce((s,x)=>s+x.bags,0);
+    const totOwnRs=sorted.filter(x=>x.kind==='own').reduce((s,x)=>s+x.lineAmt,0);
+    const hdrL=['Type','Farmer','Grade','Bags','Rs_per_bag','Line_Rs','Chamber','Floor','Pillar','Receipt','Tarikh','Quality'];
+    const rowL=sorted.map(x=>[
+      x.kind==='store'?'Store':'Own',x.r.farmer,x.grade,x.bags,
+      (x.kind==='own'||x.rate)?'₹'+fmt(x.rate):'',
+      (x.kind==='own'&&x.lineAmt)?'₹'+fmt(x.lineAmt):'',
+      x.chamber,x.floor,x.pillar,x.r.receipt||'',x.r.date||'',x.r.quality||''
+    ]);
+    rowL.push(['TOTAL','','',sorted.reduce((s,x)=>s+x.bags,0),'','₹'+fmt(totOwnRs),'','','','','','']);
+    setViewReportExport('📍 Store + Own — Farmer · Rate · Location','Farmer_Rate_Location',[{sectionTitle:null,headers:hdrL,rows:rowL}]);
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📍 Store + Own — Farmer · Rate · Location</div><div style="font-size:12px;color:var(--text3)">Store bags (lines): <strong style="color:var(--teal)">${totStore}</strong> · Own bags: <strong style="color:var(--purple)">${totOwnB}</strong> · Own line total: <strong class="amt">₹${fmt(totOwnRs)}</strong></div></div><div class="tsc"><table><thead><tr><th>Type</th><th>Farmer</th><th>Grade</th><th>Bags</th><th>₹/bag</th><th>Line ₹</th><th>Chamber</th><th>Floor</th><th>Pillar</th><th>Receipt</th><th>Tarikh</th><th>Quality</th></tr></thead><tbody>${tb}</tbody><tfoot><tr style="background:var(--s2);font-weight:700"><td colspan="3">TOTAL</td><td>${sorted.reduce((s,x)=>s+x.bags,0)}</td><td></td><td class="amt">₹${fmt(totOwnRs)}</td><td colspan="6"></td></tr></tfoot></table></div></div>`;
+  }
+  function groupLocReport(title,keyFn,keyLabel,fileSlug){
+    if(!locRows.length){out.innerHTML=emptyLoc;return;}
+    const groups={};
+    locRows.forEach(x=>{
+      const k=String(keyFn(x)||'').trim()||'—';
+      if(!groups[k])groups[k]=[];
+      groups[k].push(x);
+    });
+    const keys=Object.keys(groups).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+    const hdrG=['Type','Farmer','Grade','Bags','Rs_per_bag','Line_Rs','Chamber','Floor','Pillar','Tarikh','Receipt'];
+    const sections=[];
+    const blocks=keys.map(k=>{
+      const arr=groups[k];
+      arr.sort((a,b)=>{const fa=(a.r.farmer||'').localeCompare(b.r.farmer||'');if(fa)return fa;return a.kind===b.kind?a.grade.localeCompare(b.grade):a.kind==='store'?-1:1;});
+      const sub=arr.reduce((s,x)=>s+x.bags,0);
+      const subOwnRs=arr.filter(x=>x.kind==='own').reduce((s,x)=>s+x.lineAmt,0);
+      const rowsCsv=arr.map(x=>[
+        x.kind==='store'?'Store':'Own',x.r.farmer,x.grade,x.bags,
+        (x.kind==='own'||x.rate)?'₹'+fmt(x.rate):'',
+        (x.kind==='own'&&x.lineAmt)?'₹'+fmt(x.lineAmt):'',
+        x.chamber,x.floor,x.pillar,x.r.date||'',x.r.receipt||''
+      ]);
+      sections.push({sectionTitle:keyLabel+': '+k+' | '+sub+' bags | Own Rs '+fmt(subOwnRs),headers:hdrG,rows:rowsCsv});
+      const tb=arr.map(x=>{
+        const c=gc(x.r.farmer);
+        const rateShow=x.kind==='own'||x.rate?('₹'+fmt(x.rate)):'—';
+        const lineShow=x.kind==='own'&&x.lineAmt?('₹'+fmt(x.lineAmt)):'—';
+        return`<tr><td>${typeBadge(x)}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${x.r.farmer}</div></td><td><span class="ct2 ${x.grade}">${x.grade}</span></td><td><strong>${x.bags}</strong></td><td class="mono" style="font-weight:700;color:${x.kind==='own'?'var(--purple)':'inherit'}">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${x.chamber}</td><td>${x.floor}</td><td>${x.pillar}</td><td class="mono" style="font-size:11px">${x.r.date||'—'}</td><td>${x.r.receipt||'—'}</td></tr>`;
+      }).join('');
+      return`<div style="margin-bottom:22px"><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--blue);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--border)">${keyLabel}: <span style="color:var(--text)">${k}</span> <span style="font-size:12px;font-weight:600;color:var(--text3)">${sub} bags</span> <span style="font-size:12px;font-weight:700;color:var(--purple)">· Own ₹${fmt(subOwnRs)}</span></div><div class="tsc"><table><thead><tr><th>Type</th><th>Farmer</th><th>Grade</th><th>Bags</th><th>₹/bag</th><th>Line ₹</th><th>Chamber</th><th>Floor</th><th>Pillar</th><th>Tarikh</th><th>Receipt</th></tr></thead><tbody>${tb}</tbody></table></div></div>`;
+    }).join('');
+    setViewReportExport(title,fileSlug,sections);
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">${title}</div><div style="font-size:11px;color:var(--text3)">Store + Own dono · Own ke liye rate aur line amount.</div></div>${blocks}</div>`;
+  }
+  if(type==='by_chamber')groupLocReport('🏛 Chamber-wise — kiska maal kaun sa grade',x=>x.chamber,'Chamber','ChamberWise');
+  if(type==='by_floor')groupLocReport('🏢 Floor-wise — kiska maal kaun sa grade',x=>x.floor,'Floor','FloorWise');
+  if(type==='by_pillar')groupLocReport('🏛 Pillar-wise — kiska maal kaun sa grade',x=>x.pillar,'Pillar','PillarWise');
+  if(type==='by_grade'){
+    if(!locRows.length){out.innerHTML=emptyLoc;return;}
+    const order=['A','B','C','D','Z','K'];
+    const labels={A:'Class A',B:'Class B',C:'Class C',D:'Class D',Z:'Zero',K:'Kaat'};
+    const hdrGr=['Type','Farmer','Bags','Rs_per_bag','Line_Rs','Chamber','Floor','Pillar','Receipt','Tarikh','Quality','Mobile','Row_Store','Row_Own','Net_Dena'];
+    const expGradeSections=[];
+    const parts=order.map(gr=>{
+      const arr=locRows.filter(x=>x.grade===gr);
+      if(!arr.length)return`<div style="margin-bottom:18px;opacity:0.75"><div style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px"><span class="ct2 ${gr}">${gr}</span> ${labels[gr]||gr} — <span style="color:var(--text3);font-weight:500">koi store/own line nahi</span></div></div>`;
+      arr.sort((a,b)=>{const fa=(a.r.farmer||'').localeCompare(b.r.farmer||'');if(fa)return fa;return a.kind===b.kind?0:a.kind==='store'?-1:1;});
+      const subSt=arr.filter(x=>x.kind==='store').reduce((s,x)=>s+x.bags,0);
+      const subOw=arr.filter(x=>x.kind==='own').reduce((s,x)=>s+x.bags,0);
+      const subOwRs=arr.filter(x=>x.kind==='own').reduce((s,x)=>s+x.lineAmt,0);
+      const rowsCsv=arr.map(x=>[
+        x.kind==='store'?'Store':'Own',x.r.farmer,x.bags,
+        (x.kind==='own'||x.rate)?'₹'+fmt(x.rate):'',
+        (x.kind==='own'&&x.lineAmt)?'₹'+fmt(x.lineAmt):'',
+        x.chamber,x.floor,x.pillar,x.r.receipt||'',x.r.date||'',x.r.quality||'',x.r.mobile||'',
+        x.r.storeBags||0,x.r.ownBags||0,'₹'+fmt(x.r.netPay||0)
+      ]);
+      const subBags=arr.reduce((s,x)=>s+x.bags,0);
+      rowsCsv.push(['Subtotal','',String(subBags),'','₹'+fmt(subOwRs),'','','','','','','','','','']);
+      expGradeSections.push({sectionTitle:gr+' — '+labels[gr]+' | Store '+subSt+' bags | Own '+subOw+' bags | Own Rs '+fmt(subOwRs),headers:hdrGr,rows:rowsCsv});
+      const tb=arr.map(x=>{
+        const c=gc(x.r.farmer);
+        const rateShow=x.kind==='own'||x.rate?('₹'+fmt(x.rate)):'—';
+        const lineShow=x.kind==='own'&&x.lineAmt?('₹'+fmt(x.lineAmt)):'—';
+        return`<tr><td>${typeBadge(x)}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${x.r.farmer}</div></td><td><strong>${x.bags}</strong></td><td class="mono" style="font-weight:700;color:${x.kind==='own'?'var(--purple)':'inherit'}">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${x.chamber}</td><td>${x.floor}</td><td>${x.pillar}</td><td class="mono" style="font-size:11px">${x.r.receipt||'—'}</td><td class="mono" style="font-size:11px">${x.r.date||'—'}</td><td>${x.r.quality||'—'}</td><td style="font-size:11px">${x.r.mobile||'—'}</td><td style="color:var(--teal)">${x.r.storeBags||0}</td><td style="color:var(--purple)">${x.r.ownBags||0}</td><td class="amt" style="font-size:11px">₹${fmt(x.r.netPay||0)}</td></tr>`;
+      }).join('');
+      return`<div style="margin-bottom:24px"><div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="ct2 ${gr}">${gr}</span> ${labels[gr]||gr} <span style="font-size:13px;font-weight:600;color:var(--text3)">${arr.length} lines</span> <span style="font-size:12px;color:var(--teal)">Store ${subSt} bags</span> <span style="font-size:12px;color:var(--purple)">· Own ${subOw} bags · ₹${fmt(subOwRs)}</span></div><div class="tsc"><table><thead><tr><th>Type</th><th>Farmer</th><th>Bags</th><th>₹/bag</th><th>Line ₹</th><th>Chamber</th><th>Floor</th><th>Pillar</th><th>Receipt</th><th>Tarikh</th><th>Quality</th><th>Mobile</th><th>Row Store</th><th>Row Own</th><th>Net Dena</th></tr></thead><tbody>${tb}</tbody><tfoot><tr style="background:var(--s2);font-weight:700"><td colspan="2">Subtotal</td><td>${arr.reduce((s,x)=>s+x.bags,0)}</td><td></td><td class="amt">₹${fmt(subOwRs)}</td><td colspan="10"></td></tr></tfoot></table></div></div>`;
+    }).join('');
+    setViewReportExport('🔤 Grade-wise — Store + Own (full)','GradeWise',expGradeSections);
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">🔤 Grade-wise — Store + Own (full)</div><div style="font-size:11px;color:var(--text3);max-width:720px">Har grade: Type, <b>₹/bag</b>, <b>Line ₹</b> (bags×rate) Own ke liye, location, entry snapshot.</div></div>${parts}</div>`;
+  }
 }
 
 // ===== EXPORT SYSTEM =====
@@ -1699,7 +2116,8 @@ const EXP_FIELDS=[
   {key:'pillar',label:'Pillar',fn:r=>r.pillar||''},
   {key:'notes',label:'Notes',fn:r=>r.notes||''}
 ];
-const EXP_DEFAULT=['receipt','date','farmer','mobile','village','quality','totalBags','storeBags','ownBags','gharBags','zeroBags','kaatBags','ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay','chamber'];
+const EXP_DEFAULT=['receipt','date','farmer','mobile','village','quality','totalBags','aBags','aDest','aRate','bBags','bDest','bRate','cBags','cDest','cRate','dBags','dDest','dRate','storeBags','ownBags','gharBags','zeroBags','kaatBags','ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay','chamber'];
+const EXP_SUM_KEYS=new Set(['totalBags','storeBags','ownBags','gharBags','zeroBags','kaatBags','ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay','aBags','bBags','cBags','dBags']);
 
 function openExpModal(){
   if(!recs.length){toast('Koi record nahi','e');return;}
@@ -1740,9 +2158,17 @@ function doExport(type){
   if(type==='csv'){
     const h=selFields.map(f=>f.label);
     const rows=data.map((r,i)=>selFields.map(f=>String(f.fn(r,i)).replace(/,/g,' ')));
-    const csv=[h,...rows].map(r=>r.join(',')).join('\n');
+    const totalLine=selFields.map((f,idx)=>{
+      if(idx===0)return'TOTAL ('+data.length+' rows)';
+      if(EXP_SUM_KEYS.has(f.key)){
+        const t=data.reduce((s,r,i)=>s+(Number(f.fn(r,i))||0),0);
+        return String(t).replace(/,/g,' ');
+      }
+      return'';
+    });
+    const csv=[h,...rows,totalLine].map(r=>r.join(',')).join('\n');
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download=fname+'.csv';a.click();
-    toast('CSV download ho rahi hai!','s');closeM('exp-modal');
+    toast('CSV download ho rahi hai! (last row = totals)','s');closeM('exp-modal');
   } else {
     expPDF(data,selFields,fname,from,to,farmer);
   }
@@ -1750,11 +2176,17 @@ function doExport(type){
 
 function expPDF(data,selFields,fname,from,to,farmer){
   const win=window.open('','_blank','width=1000,height=700');
-  const totKeys=['totalBags','storeBags','ownBags','gharBags','zeroBags','kaatBags','ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay'];
-  const tot={}; totKeys.forEach(k=>{tot[k]=data.reduce((s,r)=>s+(r[k]||0),0);});
   const headers=selFields.map(f=>`<th>${f.label}</th>`).join('');
   const rows=data.map((r,i)=>`<tr>${selFields.map(f=>`<td>${f.fn(r,i)}</td>`).join('')}</tr>`).join('');
-  const totRow=selFields.map(f=>tot[f.key]!==undefined?`<td><strong>${tot[f.key].toLocaleString('en-IN')}</strong></td>`:`<td></td>`).join('');
+  const totRow=selFields.map((f,i)=>{
+    if(i===0)return'<td><strong>TOTAL</strong></td>';
+    if(EXP_SUM_KEYS.has(f.key)){
+      const t=data.reduce((s,r,idx)=>s+(Number(f.fn(r,idx))||0),0);
+      const isMoney=f.key.includes('Amt')||f.key.includes('Pay')||f.key==='ownAmt';
+      return`<td><strong>${isMoney?'₹'+fmt(t):t.toLocaleString('en-IN')}</strong></td>`;
+    }
+    return'<td></td>';
+  }).join('');
   win.document.write(`<!DOCTYPE html><html><head><meta charset='UTF-8'><title>${fname}</title><style>body{font-family:Arial,sans-serif;font-size:11px;margin:15px;color:#1a2332}h2{color:#1a3a6b;margin-bottom:4px;font-size:16px}.info{font-size:11px;color:#64748b;margin-bottom:12px}table{width:100%;border-collapse:collapse}th{background:#1a3a6b;color:#fff;padding:6px 8px;text-align:left;font-size:10px;white-space:nowrap}td{padding:5px 8px;border-bottom:1px solid #e5e7eb;white-space:nowrap}tr:nth-child(even){background:#f8fafc}.tf td{background:#1a3a6b;color:#fff;font-weight:bold;padding:6px 8px}.prtbtn{background:#1a3a6b;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;margin-bottom:12px;font-size:12px}@media print{.prtbtn{display:none}}</style></head><body><h2>Prime ColdStore Pro</h2><div class='info'>Period: ${from||'Start'} to ${to||'End'} | ${farmer||'Sab Farmers'} | Records: ${data.length}</div><button class='prtbtn' onclick='window.print()'>Print / Save PDF</button><table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody><tfoot><tr class='tf'>${totRow}</tr></tfoot></table></body></html>`);
   win.document.close();
   toast('PDF window khul gayi! Print karo ya Save as PDF','s');
@@ -1886,105 +2318,36 @@ function toast(msg,type='i'){
 function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
 
 // ===== AUTH =====
-const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin',active:true}];
+/** true = purana login screen; false = seedha app khulegi (default admin) */
+const REQUIRE_LOGIN=false;
+const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}];
 let currentUser=null,users=[],editUserId=null;
-
-function normalizeUsers(){
-  if(!Array.isArray(users)) users=[];
-  users = users.map(u=>({
-    id: String(u.id||Date.now()),
-    name: String(u.name||'').trim() || 'User',
-    username: String(u.username||'').trim().toLowerCase(),
-    role: String(u.role||'viewer'),
-    // RTDB does not allow `undefined` anywhere
-    permissions: Array.isArray(u.permissions) ? u.permissions : [],
-    active: (u.active !== false),
-    deactivatedAt: u.deactivatedAt || null,
-    passwordHash: u.passwordHash || null,
-    passwordSalt: u.passwordSalt || null,
-    password: u.password || ''
-  })).filter(u=>u.username);
-  if(!users.length) users=[...DEFAULT_USERS];
-}
-
-function loadUsers(){
-  const s=localStorage.getItem('cs_users');
-  users=s?JSON.parse(s):[...DEFAULT_USERS];
-  normalizeUsers();
-}
-
+function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
+function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
 async function saveUsersToSheet(){const img=new Image();img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify({action:'saveUsers',users}));}
-
-async function loadUsersFromFirebase(){
-  await loadFB();
-  if(!(FB_ON && FB_DB)){ setUserSt('off','sdk'); return false; }
-  try{
-    setUserSt('sync');
-    const snap = await FB_DB.ref(FB_USERS_PATH).once('value');
-    const val = snap.val();
-    if(val && typeof val === 'object'){
-      const arr = Object.values(val).filter(Boolean);
-      if(arr.length){
-        users = arr;
-        normalizeUsers();
-        localStorage.setItem('cs_users',JSON.stringify(users));
-        setUserSt('ok', users.length+'');
-        return true;
-      }
-    }
-    setUserSt('err','empty');
-  }catch(e){
-    console.log('FB users load err:', e.message);
-    setUserSt('err', e.message||'load');
+function mergeSheetUsers(sheetUsers,previous){
+  const prevByUser=new Map((previous||[]).map(u=>[(String(u.username||'')).toLowerCase(),u]));
+  const merged=sheetUsers.map(u=>{
+    const key=(String(u.username||'')).toLowerCase();
+    const old=prevByUser.get(key);
+    const sheetPwd=u.password!=null?String(u.password):'';
+    const password=sheetPwd.length>0?sheetPwd:(old&&old.password!=null?String(old.password):'');
+    const id=String((old&&old.id!=null&&String(old.id).length)?old.id:(u.id!=null?u.id:''));
+    return{...u,id,password};
+  });
+  const adm=merged.find(u=>(String(u.username||'')).toLowerCase()==='admin');
+  if(adm&&!(String(adm.password||'').length)){
+    const oldA=prevByUser.get('admin');
+    adm.password=(oldA&&String(oldA.password||'').length)?oldA.password:DEFAULT_USERS[0].password;
   }
-  return false;
-}
-
-async function saveUsersToFirebase(){
-  try{
-    await loadFB();
-    if(!(FB_ON && FB_DB)){ setUserSt('off','sdk'); return false; }
-    const obj = {};
-    (users||[]).forEach(u=>{ if(u && u.id) obj[u.id]=u; });
-    setUserSt('sync');
-    await FB_DB.ref(FB_USERS_PATH).set(obj);
-    setUserSt('ok', (users||[]).length+'');
-    return true;
-  }catch(e){
-    const msg = (e && (e.message || e.code)) ? (e.message || e.code) : String(e);
-    console.log('FB users save err:', msg, e);
-    try{ window.__lastUserSyncErr = msg; }catch(_){}
-    setUserSt('err', msg);
-    return false;
+  if(!merged.some(u=>(String(u.username||'')).toLowerCase()==='admin')){
+    merged.unshift(...DEFAULT_USERS);
   }
+  return merged;
 }
-
-function attachUsersRealtime(){
-  if(!(FB_ON && FB_DB)) return;
-  try{
-    FB_DB.ref(FB_USERS_PATH).on('value', snap=>{
-      const v = snap.val();
-      if(v && typeof v === 'object'){
-        const arr = Object.values(v).filter(Boolean);
-        if(arr.length){
-          users = arr;
-          normalizeUsers();
-          localStorage.setItem('cs_users',JSON.stringify(users));
-          if(currentUser){
-            const fresh = users.find(x=>x.id===currentUser.id);
-            if(fresh && fresh.active===false){
-              showLoginMsg('Account deactivate hai — admin se contact karo');
-              logout();
-            }
-          }
-          try{ renderUsers(); }catch(e){}
-        }
-      }
-    });
-  }catch(e){}
-}
-
 async function loadUsersFromSheet(){
+  let previous=[];
+  try{previous=JSON.parse(localStorage.getItem('cs_users')||'[]');}catch(e){previous=[];}
   try{
     const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];
     for(let i=0;i<proxies.length;i++){
@@ -1994,54 +2357,14 @@ async function loadUsersFromSheet(){
         try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
         const data=JSON.parse(txt);
         if(data.users&&data.users.length>0){
-          users=data.users;
-          normalizeUsers();
+          users=mergeSheetUsers(data.users,previous);
           localStorage.setItem('cs_users',JSON.stringify(users));
-          return true;
+          return;
         }
       }catch(e){}
     }
   }catch(e){}
   loadUsers();
-  return false;
-}
-
-async function saveUsers(){
-  normalizeUsers();
-  localStorage.setItem('cs_users',JSON.stringify(users));
-  const ok = await saveUsersToFirebase();
-  if(!ok){
-    const reason = (typeof window!=='undefined' && window.__lastUserSyncErr) ? (' ('+window.__lastUserSyncErr+')') : '';
-    toast('Firebase user sync fail — local save ok'+reason,'e');
-  }
-  else toast('Users Firebase sync ok','s');
-  saveUsersToSheet();
-}
-
-function randSalt(){
-  const a = new Uint8Array(16);
-  crypto.getRandomValues(a);
-  return Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function sha256Hex(s){
-  const enc = new TextEncoder().encode(s);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function ensureUserHasHash(u){
-  if(u.passwordHash && u.passwordSalt) return u;
-  if(!u.password) return u;
-  u.passwordSalt = u.passwordSalt || randSalt();
-  u.passwordHash = await sha256Hex(u.passwordSalt + '|' + u.password);
-  u.password = '';
-  return u;
-}
-async function verifyUserPassword(u, inputPass){
-  if(u.passwordHash && u.passwordSalt){
-    const h = await sha256Hex(u.passwordSalt + '|' + inputPass);
-    return h === u.passwordHash;
-  }
-  return String(u.password||'') === String(inputPass||'');
 }
 // ===== SECURITY CONFIG =====
 const SESSION_HOURS=8;
@@ -2069,48 +2392,71 @@ function recordFail(username){
 }
 function clearFail(username){const lk=getLockout();delete lk[username.toLowerCase()];setLockout(lk);}
 
-async function doLogin(){
-  // No-login mode: keep UI button harmless
-  const lw=document.getElementById('login-wrap'); if(lw) lw.style.display='none';
-  toast('Login disabled (no-login mode)','i');
+function doLogin(){
+  const username=document.getElementById('l-user').value.trim().toLowerCase();
+  const password=document.getElementById('l-pass').value.trim();
+  const err=document.getElementById('login-err');
+  err.style.background='';err.style.borderColor='';err.style.color='';
+  if(!username||!password){err.textContent='Username aur password daalo!';err.classList.add('show');return;}
+  const locked=checkLockout(username);
+  if(locked){err.textContent='LOCKED: '+locked+' minute baad try karo (zyada galat attempts)';err.classList.add('show');document.getElementById('l-pass').value='';return;}
+  loadUsers();
+  const user=users.find(u=>(String(u.username||'')).toLowerCase()===username&&String(u.password||'')===password);
+  if(!user){
+    const left=recordFail(username);
+    const lockedNow=checkLockout(username);
+    if(lockedNow){err.textContent='LOCKED: Account '+LOCKOUT_MIN+' minute ke liye band ho gaya!';}
+    else{err.textContent='Galat username ya password! ('+left+' attempts baaki)';}
+    err.classList.add('show');document.getElementById('l-pass').value='';return;
+  }
+  clearFail(username);
+  const token=genToken();
+  const sessData={id:user.id,token,expires:Date.now()+(SESSION_HOURS*3600*1000)};
+  err.classList.remove('show');
+  currentUser=user;
+  localStorage.setItem('cs_session',JSON.stringify(sessData));
+  hideLoginUI();
+  applyPermissions();addUserBadge();
+  toast('Welcome '+user.name+'!','s');loadUsersFromSheet();setSt('ch');loadSheet();
 }
 
+function hideLoginUI(){const lw=document.getElementById('login-wrap');if(lw){lw.style.display='none';lw.classList.remove('show-login');}}
+function showLoginUI(){if(!REQUIRE_LOGIN)return;const lw=document.getElementById('login-wrap');if(lw){lw.style.display='flex';lw.classList.add('show-login');}}
+function enterDirectApp(){
+  loadUsers();
+  const admin=users.find(u=>u.role==='admin')||DEFAULT_USERS[0];
+  currentUser={...admin};
+  hideLoginUI();
+  applyPermissions();addUserBadge();setSt('ch');loadSheet();
+}
 async function checkSession(){
-  const gotFb = await loadUsersFromFirebase();
-  if(!gotFb){
-    localStorage.removeItem('cs_session');
-    showLoginMsg('Firebase users connect nahi ho rahe — login possible nahi');
-    document.getElementById('login-wrap').style.display='flex';
+  await loadUsersFromSheet();
+  if(!REQUIRE_LOGIN){
+    enterDirectApp();
     return;
   }
-  attachUsersRealtime();
   const raw=localStorage.getItem('cs_session');
   if(raw){
     try{
       const sess=JSON.parse(raw);
-      if(sess.expires&&Date.now()<sess.expires&&sess.id&&sess.token){
-        const user=users.find(u=>u.id===sess.id);
+      if(sess.expires&&Date.now()<sess.expires&&sess.id!=null&&sess.token){
+        const user=users.find(u=>String(u.id)===String(sess.id));
         if(user){
-          if(user.active===false){
-            localStorage.removeItem('cs_session');
-            showLoginMsg('Account deactivate hai — admin se contact karo');
-            document.getElementById('login-wrap').style.display='flex';return;
-          }
           currentUser=user;
           sess.expires=Date.now()+(SESSION_HOURS*3600*1000);
           localStorage.setItem('cs_session',JSON.stringify(sess));
-          document.getElementById('login-wrap').style.display='none';
+          hideLoginUI();
           applyPermissions();addUserBadge();setSt('ch');loadSheet();return;
         }
       } else if(sess.expires&&Date.now()>sess.expires){
         localStorage.removeItem('cs_session');
         showLoginMsg('Session '+SESSION_HOURS+' ghante baad expire ho gaya — dobara login karo');
-        document.getElementById('login-wrap').style.display='flex';return;
+        showLoginUI();return;
       }
     }catch(e){}
   }
   localStorage.removeItem('cs_session');
-  document.getElementById('login-wrap').style.display='flex';
+  showLoginUI();
 }
 
 function showLoginMsg(msg){
@@ -2119,22 +2465,23 @@ function showLoginMsg(msg){
 }
 
 function logout(){
+  if(!REQUIRE_LOGIN){
+    toast('App direct mode mein hai — login band hai','i');
+    return;
+  }
   localStorage.removeItem('cs_session');
   currentUser=null;
-  document.getElementById('login-wrap').style.display='flex';
+  showLoginUI();
   document.getElementById('l-user').value='';
   document.getElementById('l-pass').value='';
   const err=document.getElementById('login-err');
   if(err){err.classList.remove('show');err.style.background='';err.style.borderColor='';err.style.color='';}
   toast('Logout ho gaye!','i');
 }
-function addUserBadge(){const hdr=document.querySelector('.hdr-r');const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
+function addUserBadge(){const hdr=document.querySelector('.hdr-r');if(!hdr||!currentUser)return;const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
 function hasPerm(p){
   if(!currentUser)return false;
-  const rolePerms={'admin':['view','add','edit','delete','payment','export','import','users'],'manager':['view','add','edit','payment','export'],'viewer':['view']};
-  const perms=(Array.isArray(currentUser.permissions)&&currentUser.permissions.length)
-    ? currentUser.permissions
-    : (rolePerms[currentUser.role]||['view']);
+  const perms=currentUser.permissions||({'admin':['view','add','edit','delete','payment','export','import','users'],'manager':['view','add','edit','payment','export'],'viewer':['view']}[currentUser.role]||['view']);
   return perms.includes(p);
 }
 function applyPermissions(){
@@ -2164,8 +2511,7 @@ function openUserModal(id=null){
     if(u){
       document.getElementById('u-name').value=u.name;
       document.getElementById('u-user').value=u.username;
-      // Password hash is stored; for edit, keep blank unless resetting
-      document.getElementById('u-pass').value='';
+      document.getElementById('u-pass').value=u.password;
       const perms=u.permissions||PPRE[u.role]||['view'];
       PALL.forEach(p=>{const el=document.getElementById('up-'+p);if(el)el.checked=perms.includes(p);});
       syncPerms();
@@ -2183,79 +2529,20 @@ function saveUser(){
   const role=document.getElementById('u-role').value;
   const PALL=['view','add','edit','delete','payment','export','import','users'];
   const permissions=PALL.filter(p=>{const el=document.getElementById('up-'+p);return el&&el.checked;});
-  if(!name||!username){toast('Sab fields bharo!','e');return;}
+  if(!name||!username||!password){toast('Sab fields bharo!','e');return;}
   if(!permissions.length){toast('Koi ek permission to do!','e');return;}
   if(users.find(u=>u.username===username&&u.id!==editUserId)){toast('Username pehle se exists!','e');return;}
   if(editUserId){
-    users=users.map(u=>{
-      if(u.id!==editUserId) return u;
-      // If password blank during edit, keep existing hash/password
-      if(!password){
-        return {...u,name,username,role,permissions,active:(u.active!==false)};
-      }
-      return {...u,name,username,password,role,permissions,active:(u.active!==false),passwordHash:null,passwordSalt:null};
-    });
+    users=users.map(u=>u.id===editUserId?{...u,name,username,password,role,permissions}:u);
     toast(name+' update ho gaya!','s');
   }else{
-    if(!password){toast('Password zaroori hai','e');return;}
-    users.push({id:Date.now().toString(),name,username,password,role,permissions,active:true});
+    users.push({id:Date.now().toString(),name,username,password,role,permissions});
     toast(name+' add ho gaya!','s');
   }
-  (async ()=>{
-    for(const u of users){ await ensureUserHasHash(u); }
-    saveUsers();closeM('user-modal');renderUsers();
-  })();
+  saveUsers();closeM('user-modal');renderUsers();
 }
 function deleteUser(id){if(id===currentUser.id){toast('Apna account delete nahi kar sakte!','e');return;}if(!confirm('Delete karna chahte hain?'))return;users=users.filter(u=>u.id!==id);saveUsers();renderUsers();toast('User delete ho gaya','i');}
-function toggleUserActive(id){
-  if(!currentUser || !hasPerm('users')){toast('Permission nahi hai!','e');return;}
-  const u = users.find(x=>x.id===id);
-  if(!u){toast('User nahi mila','e');return;}
-  if(currentUser && currentUser.id===id){toast('Apna account deactivate nahi kar sakte!','e');return;}
-  u.active = (u.active===false) ? true : false;
-  u.deactivatedAt = u.active ? null : Date.now();
-  users = users.map(x=>x.id===id?u:x);
-  saveUsers();
-  renderUsers();
-  toast(u.active ? 'User activate ho gaya' : 'User deactivate ho gaya','i');
-}
-
-function renderUsers(){
-  const grid=document.getElementById('users-grid');if(!grid)return;
-  if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}
-  const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};
-  grid.innerHTML=users.map(u=>{
-    const isMe=currentUser&&u.id===currentUser.id;
-    const active = (u.active !== false);
-    const statusPill = active
-      ? `<span style="font-size:10px;background:#dcfce7;border:1px solid #86efac;color:#166534;padding:2px 7px;border-radius:999px;font-weight:700">ACTIVE</span>`
-      : `<span style="font-size:10px;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:2px 7px;border-radius:999px;font-weight:700">DEACTIVATED</span>`;
-    const canManage = currentUser && hasPerm('users');
-    const actBtn = (canManage && !isMe)
-      ? `<button class="btn ${active?'btn-red':'btn-green'}" onclick="toggleUserActive('${u.id}')">${active?'Deactivate':'Activate'}</button>`
-      : '';
-    return `<div class="user-card" style="${active?'':'opacity:0.75'}">
-      <div class="user-card-hdr">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${ini(u.name)}</div>
-          <div>
-            <div style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">${esc(u.name)}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div>
-            <div style="font-size:11px;color:#8a95a8">@${esc(u.username)}</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          ${statusPill}
-          <span class="role-badge ${esc(u.role)}">${esc(u.role)}</span>
-        </div>
-      </div>
-      <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap">
-        ${canManage?`<button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>`:''}
-        ${actBtn}
-        ${(!isMe && canManage)?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}
-      </div>
-    </div>`;
-  }).join('');
-}
+function renderUsers(){const grid=document.getElementById('users-grid');if(!grid)return;if(!users.length){grid.innerHTML='<div class="empty"><div class="ei">👥</div><h3>Koi user nahi</h3></div>';return;}const rc={admin:'#e8f0fd',manager:'#e8f5ed',viewer:'#fef3e2'};const rco={admin:'#1a5fc8',manager:'#1a7a3c',viewer:'#b45309'};grid.innerHTML=users.map(u=>{const isMe=u.id===currentUser.id;return`<div class="user-card"><div class="user-card-hdr"><div style="display:flex;align-items:center;gap:10px"><div class="user-av" style="background:${rc[u.role]||'#e8f0fd'};color:${rco[u.role]||'#1a5fc8'}">${u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div><div><div style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">${u.name}${isMe?' <span style="font-size:10px;color:#8a95a8">(Aap)</span>':''}</div><div style="font-size:11px;color:#8a95a8">@${u.username}</div></div></div><span class="role-badge ${u.role}">${u.role}</span></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost" onclick="openUserModal('${u.id}')">✏ Edit</button>${!isMe?`<button class="btn btn-red" onclick="deleteUser('${u.id}')">🗑</button>`:''}</div></div>`;}).join('');}
 
 // ===== PAYMENTS =====
 let payments=[];
@@ -2437,14 +2724,7 @@ function syncPerms(){
 // ===== INIT =====
 loadUsers();
 loadPayments();
-// NO-LOGIN MODE (admin panel removed)
-try{
-  currentUser={id:'local_admin',name:'Admin',username:'admin',role:'admin',permissions:['view','add','edit','delete','payment','export','import','users'],active:true};
-  const lw=document.getElementById('login-wrap'); if(lw) lw.style.display='none';
-  applyPermissions(); addUserBadge();
-  setSt('ch');
-  loadSheet(); // auto-connect records on startup
-}catch(e){}
+checkSession();
 </script>
 </body>
 </html>
