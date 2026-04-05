@@ -387,9 +387,10 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
           <div style="font-size:11px;color:#8a95a8;margin-top:4px">Google Sheet se download ki CSV file yahan upload karo</div>
           <input type="file" id="imp-file" accept=".csv" style="display:none" onchange="parseImpCSV(this)">
         </div>
-        <div style="background:#fef3cd;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;font-size:11px;color:#854d0e">
-          <strong>Zaruri:</strong> Google Sheet se File → Download → CSV format mein download karo, phir yahan upload karo.
+        <div style="background:#fef3cd;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;font-size:11px;color:#854d0e;margin-bottom:10px">
+          <strong>Zaruri:</strong> UTF-8 CSV. <strong>Har class ek block:</strong> pehle A ke Bags+Dest+Rate phir usi class ke LocA_Chamber/Floor/Pillar, phir B ka block… (Z/K bhi waise hi). Neeche sample download — Purani fixed-column sheet bhi chalegi.
         </div>
+        <button type="button" class="btn" onclick="downloadImportSampleCSV()" style="width:100%;background:#0f766e;color:#fff;font-weight:600">📥 Naya format — sample CSV download</button>
       </div>
       <!-- Step 2: Preview -->
       <div id="imp-step2" style="display:none">
@@ -401,6 +402,73 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
           <button class="btn" id="imp-confirm-btn" onclick="doImport()" style="background:#7c3aed;color:#fff">Firebase mein Import Karo</button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+<!-- CUSTOM REPORT BUILDER -->
+<div class="ov" id="custom-rep-modal" onclick="closeOut(event,'custom-rep-modal')">
+  <div class="modal-box" style="max-width:520px;width:min(520px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
+    <div class="mh" style="flex-shrink:0;background:linear-gradient(135deg,#1a3a6b,#7c3aed)">
+      <div class="mt">🔧 Meri report — khud banao</div>
+      <button class="mx" onclick="closeM('custom-rep-modal')">✕</button>
+    </div>
+    <div class="mb" style="overflow-y:auto;flex:1;padding:14px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;line-height:1.45">Data = <b>Store + Own</b> ki <b>class lines</b> (har entry ke A/B/C… alag lines). Pehle <b>Level 1</b> se bada group, phir Level 2–3 se andar groups. Sab level <b>— Nahi —</b> = filtered flat list.</div>
+      <div style="display:grid;gap:10px;margin-bottom:12px">
+        <div><label class="flbl">Level 1 (pehla group)</label>
+          <select class="finp" id="cr-d1" style="margin-top:4px">
+            <option value="none">— Nahi —</option>
+            <option value="quality" selected>Potato Quality</option>
+            <option value="farmer">Farmer</option>
+            <option value="class">Class (A–K)</option>
+            <option value="rate">Rate (₹/bag)</option>
+            <option value="type">Type (Store / Own)</option>
+            <option value="month">Month (YYYY-MM)</option>
+            <option value="chamber">Chamber</option>
+            <option value="floor">Floor</option>
+            <option value="pillar">Pillar</option>
+          </select>
+        </div>
+        <div><label class="flbl">Level 2 (optional)</label>
+          <select class="finp" id="cr-d2" style="margin-top:4px">
+            <option value="none" selected>— Nahi —</option>
+            <option value="quality">Potato Quality</option>
+            <option value="farmer">Farmer</option>
+            <option value="class">Class (A–K)</option>
+            <option value="rate">Rate (₹/bag)</option>
+            <option value="type">Type (Store / Own)</option>
+            <option value="month">Month (YYYY-MM)</option>
+            <option value="chamber">Chamber</option>
+            <option value="floor">Floor</option>
+            <option value="pillar">Pillar</option>
+          </select>
+        </div>
+        <div><label class="flbl">Level 3 (optional)</label>
+          <select class="finp" id="cr-d3" style="margin-top:4px">
+            <option value="none" selected>— Nahi —</option>
+            <option value="quality">Potato Quality</option>
+            <option value="farmer">Farmer</option>
+            <option value="class">Class (A–K)</option>
+            <option value="rate">Rate (₹/bag)</option>
+            <option value="type">Type (Store / Own)</option>
+            <option value="month">Month (YYYY-MM)</option>
+            <option value="chamber">Chamber</option>
+            <option value="floor">Floor</option>
+            <option value="pillar">Pillar</option>
+          </select>
+        </div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:11px;margin-bottom:12px">
+        <div style="font-weight:700;font-size:12px;margin-bottom:8px;color:var(--blue2)">Filter (optional)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:10px;color:var(--text3)">From</label><input type="date" class="finp" id="cr-from" style="margin-top:3px"></div>
+          <div><label style="font-size:10px;color:var(--text3)">To</label><input type="date" class="finp" id="cr-to" style="margin-top:3px"></div>
+        </div>
+        <div style="margin-top:8px"><label style="font-size:10px;color:var(--text3)">Farmer (search)</label><input class="finp" id="cr-farm" placeholder="Naam ka hissa…" style="margin-top:3px"></div>
+        <div style="margin-top:8px"><label style="font-size:10px;color:var(--text3)">Quality (search)</label><input class="finp" id="cr-qual" placeholder="LR, DM…" style="margin-top:3px"></div>
+      </div>
+      <button type="button" class="btn" style="width:100%;background:#1a3a6b;color:#fff;font-weight:600;margin-bottom:8px" onclick="runCustomReport()">📊 Report banao (niche Reports area)</button>
+      <button type="button" class="btn btn-ghost" style="width:100%" onclick="closeM('custom-rep-modal')">Band karo</button>
     </div>
   </div>
 </div>
@@ -631,13 +699,16 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <span style="font-size:10px;color:var(--text3);max-width:120px;line-height:1.3">Poori entry records</span>
       <button class="btn" style="background:#047857;color:#fff" onclick="exportViewReportCSV()" title="Niche jo table dikh rahi hai wahi">📥 Isi report → CSV</button>
       <button class="btn" style="background:#b91c1c;color:#fff" onclick="exportViewReportPDF()">📄 Isi report → PDF</button>
+      <button class="btn" style="background:#4338ca;color:#fff" onclick="openCustomReportModal()" title="Quality, Farmer, Class, Rate… apne hisaab se group">🔧 Meri report</button>
     </div>
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">📍 Chamber / Floor / Pillar / Grade — Store + Own</div>
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">📍 Chamber / Floor / Pillar / Grade / <span style="color:var(--purple)">Potato Quality</span> — Store + Own</div>
     <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
       <button class="btn" style="background:#0f766e;color:#fff" onclick="genR('loc_detail')" title="Har farmer ka rate + chamber/floor/pillar">📍 Farmer · Rate · Location</button>
       <button class="btn" style="background:#1d4ed8;color:#fff" onclick="genR('by_chamber')">🏛 Chamber-wise</button>
       <button class="btn" style="background:#7c3aed;color:#fff" onclick="genR('by_floor')">🏢 Floor-wise</button>
       <button class="btn" style="background:#c2410c;color:#fff" onclick="genR('by_pillar')">🏛 Pillar-wise</button>
+      <button class="btn" style="background:#a16207;color:#fff" onclick="genR('by_quality')" title="Entry wali Potato Quality (Pukhraj, LR…) ke hisaab se">🥔 Quality-wise</button>
+      <button class="btn" style="background:#92400e;color:#fff" onclick="genR('quality_matrix')" title="Har quality par Class A/B/C/D/Zero/Kaat kitne bags (grading total)">📊 Quality × Class (A–K)</button>
       <button class="btn" style="background:#15803d;color:#fff" onclick="genR('by_grade')">🔤 Grade A–D (Full)</button>
     </div>
     <div id="r-out"><div class="empty" style="padding:50px"><div class="ei">📊</div><h3>Report select karo</h3></div></div>
@@ -1977,6 +2048,78 @@ function genR(type){
   if(type==='store'){updStore();toast('Store tab mein jaake dekho!','i');goTab('store');return;}
   if(type==='own'){updOwn();toast('Own Purchase tab mein jaake dekho!','i');goTab('own');return;}
 
+  if(type==='quality_matrix'){
+    if(!recs.length){out.innerHTML='<div class="empty"><div class="ei">🥔</div><h3>Koi record nahi</h3></div>';return;}
+    const gb=(r,cl)=>{const g=r.grading||{};if(cl==='Z')return Number((g.Z&&g.Z.bags)||r.zeroBags)||0;if(cl==='K')return Number((g.K&&g.K.bags)||r.kaatBags)||0;return Number((g[cl]&&g[cl].bags)||0)||0;};
+    const byQ={};
+    recs.forEach(r=>{
+      const q=String(r.quality||'').trim()||'—';
+      if(!byQ[q])byQ[q]={n:0,tb:0,A:0,B:0,C:0,D:0,Z:0,K:0,list:[]};
+      const o=byQ[q];
+      o.list.push(r);
+      o.n++;
+      o.tb+=Number(r.totalBags)||0;
+      ['A','B','C','D','Z','K'].forEach(cl=>{o[cl]+=gb(r,cl);});
+    });
+    const keys=Object.keys(byQ).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+    const CLS=['A','B','C','D','Z','K'];
+    const hdrQ=['Potato_Quality','Entries','Class_A','Class_B','Class_C','Class_D','Zero','Kaat','Sum_A_K','Sum_TotalBags_Rows'];
+    const rowQ=keys.map(k=>{
+      const o=byQ[k];
+      const sumG=CLS.reduce((s,cl)=>s+o[cl],0);
+      return[k,String(o.n),String(o.A),String(o.B),String(o.C),String(o.D),String(o.Z),String(o.K),String(sumG),String(o.tb)];
+    });
+    const T=keys.reduce((s,k)=>{const o=byQ[k];return{n:s.n+o.n,tb:s.tb+o.tb,A:s.A+o.A,B:s.B+o.B,C:s.C+o.C,D:s.D+o.D,Z:s.Z+o.Z,K:s.K+o.K};},{n:0,tb:0,A:0,B:0,C:0,D:0,Z:0,K:0});
+    const sumGT=CLS.reduce((s,cl)=>s+T[cl],0);
+    rowQ.push(['TOTAL',String(T.n),String(T.A),String(T.B),String(T.C),String(T.D),String(T.Z),String(T.K),String(sumGT),String(T.tb)]);
+    const hdrD=['Receipt','Tarikh','Farmer','Mobile','A','B','C','D','Z','K','Sum_A_K_row','Total_Bags','Store','Own','Ghar','Net_Dena'];
+    const expSections=[{sectionTitle:'SUMMARY (sab qualities)',headers:hdrQ,rows:rowQ}];
+    const eq=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const thCls=CLS.map(cl=>`<th style="text-align:center;white-space:nowrap"><span class="ct2 ${cl}">${cl}</span></th>`).join('');
+    const qmRowSum=r=>CLS.reduce((s,cl)=>s+gb(r,cl),0);
+    keys.forEach(k=>{
+      const o=byQ[k];
+      const sumG=CLS.reduce((s,cl)=>s+o[cl],0);
+      const sortedList=o.list.slice().sort((a,b)=>{const da=a.date||'',db=b.date||'';if(da!==db)return da.localeCompare(db);return String(a.receipt||'').localeCompare(String(b.receipt||''),undefined,{numeric:true});});
+      const rowsD=sortedList.map(r=>{
+        const cells=CLS.map(cl=>gb(r,cl));
+        const sr=cells.reduce((s,x)=>s+x,0);
+        return[r.receipt||'',r.date||'',r.farmer||'',r.mobile||'',...cells.map(String),String(sr),String(r.totalBags||0),String(r.storeBags||0),String(r.ownBags||0),String(r.gharBags||0),'₹'+fmt(r.netPay||0)];
+      });
+      expSections.push({sectionTitle:'DETAIL: Quality "'+k+'" | '+o.n+' entries | Sum A–K '+sumG+' | Σ TB '+o.tb,headers:hdrD,rows:rowsD});
+    });
+    setViewReportExport('📊 Advance: Potato Quality × Class (summary + detail)','Quality_Class_Matrix',expSections);
+    const blocks=keys.map(k=>{
+      const o=byQ[k];
+      const sumG=CLS.reduce((s,cl)=>s+o[cl],0);
+      const sortedList=o.list.slice().sort((a,b)=>{const da=a.date||'',db=b.date||'';if(da!==db)return da.localeCompare(db);return String(a.receipt||'').localeCompare(String(b.receipt||''),undefined,{numeric:true});});
+      const dbody=sortedList.map(r=>{
+        const c=gc(r.farmer);
+        const sr=qmRowSum(r);
+        return`<tr><td class="mono" style="font-size:11px">${eq(r.receipt||'—')}</td><td class="mono" style="font-size:11px">${eq(r.date||'—')}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(r.farmer)}</div>${eq(r.farmer||'')}</div></td><td style="font-size:11px">${eq(r.mobile||'—')}</td>${CLS.map(cl=>`<td style="text-align:center;font-family:'Rajdhani',sans-serif;font-weight:600">${gb(r,cl)}</td>`).join('')}<td style="text-align:center;background:var(--s2);font-weight:700;font-family:'Rajdhani',sans-serif">${sr}</td><td style="text-align:center;font-weight:700">${r.totalBags||0}</td><td style="text-align:center;color:var(--teal)">${r.storeBags||0}</td><td style="text-align:center;color:var(--purple)">${r.ownBags||0}</td><td style="text-align:center">${r.gharBags||0}</td><td class="amt" style="font-size:11px">₹${fmt(r.netPay||0)}</td></tr>`;
+      }).join('');
+      return`<div class="qm-quality-block" style="margin-bottom:18px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)">
+        <div style="background:linear-gradient(135deg,rgba(26,58,107,0.12),rgba(124,58,237,0.08));border-bottom:2px solid var(--border);padding:11px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px">
+          <span style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--blue)">${eq(k)}</span>
+          <span style="font-size:12px;color:var(--text3)"><strong style="color:var(--text)">${o.n}</strong> entries</span>
+          <span style="font-size:11px;color:var(--text3)">${CLS.map(cl=>`<span style="margin-right:8px"><span class="ct2 ${cl}" style="font-size:9px">${cl}</span> <strong style="font-family:'Rajdhani',sans-serif">${o[cl]}</strong></span>`).join('')}</span>
+          <span style="font-size:12px;font-weight:700;font-family:'Rajdhani',sans-serif">Sum A–K: ${sumG}</span>
+          <span style="font-size:11px;color:var(--text3)">Σ Total Bags: <strong>${o.tb}</strong></span>
+        </div>
+        <div class="tsc" style="max-height:none"><table style="width:100%;min-width:980px"><thead><tr><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th>${thCls}<th>Sum A–K</th><th>Total</th><th>Store</th><th>Own</th><th>Ghar</th><th>Net ₹</th></tr></thead><tbody>${dbody}</tbody></table></div>
+      </div>`;
+    }).join('');
+    const grandBar=`<div style="margin-top:8px;padding:12px 14px;background:var(--s2);border:1px solid var(--border);border-radius:10px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-weight:700">
+      <span style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--blue2)">SAB MILA KAR</span>
+      <span style="font-size:12px;color:var(--text3)">${T.n} entries</span>
+      ${CLS.map(cl=>`<span style="font-size:11px"><span class="ct2 ${cl}">${cl}</span> ${T[cl]}</span>`).join('')}
+      <span style="font-family:'Rajdhani',sans-serif">Sum A–K: ${sumGT}</span>
+      <span style="color:var(--text3)">Σ Total Bags: ${T.tb}</span>
+    </div>`;
+    out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📊 Advance: Potato Quality × Grading Class</div><div style="font-size:12px;color:var(--text3);max-width:780px">Har <b>Quality</b> ke neeche pehle <b>jod (header)</b>, phir usi quality ki <b>saari entries</b> (receipt, tarikh, farmer, class bags…). CSV mein pehle summary sheet jaisa block, phir har quality ka detail block.</div></div>${blocks}${grandBar}</div>`;
+    return;
+  }
+
   const locRows=allLocRows();
   const emptyLoc='<div class="empty" style="padding:40px"><div class="ei">📍</div><h3>Store / Own par koi class-wise line nahi</h3><p style="font-size:12px;color:var(--text3);max-width:460px;margin:8px auto 0">Entry mein class <b>Store</b> ya <b>Own Purchase</b> rakho, bags daalo; Own par <b>rate ₹/bag</b> zaroor bharein. Chamber / Floor / Pillar optional.</p></div>';
   const typeBadge=x=>x.kind==='store'?'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:#0d9488;color:#fff;font-weight:700">Store</span>':'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:#7c3aed;color:#fff;font-weight:700">Own</span>';
@@ -2040,6 +2183,7 @@ function genR(type){
   if(type==='by_chamber')groupLocReport('🏛 Chamber-wise — kiska maal kaun sa grade',x=>x.chamber,'Chamber','ChamberWise');
   if(type==='by_floor')groupLocReport('🏢 Floor-wise — kiska maal kaun sa grade',x=>x.floor,'Floor','FloorWise');
   if(type==='by_pillar')groupLocReport('🏛 Pillar-wise — kiska maal kaun sa grade',x=>x.pillar,'Pillar','PillarWise');
+  if(type==='by_quality')groupLocReport('🥔 Potato Quality-wise — Store + Own (class lines)',x=>String((x.r&&x.r.quality)||'').trim()||'—','Quality','QualityWise');
   if(type==='by_grade'){
     if(!locRows.length){out.innerHTML=emptyLoc;return;}
     const order=['A','B','C','D','Z','K'];
@@ -2074,6 +2218,135 @@ function genR(type){
     setViewReportExport('🔤 Grade-wise — Store + Own (full)','GradeWise',expGradeSections);
     out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">🔤 Grade-wise — Store + Own (full)</div><div style="font-size:11px;color:var(--text3);max-width:720px">Har grade: Type, <b>₹/bag</b>, <b>Line ₹</b> (bags×rate) Own ke liye, location, entry snapshot.</div></div>${parts}</div>`;
   }
+}
+
+// ===== CUSTOM REPORT BUILDER (Store + Own class lines) =====
+const CR_PATH_NAME={farmer:'Farmer',quality:'Quality',class:'Class',month:'Month',chamber:'Chamber',floor:'Floor',pillar:'Pillar',type:'Type',rate:'Rate'};
+function openCustomReportModal(){
+  document.getElementById('custom-rep-modal').classList.add('open');
+}
+function crEsc(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function customReportKey(x,dim){
+  const r=x.r||{};
+  if(dim==='farmer')return String(r.farmer||'').trim()||'—';
+  if(dim==='quality')return String(r.quality||'').trim()||'—';
+  if(dim==='class')return String(x.grade||'').trim()||'—';
+  if(dim==='month')return String(r.date||'').slice(0,7)||'—';
+  if(dim==='chamber')return String(x.chamber||'').trim()||'—';
+  if(dim==='floor')return String(x.floor||'').trim()||'—';
+  if(dim==='pillar')return String(x.pillar||'').trim()||'—';
+  if(dim==='type')return x.kind==='own'?'Own':'Store';
+  if(dim==='rate'){
+    const rt=Number(x.rate)||0;
+    if(x.kind==='own'&&rt>0)return '₹'+fmt(rt);
+    if(rt>0)return '₹'+fmt(rt);
+    return '—';
+  }
+  return '—';
+}
+function buildCustomReportTree(rows,dims){
+  if(!dims.length)return{type:'leaf',rows:rows.slice()};
+  function rec(sub,idx){
+    if(idx>=dims.length)return{type:'leaf',rows:sub};
+    const dim=dims[idx];
+    const m={};
+    sub.forEach(x=>{
+      const k=customReportKey(x,dim);
+      if(!m[k])m[k]=[];
+      m[k].push(x);
+    });
+    const keys=Object.keys(m).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+    return{type:'branch',dim,children:keys.map(k=>({key:k,node:rec(m[k],idx+1)}))};
+  }
+  return rec(rows,0);
+}
+function customFlattenRows(node){
+  if(node.type==='leaf')return node.rows.slice();
+  return node.children.flatMap(({node:ch})=>customFlattenRows(ch));
+}
+function customLeafSections(node,pathParts,sections){
+  if(node.type==='leaf'){
+    const title=pathParts.length?pathParts.join(' > '):'Custom — poori list (filtered)';
+    const hdr=['Receipt','Farmer','Tarikh','Quality','Class','Type','Bags','Rate','Line_Rs','Chamber','Floor','Pillar'];
+    const rows=node.rows.map(x=>[
+      x.r.receipt||'',x.r.farmer||'',x.r.date||'',x.r.quality||'',x.grade,x.kind==='store'?'Store':'Own',x.bags,
+      (x.kind==='own'||x.rate)?'₹'+fmt(x.rate):'',
+      (x.kind==='own'&&x.lineAmt)?'₹'+fmt(x.lineAmt):'',
+      x.chamber,x.floor,x.pillar
+    ]);
+    sections.push({sectionTitle:title,headers:hdr,rows});
+    return;
+  }
+  node.children.forEach(({key,node:ch})=>{
+    const name=CR_PATH_NAME[node.dim]||node.dim;
+    customLeafSections(ch,[...pathParts,name+': '+key],sections);
+  });
+}
+function crRowBadge(x){
+  return x.kind==='store'?'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:#0d9488;color:#fff;font-weight:700">Store</span>':'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:#7c3aed;color:#fff;font-weight:700">Own</span>';
+}
+function renderCustomReportHtml(node,depth){
+  if(node.type==='leaf'){
+    const sub=node.rows;
+    const bags=sub.reduce((s,x)=>s+x.bags,0);
+    const ownRs=sub.filter(x=>x.kind==='own').reduce((s,x)=>s+x.lineAmt,0);
+    const tb=sub.map(x=>{
+      const c=gc(x.r.farmer);
+      const rateShow=x.kind==='own'||x.rate?('₹'+fmt(x.rate)):'—';
+      const lineShow=x.kind==='own'&&x.lineAmt?('₹'+fmt(x.lineAmt)):'—';
+      return`<tr><td class="mono" style="font-size:11px">${crEsc(x.r.receipt||'—')}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${crEsc(x.r.farmer||'')}</div></td><td class="mono" style="font-size:11px">${crEsc(x.r.date||'—')}</td><td>${crEsc(x.r.quality||'—')}</td><td><span class="ct2 ${x.grade}">${x.grade}</span></td><td>${crRowBadge(x)}</td><td style="text-align:center;font-weight:700">${x.bags}</td><td class="mono">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${crEsc(x.chamber)}</td><td>${crEsc(x.floor)}</td><td>${crEsc(x.pillar)}</td></tr>`;
+    }).join('');
+    return`<div style="margin:10px 0 18px 0"><div style="font-size:12px;font-weight:700;margin-bottom:6px;color:var(--text2)">${sub.length} lines · <span style="color:var(--teal)">${bags} bags</span> · <span style="color:var(--purple)">Own line ₹${fmt(ownRs)}</span></div><div class="tsc"><table style="min-width:900px"><thead><tr><th>Receipt</th><th>Farmer</th><th>Tarikh</th><th>Quality</th><th>Class</th><th>Type</th><th>Bags</th><th>₹/bag</th><th>Line ₹</th><th>Chamber</th><th>Floor</th><th>Pillar</th></tr></thead><tbody>${tb}</tbody></table></div></div>`;
+  }
+  return node.children.map(({key,node:ch})=>{
+    const allR=customFlattenRows(ch);
+    const bags=allR.reduce((s,x)=>s+x.bags,0);
+    const ownRs=allR.filter(x=>x.kind==='own').reduce((s,x)=>s+x.lineAmt,0);
+    const dname=CR_PATH_NAME[node.dim]||node.dim;
+    const indent=Math.min(depth*14,56);
+    return`<div style="margin-bottom:12px;margin-left:${indent}px;border-left:3px solid var(--purple);padding-left:12px">
+      <div style="background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(26,58,107,0.06));border:1px solid var(--border);border-radius:8px;padding:9px 12px;margin-bottom:8px">
+        <span style="font-weight:700;color:var(--blue2)">${crEsc(dname)}:</span> <span style="font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700">${crEsc(key)}</span>
+        <span style="margin-left:12px;font-size:12px;color:var(--text3)">${allR.length} lines</span>
+        <span style="margin-left:10px;font-size:12px;font-weight:700">${bags} bags</span>
+        <span style="margin-left:8px;color:var(--purple);font-weight:700">Own ₹${fmt(ownRs)}</span>
+      </div>
+      ${renderCustomReportHtml(ch,depth+1)}
+    </div>`;
+  }).join('');
+}
+function runCustomReport(){
+  const d1=document.getElementById('cr-d1').value;
+  const d2=document.getElementById('cr-d2').value;
+  const d3=document.getElementById('cr-d3').value;
+  const dims=[d1,d2,d3].filter(d=>d&&d!=='none');
+  if(new Set(dims).size!==dims.length){toast('Har level alag hona chahiye — duplicate mat rakho','e');return;}
+  let base=allLocRows();
+  const fFrom=document.getElementById('cr-from').value;
+  const fTo=document.getElementById('cr-to').value;
+  const fFarm=(document.getElementById('cr-farm').value||'').trim().toLowerCase();
+  const fQual=(document.getElementById('cr-qual').value||'').trim().toLowerCase();
+  if(fFrom)base=base.filter(x=>(x.r.date||'')>=fFrom);
+  if(fTo)base=base.filter(x=>(x.r.date||'')<=fTo);
+  if(fFarm)base=base.filter(x=>(String(x.r.farmer||'').toLowerCase().includes(fFarm)));
+  if(fQual)base=base.filter(x=>String(x.r.quality||'').toLowerCase().includes(fQual));
+  if(!base.length){
+    toast('Is filter par koi line nahi — Store/Own class lines chahiye','e');
+    return;
+  }
+  const tree=buildCustomReportTree(base,dims);
+  clearViewReportExport();
+  const sections=[];
+  customLeafSections(tree,[],sections);
+  const dimDesc=dims.length?dims.map(d=>CR_PATH_NAME[d]||d).join(' → '):'Flat list';
+  setViewReportExport('🔧 Custom report — '+dimDesc,'CustomReport',sections);
+  const out=document.getElementById('r-out');
+  out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">🔧 Custom report</div><div style="font-size:12px;color:var(--text3)">Group: <b>${crEsc(dimDesc)}</b> · Export = har group ka alag CSV/PDF block</div></div>${renderCustomReportHtml(tree,0)}</div>`;
+  closeM('custom-rep-modal');
+  goTab('rep');
+  toast('Custom report tayyar — 📥 CSV / 📄 PDF yahin se','s');
 }
 
 // ===== EXPORT SYSTEM =====
@@ -2204,6 +2477,186 @@ function impReset(){
   document.getElementById('imp-file').value='';
   document.getElementById('imp-step1').style.display='block';
   document.getElementById('imp-step2').style.display='none';
+  const w=document.getElementById('imp-warn');
+  if(w){w.style.display='none';w.innerHTML='';}
+}
+/** CSV line — commas ke andar quotes handle */
+function parseCSVLine(line){
+  const out=[];let cur='';let q=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){q=!q;continue;}
+    if(!q&&c===','){out.push(cur);cur='';continue;}
+    cur+=c;
+  }
+  out.push(cur);
+  return out.map(x=>String(x==null?'':x).trim());
+}
+function normImpHeader(h){
+  return String(h||'').trim().toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+}
+function normImpDest(s){
+  const x=String(s||'').toLowerCase().trim();
+  if(!x)return'';
+  if(x==='store'||x.includes('store'))return'store';
+  if(x==='own'||x.includes('own')||x.includes('purchase'))return'own';
+  if(x==='ghar'||x.includes('ghar')||x.includes('home'))return'ghar';
+  return x;
+}
+function impHeaderToMap(hdrCells){
+  const h2i={};
+  hdrCells.forEach((h,i)=>{const k=normImpHeader(h);if(k)h2i[k]=i;});
+  if(h2i.gaon!=null&&h2i.village==null)h2i.village=h2i.gaon;
+  if(h2i.tarikh!=null&&h2i.date==null)h2i.date=h2i.tarikh;
+  return h2i;
+}
+function impGv(row,h2i){
+  const keys=[].slice.call(arguments,2);
+  for(let k=0;k<keys.length;k++){
+    const nk=normImpHeader(keys[k]);
+    if(h2i[nk]!=null)return(row[h2i[nk]]||'').trim();
+  }
+  return'';
+}
+function impLocFromRow(row,h2i,cls){
+  const L=cls.toUpperCase();
+  const lc=cls.toLowerCase();
+  return{
+    chamber:impGv(row,h2i,'loc'+L+'_chamber','loc'+lc+'_chamber',lc+'_chamber'),
+    floor:impGv(row,h2i,'loc'+L+'_floor','loc'+lc+'_floor',lc+'_floor'),
+    pillar:impGv(row,h2i,'loc'+L+'_pillar','loc'+lc+'_pillar',lc+'_pillar')
+  };
+}
+function impGradeCell(row,h2i,letter){
+  const L=letter.toUpperCase();
+  const l=letter.toLowerCase();
+  return{
+    bags:parseInt(impGv(row,h2i,L+'_bags',l+'_bags'),10)||0,
+    dest:normImpDest(impGv(row,h2i,L+'_dest',l+'_dest')),
+    rate:parseFloat(impGv(row,h2i,L+'_rate',l+'_rate'))||0
+  };
+}
+function impTotalsFromGrading(grading){
+  let totalBags=0,storeBags=0,ownBags=0,gharBags=0,ownAmt=0;
+  ['A','B','C','D','Z','K'].forEach(cl=>{
+    const g=grading[cl]||{bags:0,dest:'',rate:0};
+    const n=g.bags||0;
+    totalBags+=n;
+    const d=g.dest||'';
+    if(d==='store')storeBags+=n;
+    else if(d==='own'){ownBags+=n;ownAmt+=n*(parseFloat(g.rate)||0);}
+    else if(d==='ghar')gharBags+=n;
+  });
+  return{totalBags,storeBags,ownBags,gharBags,ownAmt};
+}
+function isNewImportLayout(h2i){
+  if(h2i.loca_chamber!=null||h2i.locb_chamber!=null||h2i.locc_chamber!=null||h2i.locd_chamber!=null||
+    h2i.locz_chamber!=null||h2i.lock_chamber!=null||h2i.z_dest!=null||h2i.k_dest!=null||h2i.firebase_id!=null)
+    return true;
+  /* Purani sheet: col0 = Sr / Sr No, Receipt aage column par. Naya: pehla column Receipt */
+  if(h2i.receipt===0)return true;
+  return false;
+}
+function rowToRecV2(vals,h2i,rowIndex){
+  const row=vals;
+  const gA=impGradeCell(row,h2i,'A'),gB=impGradeCell(row,h2i,'B'),gC=impGradeCell(row,h2i,'C'),gD=impGradeCell(row,h2i,'D');
+  const gZ=impGradeCell(row,h2i,'Z'),gK=impGradeCell(row,h2i,'K');
+  const grading={A:gA,B:gB,C:gC,D:gD,Z:gZ,K:gK};
+  const zb=gZ.bags||parseInt(impGv(row,h2i,'zero_bags','zerobags'),10)||0;
+  const kb=gK.bags||parseInt(impGv(row,h2i,'kaat_bags','kaatbags'),10)||0;
+  if(!gZ.bags&&zb)grading.Z={bags:zb,dest:grading.Z.dest,rate:grading.Z.rate};
+  if(!gK.bags&&kb)grading.K={bags:kb,dest:grading.K.dest,rate:grading.K.rate};
+  const tcalc=impTotalsFromGrading(grading);
+  let gradingBags=parseInt(impGv(row,h2i,'grading_bags','gradingbags'),10)||0;
+  const gradingRate=parseFloat(impGv(row,h2i,'grading_rate','gradingrate'))||0;
+  let gradingAmt=parseFloat(impGv(row,h2i,'grading_amt','gradingamt'))||0;
+  let bardanaBags=parseInt(impGv(row,h2i,'bardana_bags','bardanabags'),10)||0;
+  const bardanaRate=parseFloat(impGv(row,h2i,'bardana_rate','bardanarate'))||0;
+  let bardanaAmt=parseFloat(impGv(row,h2i,'bardana_amt','bardanaamt'))||0;
+  let labourBags=parseInt(impGv(row,h2i,'labour_bags','labourbags'),10)||0;
+  const labourRate=parseFloat(impGv(row,h2i,'labour_rate','labourrate'))||0;
+  let labourAmt=parseFloat(impGv(row,h2i,'labour_amt','labouramt'))||0;
+  let totalBags=parseInt(impGv(row,h2i,'total_bags','totalbags'),10)||0;
+  let storeBags=parseInt(impGv(row,h2i,'store_bags','storebags'),10)||0;
+  let ownBags=parseInt(impGv(row,h2i,'own_bags','ownbags'),10)||0;
+  let gharBags=parseInt(impGv(row,h2i,'ghar_bags','gharbags'),10)||0;
+  let ownAmt=parseFloat(impGv(row,h2i,'own_amt','ownamt'))||0;
+  let netPay=parseFloat(impGv(row,h2i,'net_dena','netpay','net_pay'))||0;
+  if(!totalBags||!storeBags&&!ownBags&&!gharBags){
+    totalBags=tcalc.totalBags;storeBags=tcalc.storeBags;ownBags=tcalc.ownBags;gharBags=tcalc.gharBags;ownAmt=tcalc.ownAmt;
+  }
+  if(!gradingBags)gradingBags=totalBags;
+  if(!bardanaBags)bardanaBags=totalBags;
+  if(!gradingAmt)gradingAmt=gradingBags*gradingRate;
+  if(!bardanaAmt)bardanaAmt=bardanaBags*bardanaRate;
+  if(!labourAmt)labourAmt=labourBags*labourRate;
+  if(netPay===0&&ownAmt)netPay=ownAmt-gradingAmt-bardanaAmt-labourAmt;
+  const locations={
+    A:impLocFromRow(row,h2i,'A'),B:impLocFromRow(row,h2i,'B'),C:impLocFromRow(row,h2i,'C'),D:impLocFromRow(row,h2i,'D'),
+    Z:impLocFromRow(row,h2i,'Z'),K:impLocFromRow(row,h2i,'K')
+  };
+  const legCh=impGv(row,h2i,'chamber','legacy_chamber');
+  const legF=impGv(row,h2i,'floor','legacy_floor');
+  const legP=impGv(row,h2i,'pillar','legacy_pillar');
+  const chA=locations.A.chamber||legCh,flA=locations.A.floor||legF,plA=locations.A.pillar||legP;
+  const existId=impGv(row,h2i,'firebase_id','id','record_id');
+  const farmer=impGv(row,h2i,'farmer','farmer_naam');
+  const receipt=impGv(row,h2i,'receipt','receipt_no');
+  if(!farmer&&!receipt)return null;
+  return{
+    id:existId||'IMP'+Date.now()+'_'+rowIndex,
+    date:impGv(row,h2i,'tarikh','date'),
+    farmer,
+    mobile:impGv(row,h2i,'mobile'),
+    village:impGv(row,h2i,'village','gaon'),
+    quality:impGv(row,h2i,'quality'),
+    receipt,
+    notes:impGv(row,h2i,'notes'),
+    chamber:chA,floor:flA,pillar:plA,
+    locations,
+    grading,
+    zeroBags:grading.Z.bags,kaatBags:grading.K.bags,
+    gradingBags,gradingRate,gradingAmt,
+    bardanaBags,bardanaRate,bardanaAmt,
+    labourBags,labourRate,labourAmt,
+    totalBags,storeBags,ownBags,gharBags,
+    ownAmt,netPay,
+    createdAt:new Date().toISOString()
+  };
+}
+function downloadImportSampleCSV(){
+  const hdr=[
+    'Receipt','Tarikh','Farmer','Mobile','Gaon','Quality',
+    'A_Bags','A_Dest','A_Rate','LocA_Chamber','LocA_Floor','LocA_Pillar',
+    'B_Bags','B_Dest','B_Rate','LocB_Chamber','LocB_Floor','LocB_Pillar',
+    'C_Bags','C_Dest','C_Rate','LocC_Chamber','LocC_Floor','LocC_Pillar',
+    'D_Bags','D_Dest','D_Rate','LocD_Chamber','LocD_Floor','LocD_Pillar',
+    'Z_Bags','Z_Dest','Z_Rate','LocZ_Chamber','LocZ_Floor','LocZ_Pillar',
+    'K_Bags','K_Dest','K_Rate','LocK_Chamber','LocK_Floor','LocK_Pillar',
+    'Grading_Bags','Grading_Rate','Grading_Amt','Bardana_Bags','Bardana_Rate','Bardana_Amt','Labour_Bags','Labour_Rate','Labour_Amt',
+    'Total_Bags','Store_Bags','Own_Bags','Ghar_Bags','Own_Amt','Net_Dena',
+    'Notes','Firebase_ID'
+  ];
+  const ex=[
+    'RC-SAMPLE-001','2026-04-05','Ram Singh','9876543210','Ludhiana','Pukhraj',
+    '100','store','0','1','G','P12',
+    '40','own','850','2','1','P03',
+    '0','','0','','','',
+    '0','','0','','','',
+    '8','store','0','7','G','Z1',
+    '5','ghar','0','','','',
+    '153','30','4590','153','16','2448','0','0','0',
+    '153','108','40','5','34000','26962',
+    'Har class ek saath: bags dest rate + us class ki location',
+    ''
+  ];
+  const esc=(c)=>{const s=String(c);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  const csv='\uFEFF'+[hdr.map(esc).join(','),ex.map(esc).join(',')].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download='PrimeColdStore_import_sample_naya_format.csv';
+  a.click();
+  toast('Sample CSV download ho gayi!','s');
 }
 function parseImpCSV(input){
   const file=input.files[0];
@@ -2214,47 +2667,70 @@ function parseImpCSV(input){
     if(lines.length<2){toast('CSV mein koi data nahi!','e');return;}
     impRows=[];
     const warns=[];
+    const w0=document.getElementById('imp-warn');
+    if(w0){w0.style.display='none';w0.innerHTML='';}
+    const hdrCells=parseCSVLine(lines[0]);
+    const h2i=impHeaderToMap(hdrCells);
+    const useV2=isNewImportLayout(h2i);
     for(let i=1;i<lines.length;i++){
-      const vals=lines[i].split(',');
-      const get=(idx)=>(vals[idx]||'').trim();
-      if(!get(2)&&!get(6))continue;
-      const existId=get(44);
-      const rec={
-        id:existId||'IMP'+Date.now()+'_'+i,
-        date:get(1),
-        farmer:get(2),
-        mobile:get(3),
-        village:get(4),
-        quality:get(5),
-        receipt:get(6),
-        grading:{
-          A:{bags:parseInt(get(7))||0,dest:get(8),rate:parseFloat(get(9))||0},
-          B:{bags:parseInt(get(11))||0,dest:get(12),rate:parseFloat(get(13))||0},
-          C:{bags:parseInt(get(15))||0,dest:get(16),rate:parseFloat(get(17))||0},
-          D:{bags:parseInt(get(19))||0,dest:get(20),rate:parseFloat(get(21))||0}
-        },
-        zeroBags:parseInt(get(23))||0,
-        kaatBags:parseInt(get(24))||0,
-        gradingBags:parseInt(get(25))||0,
-        gradingRate:parseFloat(get(26))||0,
-        gradingAmt:parseFloat(get(27))||0,
-        bardanaBags:parseInt(get(28))||0,
-        bardanaRate:parseFloat(get(29))||0,
-        bardanaAmt:parseFloat(get(30))||0,
-        labourBags:parseInt(get(31))||0,
-        labourRate:parseFloat(get(32))||0,
-        labourAmt:parseFloat(get(33))||0,
-        totalBags:parseInt(get(34))||0,
-        storeBags:parseInt(get(35))||0,
-        ownBags:parseInt(get(36))||0,
-        gharBags:parseInt(get(37))||0,
-        ownAmt:parseFloat(get(38))||0,
-        netPay:parseFloat(get(39))||0,
-        chamber:get(40),
-        floor:get(41),
-        pillar:get(42),
-        notes:get(43)
-      };
+      const vals=parseCSVLine(lines[i]);
+      let rec=null;
+      if(useV2){
+        rec=rowToRecV2(vals,h2i,i);
+      }else{
+        const get=(idx)=>(vals[idx]||'').trim();
+        if(!get(2)&&!get(6))continue;
+        const existId=get(44);
+        const gZa=parseInt(get(23))||0,gKa=parseInt(get(24))||0;
+        rec={
+          id:existId||'IMP'+Date.now()+'_'+i,
+          date:get(1),
+          farmer:get(2),
+          mobile:get(3),
+          village:get(4),
+          quality:get(5),
+          receipt:get(6),
+          grading:{
+            A:{bags:parseInt(get(7))||0,dest:normImpDest(get(8)),rate:parseFloat(get(9))||0},
+            B:{bags:parseInt(get(11))||0,dest:normImpDest(get(12)),rate:parseFloat(get(13))||0},
+            C:{bags:parseInt(get(15))||0,dest:normImpDest(get(16)),rate:parseFloat(get(17))||0},
+            D:{bags:parseInt(get(19))||0,dest:normImpDest(get(20)),rate:parseFloat(get(21))||0},
+            Z:{bags:gZa,dest:'',rate:0},
+            K:{bags:gKa,dest:'',rate:0}
+          },
+          zeroBags:gZa,
+          kaatBags:gKa,
+          gradingBags:parseInt(get(25))||0,
+          gradingRate:parseFloat(get(26))||0,
+          gradingAmt:parseFloat(get(27))||0,
+          bardanaBags:parseInt(get(28))||0,
+          bardanaRate:parseFloat(get(29))||0,
+          bardanaAmt:parseFloat(get(30))||0,
+          labourBags:parseInt(get(31))||0,
+          labourRate:parseFloat(get(32))||0,
+          labourAmt:parseFloat(get(33))||0,
+          totalBags:parseInt(get(34))||0,
+          storeBags:parseInt(get(35))||0,
+          ownBags:parseInt(get(36))||0,
+          gharBags:parseInt(get(37))||0,
+          ownAmt:parseFloat(get(38))||0,
+          netPay:parseFloat(get(39))||0,
+          chamber:get(40),
+          floor:get(41),
+          pillar:get(42),
+          notes:get(43),
+          locations:{
+            A:{chamber:get(40)||'',floor:get(41)||'',pillar:get(42)||''},
+            B:{chamber:'',floor:'',pillar:''},
+            C:{chamber:'',floor:'',pillar:''},
+            D:{chamber:'',floor:'',pillar:''},
+            Z:{chamber:'',floor:'',pillar:''},
+            K:{chamber:'',floor:'',pillar:''}
+          },
+          createdAt:new Date().toISOString()
+        };
+      }
+      if(!rec)continue;
       if(recs.find(r=>r.receipt===rec.receipt&&rec.receipt)){
         warns.push(rec.receipt);
       } else {
