@@ -509,11 +509,38 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 <!-- LOGIN -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-box">
-    <div class="login-logo"><span class="icon">❄️</span><h2>Prime ColdStore Pro</h2><p>Apna username aur password daalo</p></div>
-    <div class="login-err" id="login-err">❌ Username ya password galat hai!</div>
-    <div class="login-field"><label>Username</label><input type="text" id="l-user" placeholder="Jaise: admin" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <div class="login-field"><label>Password</label><input type="password" id="l-pass" placeholder="Password daalo" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <button class="login-btn" onclick="doLogin()">🔓 Login Karo</button>
+    <div class="login-logo"><span class="icon">❄️</span><h2>Prime ColdStore Pro</h2><p id="login-subtitle">Apni email aur password se login karo</p></div>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-success" id="login-success" style="display:none;background:#e8f5ed;border:1px solid #c8ecd4;color:#1a7a3c;border-radius:6px;padding:9px 12px;font-size:12px;margin-bottom:12px"></div>
+    <!-- Login Form -->
+    <div id="login-form">
+      <div class="login-field"><label>Email</label><input type="email" id="l-email" placeholder="example@gmail.com" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="email"></div>
+      <div class="login-field"><label>Password</label><input type="password" id="l-pass" placeholder="Password daalo" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password"></div>
+      <button class="login-btn" onclick="doLogin()">🔓 Login Karo</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <button onclick="showResetForm()" style="background:none;border:none;color:#1a5fc8;font-size:12px;cursor:pointer;text-decoration:underline">Password bhool gaye?</button>
+        <button onclick="toggleSignup()" style="background:none;border:none;color:#1a5fc8;font-size:12px;cursor:pointer;font-weight:600" id="toggle-signup-btn">Naya Account Banao →</button>
+      </div>
+    </div>
+    <!-- Signup Form -->
+    <div id="signup-form" style="display:none">
+      <div class="login-field"><label>Naam</label><input type="text" id="s-name" placeholder="Apna naam daalo" onkeydown="if(event.key==='Enter')doSignup()"></div>
+      <div class="login-field"><label>Email</label><input type="email" id="s-email" placeholder="example@gmail.com" onkeydown="if(event.key==='Enter')doSignup()" autocomplete="email"></div>
+      <div class="login-field"><label>Password</label><input type="password" id="s-pass" placeholder="Kam se kam 6 characters" onkeydown="if(event.key==='Enter')doSignup()" autocomplete="new-password"></div>
+      <div class="login-field"><label>Confirm Password</label><input type="password" id="s-pass2" placeholder="Dobara password daalo" onkeydown="if(event.key==='Enter')doSignup()"></div>
+      <button class="login-btn" onclick="doSignup()" style="background:linear-gradient(135deg,#0f766e,#14b8a6)">📝 Account Banao</button>
+      <div style="text-align:center;margin-top:12px">
+        <button onclick="toggleSignup()" style="background:none;border:none;color:#1a5fc8;font-size:12px;cursor:pointer;font-weight:600">← Login pe wapas jao</button>
+      </div>
+    </div>
+    <!-- Reset Password Form -->
+    <div id="reset-form" style="display:none">
+      <div class="login-field"><label>Email</label><input type="email" id="r-email" placeholder="Apni registered email daalo" onkeydown="if(event.key==='Enter')doResetPassword()"></div>
+      <button class="login-btn" onclick="doResetPassword()" style="background:linear-gradient(135deg,#b45309,#f59e0b)">📧 Reset Link Bhejo</button>
+      <div style="text-align:center;margin-top:12px">
+        <button onclick="showLoginForm()" style="background:none;border:none;color:#1a5fc8;font-size:12px;cursor:pointer;font-weight:600">← Login pe wapas jao</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1000,7 +1027,8 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 const SHEET_URL='https://script.google.com/macros/s/AKfycbxUZz_ewOxzIpRNQqxg6Iof8aoB-SKb-QasCUJxmeXd368Fflhrx6a9M03bqV-TEMXj0w/exec';
 const FB_CFG={apiKey:'AIzaSyBhvCmZLVSOKflr7Ub_Vjhw_1CBlV2PaAI',authDomain:'primecoldstore-439ab.firebaseapp.com',databaseURL:'https://primecoldstore-439ab-default-rtdb.asia-southeast1.firebasedatabase.app',projectId:'primecoldstore-439ab',storageBucket:'primecoldstore-439ab.firebasestorage.app',messagingSenderId:'848383603685',appId:'1:848383603685:web:7c9b45a123aa25e153f50c'};
 let FB_DB=null,FB_ON=false;
-function loadFB(){return new Promise(res=>{if(FB_ON){res();return;}const s1=document.createElement('script');s1.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';s1.onload=()=>{const s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';s2.onload=()=>{try{if(!firebase.apps.length)firebase.initializeApp(FB_CFG);FB_DB=firebase.database();FB_ON=true;}catch(e){console.log('FB err:',e);}res();};document.head.appendChild(s2);};document.head.appendChild(s1);});}
+let FB_AUTH=null;
+function loadFB(){return new Promise(res=>{if(FB_ON){res();return;}const s1=document.createElement('script');s1.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';s1.onload=()=>{const s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';s2.onload=()=>{const s3=document.createElement('script');s3.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js';s3.onload=()=>{try{if(!firebase.apps.length)firebase.initializeApp(FB_CFG);FB_DB=firebase.database();FB_AUTH=firebase.auth();FB_ON=true;}catch(e){console.log('FB err:',e);}res();};document.head.appendChild(s3);};document.head.appendChild(s2);};document.head.appendChild(s1);});}
 let recs=[],filtered=[],editId=null,pg=1;
 const PP=15;
 let sField='date',sDir='desc',autoTimer=null;
@@ -2793,165 +2821,192 @@ function toast(msg,type='i'){
 
 function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
 
-// ===== AUTH =====
-/** true = purana login screen; false = seedha app khulegi (default admin) */
-const REQUIRE_LOGIN=false;
+// ===== AUTH (Firebase Authentication) =====
+const REQUIRE_LOGIN=true;
 const DEFAULT_USERS=[{id:'1',name:'Admin',username:'admin',password:'admin123',role:'admin'}];
 let currentUser=null,users=[],editUserId=null;
-function loadUsers(){const s=localStorage.getItem('cs_users');users=s?JSON.parse(s):[...DEFAULT_USERS];}
-function saveUsers(){localStorage.setItem('cs_users',JSON.stringify(users));saveUsersToSheet();}
-async function saveUsersToSheet(){const img=new Image();img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify({action:'saveUsers',users}));}
-function mergeSheetUsers(sheetUsers,previous){
-  const prevByUser=new Map((previous||[]).map(u=>[(String(u.username||'')).toLowerCase(),u]));
-  const merged=sheetUsers.map(u=>{
-    const key=(String(u.username||'')).toLowerCase();
-    const old=prevByUser.get(key);
-    const sheetPwd=u.password!=null?String(u.password):'';
-    const password=sheetPwd.length>0?sheetPwd:(old&&old.password!=null?String(old.password):'');
-    const id=String((old&&old.id!=null&&String(old.id).length)?old.id:(u.id!=null?u.id:''));
-    return{...u,id,password};
-  });
-  const adm=merged.find(u=>(String(u.username||'')).toLowerCase()==='admin');
-  if(adm&&!(String(adm.password||'').length)){
-    const oldA=prevByUser.get('admin');
-    adm.password=(oldA&&String(oldA.password||'').length)?oldA.password:DEFAULT_USERS[0].password;
-  }
-  if(!merged.some(u=>(String(u.username||'')).toLowerCase()==='admin')){
-    merged.unshift(...DEFAULT_USERS);
-  }
-  return merged;
+
+function loadUsers(){
+  const s=localStorage.getItem('cs_users');
+  users=s?JSON.parse(s):[...DEFAULT_USERS];
+}
+function saveUsers(){
+  localStorage.setItem('cs_users',JSON.stringify(users));
+  // Also save to Firebase DB for persistence
+  if(FB_ON&&FB_DB){FB_DB.ref('cs/users_list').set(users).catch(e=>console.log('Users save err:',e));}
 }
 async function loadUsersFromSheet(){
-  let previous=[];
-  try{previous=JSON.parse(localStorage.getItem('cs_users')||'[]');}catch(e){previous=[];}
-  try{
-    const proxies=[()=>fetch(SHEET_URL+'?getUsers=1',{method:'GET',redirect:'follow'}),()=>fetch('https://corsproxy.io/?'+encodeURIComponent(SHEET_URL+'?getUsers=1'))];
-    for(let i=0;i<proxies.length;i++){
-      try{
-        const res=await proxies[i]();
-        let txt=await res.text();
-        try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
-        const data=JSON.parse(txt);
-        if(data.users&&data.users.length>0){
-          users=mergeSheetUsers(data.users,previous);
-          localStorage.setItem('cs_users',JSON.stringify(users));
-          return;
-        }
-      }catch(e){}
-    }
-  }catch(e){}
+  // Load users from Firebase DB first
+  if(FB_ON&&FB_DB){
+    try{
+      const snap=await FB_DB.ref('cs/users_list').once('value');
+      const val=snap.val();
+      if(val&&Array.isArray(val)&&val.length>0){users=val;localStorage.setItem('cs_users',JSON.stringify(users));return;}
+    }catch(e){console.log('Users load err:',e);}
+  }
   loadUsers();
 }
-// ===== SECURITY CONFIG =====
-const SESSION_HOURS=8;
-const MAX_ATTEMPTS=3;
-const LOCKOUT_MIN=15;
 
-function genToken(){return Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)+Date.now().toString(36);}
-function getLockout(){try{return JSON.parse(localStorage.getItem('cs_lock')||'{}');}catch(e){return {};}}
-function setLockout(d){localStorage.setItem('cs_lock',JSON.stringify(d));}
-function checkLockout(username){
-  const lk=getLockout(),key=username.toLowerCase();
-  if(!lk[key])return false;
-  const now=Date.now();
-  if(lk[key].until&&now<lk[key].until){return Math.ceil((lk[key].until-now)/60000);}
-  if(lk[key].until&&now>=lk[key].until){delete lk[key];setLockout(lk);}
-  return false;
+// ===== LOGIN FORM HELPERS =====
+function toggleSignup(){
+  const lf=document.getElementById('login-form');
+  const sf=document.getElementById('signup-form');
+  const rf=document.getElementById('reset-form');
+  const sub=document.getElementById('login-subtitle');
+  const err=document.getElementById('login-err');
+  const suc=document.getElementById('login-success');
+  err.classList.remove('show');err.style.display='none';
+  suc.style.display='none';
+  if(sf.style.display==='none'){lf.style.display='none';sf.style.display='block';rf.style.display='none';sub.textContent='Naya account banao — pehle admin se role set karwana';}
+  else{lf.style.display='block';sf.style.display='none';rf.style.display='none';sub.textContent='Apni email aur password se login karo';}
 }
-function recordFail(username){
-  const lk=getLockout(),key=username.toLowerCase();
-  if(!lk[key])lk[key]={count:0};
-  lk[key].count=(lk[key].count||0)+1;
-  if(lk[key].count>=MAX_ATTEMPTS){lk[key].until=Date.now()+(LOCKOUT_MIN*60*1000);lk[key].count=0;}
-  setLockout(lk);
-  return Math.max(0,MAX_ATTEMPTS-(lk[key].count||0));
+function showResetForm(){
+  document.getElementById('login-form').style.display='none';
+  document.getElementById('signup-form').style.display='none';
+  document.getElementById('reset-form').style.display='block';
+  document.getElementById('login-subtitle').textContent='Password reset link email pe aayega';
+  const err=document.getElementById('login-err');err.classList.remove('show');err.style.display='none';
+  document.getElementById('login-success').style.display='none';
 }
-function clearFail(username){const lk=getLockout();delete lk[username.toLowerCase()];setLockout(lk);}
+function showLoginForm(){
+  document.getElementById('login-form').style.display='block';
+  document.getElementById('signup-form').style.display='none';
+  document.getElementById('reset-form').style.display='none';
+  document.getElementById('login-subtitle').textContent='Apni email aur password se login karo';
+  const err=document.getElementById('login-err');err.classList.remove('show');err.style.display='none';
+  document.getElementById('login-success').style.display='none';
+}
+function showAuthError(msg){
+  const err=document.getElementById('login-err');
+  err.textContent=msg;err.classList.add('show');err.style.display='block';
+  err.style.background='';err.style.borderColor='';err.style.color='';
+}
+function showAuthSuccess(msg){
+  const suc=document.getElementById('login-success');
+  suc.textContent=msg;suc.style.display='block';
+  const err=document.getElementById('login-err');err.classList.remove('show');err.style.display='none';
+}
+function fbErrMsg(code){
+  const m={'auth/user-not-found':'Yeh email registered nahi hai','auth/wrong-password':'Password galat hai','auth/invalid-email':'Email format galat hai','auth/email-already-in-use':'Yeh email pehle se registered hai','auth/weak-password':'Password kamzor hai — kam se kam 6 characters','auth/too-many-requests':'Bahut zyada try — thodi der baad try karo','auth/network-request-failed':'Internet connection check karo','auth/invalid-credential':'Email ya password galat hai'};
+  return m[code]||'Error: '+code;
+}
 
-function doLogin(){
-  const username=document.getElementById('l-user').value.trim().toLowerCase();
-  const password=document.getElementById('l-pass').value.trim();
+// ===== FIREBASE LOGIN =====
+async function doLogin(){
+  const email=(document.getElementById('l-email').value||'').trim();
+  const password=(document.getElementById('l-pass').value||'').trim();
   const err=document.getElementById('login-err');
   err.style.background='';err.style.borderColor='';err.style.color='';
-  if(!username||!password){err.textContent='Username aur password daalo!';err.classList.add('show');return;}
-  const locked=checkLockout(username);
-  if(locked){err.textContent='LOCKED: '+locked+' minute baad try karo (zyada galat attempts)';err.classList.add('show');document.getElementById('l-pass').value='';return;}
-  loadUsers();
-  const user=users.find(u=>(String(u.username||'')).toLowerCase()===username&&String(u.password||'')===password);
-  if(!user){
-    const left=recordFail(username);
-    const lockedNow=checkLockout(username);
-    if(lockedNow){err.textContent='LOCKED: Account '+LOCKOUT_MIN+' minute ke liye band ho gaya!';}
-    else{err.textContent='Galat username ya password! ('+left+' attempts baaki)';}
-    err.classList.add('show');document.getElementById('l-pass').value='';return;
+  if(!email||!password){showAuthError('Email aur password daalo!');return;}
+  await loadFB();
+  if(!FB_AUTH){showAuthError('Firebase load nahi hua — internet check karo');return;}
+  try{
+    const cred=await FB_AUTH.signInWithEmailAndPassword(email,password);
+    // onAuthStateChanged will handle the rest
+  }catch(e){
+    showAuthError(fbErrMsg(e.code));
+    document.getElementById('l-pass').value='';
   }
-  clearFail(username);
-  const token=genToken();
-  const sessData={id:user.id,token,expires:Date.now()+(SESSION_HOURS*3600*1000)};
-  err.classList.remove('show');
-  currentUser=user;
-  localStorage.setItem('cs_session',JSON.stringify(sessData));
-  hideLoginUI();
-  applyPermissions();addUserBadge();
-  toast('Welcome '+user.name+'!','s');loadUsersFromSheet();setSt('ch');loadSheet();
+}
+
+// ===== FIREBASE SIGNUP =====
+async function doSignup(){
+  const name=(document.getElementById('s-name').value||'').trim();
+  const email=(document.getElementById('s-email').value||'').trim();
+  const pass1=(document.getElementById('s-pass').value||'').trim();
+  const pass2=(document.getElementById('s-pass2').value||'').trim();
+  if(!name||!email||!pass1){showAuthError('Sab fields bharo!');return;}
+  if(pass1!==pass2){showAuthError('Dono passwords match nahi kar rahe!');return;}
+  if(pass1.length<6){showAuthError('Password kam se kam 6 characters ka hona chahiye!');return;}
+  await loadFB();
+  if(!FB_AUTH){showAuthError('Firebase load nahi hua — internet check karo');return;}
+  try{
+    const cred=await FB_AUTH.createUserWithEmailAndPassword(email,pass1);
+    // Save user profile in Firebase DB
+    const uid=cred.user.uid;
+    const profile={id:uid,name:name,email:email,role:'viewer',createdAt:new Date().toISOString()};
+    if(FB_DB){await FB_DB.ref('cs/user_profiles/'+uid).set(profile);}
+    // Also add to users list for compatibility
+    loadUsers();
+    users.push({id:uid,name:name,username:email,role:'viewer',permissions:['view']});
+    saveUsers();
+    showAuthSuccess('Account ban gaya! Ab login ho raha hai...');
+    // onAuthStateChanged will handle auto-login
+  }catch(e){
+    showAuthError(fbErrMsg(e.code));
+  }
+}
+
+// ===== PASSWORD RESET =====
+async function doResetPassword(){
+  const email=(document.getElementById('r-email').value||'').trim();
+  if(!email){showAuthError('Email daalo!');return;}
+  await loadFB();
+  if(!FB_AUTH){showAuthError('Firebase load nahi hua');return;}
+  try{
+    await FB_AUTH.sendPasswordResetEmail(email);
+    showAuthSuccess('Password reset link '+email+' pe bhej diya! Email check karo.');
+  }catch(e){
+    showAuthError(fbErrMsg(e.code));
+  }
 }
 
 function hideLoginUI(){const lw=document.getElementById('login-wrap');if(lw){lw.style.display='none';lw.classList.remove('show-login');}}
-function showLoginUI(){if(!REQUIRE_LOGIN)return;const lw=document.getElementById('login-wrap');if(lw){lw.style.display='flex';lw.classList.add('show-login');}}
-function enterDirectApp(){
-  loadUsers();
-  const admin=users.find(u=>u.role==='admin')||DEFAULT_USERS[0];
-  currentUser={...admin};
-  hideLoginUI();
-  applyPermissions();addUserBadge();setSt('ch');loadSheet();
-}
+function showLoginUI(){const lw=document.getElementById('login-wrap');if(lw){lw.style.display='flex';lw.classList.add('show-login');showLoginForm();}}
+
+// ===== SESSION CHECK VIA FIREBASE onAuthStateChanged =====
 async function checkSession(){
-  await loadUsersFromSheet();
-  if(!REQUIRE_LOGIN){
-    enterDirectApp();
-    return;
+  await loadFB();
+  if(!FB_AUTH){
+    // Firebase not loaded — show login
+    showLoginUI();return;
   }
-  const raw=localStorage.getItem('cs_session');
-  if(raw){
-    try{
-      const sess=JSON.parse(raw);
-      if(sess.expires&&Date.now()<sess.expires&&sess.id!=null&&sess.token){
-        const user=users.find(u=>String(u.id)===String(sess.id));
-        if(user){
-          currentUser=user;
-          sess.expires=Date.now()+(SESSION_HOURS*3600*1000);
-          localStorage.setItem('cs_session',JSON.stringify(sess));
-          hideLoginUI();
-          applyPermissions();addUserBadge();setSt('ch');loadSheet();return;
-        }
-      } else if(sess.expires&&Date.now()>sess.expires){
-        localStorage.removeItem('cs_session');
-        showLoginMsg('Session '+SESSION_HOURS+' ghante baad expire ho gaya — dobara login karo');
-        showLoginUI();return;
+  FB_AUTH.onAuthStateChanged(async(fbUser)=>{
+    if(fbUser){
+      // User is signed in — load their profile
+      await loadUsersFromSheet();
+      let profile=null;
+      if(FB_DB){
+        try{
+          const snap=await FB_DB.ref('cs/user_profiles/'+fbUser.uid).once('value');
+          profile=snap.val();
+        }catch(e){console.log('Profile load err:',e);}
       }
-    }catch(e){}
-  }
-  localStorage.removeItem('cs_session');
-  showLoginUI();
+      if(!profile){
+        // First-time or no profile — create default as admin if first user, else viewer
+        const isFirst=!users||users.length===0||users.every(u=>u.id==='1');
+        profile={id:fbUser.uid,name:fbUser.displayName||fbUser.email.split('@')[0],email:fbUser.email,role:isFirst?'admin':'viewer',createdAt:new Date().toISOString()};
+        if(FB_DB){FB_DB.ref('cs/user_profiles/'+fbUser.uid).set(profile).catch(e=>console.log(e));}
+      }
+      // Map profile to currentUser format for compatibility
+      currentUser={id:profile.id||fbUser.uid,name:profile.name||fbUser.email,username:fbUser.email,email:fbUser.email,role:profile.role||'viewer',permissions:profile.permissions||null};
+      hideLoginUI();
+      applyPermissions();addUserBadge();setSt('ch');loadSheet();
+      toast('Welcome '+currentUser.name+'!','s');
+    } else {
+      // No user — show login
+      currentUser=null;
+      showLoginUI();
+    }
+  });
 }
 
 function showLoginMsg(msg){
   const err=document.getElementById('login-err');
-  if(err){err.textContent=msg;err.classList.add('show');err.style.background='#fef3cd';err.style.borderColor='#f59e0b';err.style.color='#92400e';}
+  if(err){err.textContent=msg;err.classList.add('show');err.style.display='block';err.style.background='#fef3cd';err.style.borderColor='#f59e0b';err.style.color='#92400e';}
 }
 
-function logout(){
-  if(!REQUIRE_LOGIN){
-    toast('App direct mode mein hai — login band hai','i');
-    return;
+async function logout(){
+  if(FB_AUTH){
+    try{await FB_AUTH.signOut();}catch(e){console.log('Signout err:',e);}
   }
-  localStorage.removeItem('cs_session');
   currentUser=null;
   showLoginUI();
-  document.getElementById('l-user').value='';
+  document.getElementById('l-email').value='';
   document.getElementById('l-pass').value='';
   const err=document.getElementById('login-err');
-  if(err){err.classList.remove('show');err.style.background='';err.style.borderColor='';err.style.color='';}
+  if(err){err.classList.remove('show');err.style.display='none';}
+  document.getElementById('login-success').style.display='none';
   toast('Logout ho gaye!','i');
 }
 function addUserBadge(){const hdr=document.querySelector('.hdr-r');if(!hdr||!currentUser)return;const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
