@@ -613,6 +613,43 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 
   <!-- FARMER -->
   <div id="p-jim" class="hidden">
+    <div class="fbox" style="margin-bottom:14px">
+      <div class="ftitle">💳 Payment Tracker — sab farmers (Firebase sync)</div>
+      <p style="font-size:11px;color:var(--text3);margin:-4px 0 10px">Har farmer: kul dena, kitna diya, kitna baaki. Mobile/laptop par same data — login ke baad cloud se sync.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px">
+        <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Kul Dena</div>
+          <div id="pt-sum-net" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--green)">₹0</div>
+        </div>
+        <div style="background:#ecfdf5;border:1px solid #86efac;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Diya (paid)</div>
+          <div id="pt-sum-paid" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#15803d">₹0</div>
+        </div>
+        <div style="background:var(--rbg);border:1px solid var(--rb);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Baaki (pending)</div>
+          <div id="pt-sum-bal" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--red)">₹0</div>
+        </div>
+        <div style="background:var(--ybg);border:1px solid var(--yb);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Farmers (balance &gt; 0)</div>
+          <div id="pt-sum-owing" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--yellow)">0</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+        <input class="fi" id="pt-s" placeholder="🔍 Farmer naam / mobile..." oninput="renderPayTracker()" style="flex:1;min-width:160px">
+        <select class="fi" id="pt-sort" onchange="renderPayTracker()" style="width:190px">
+          <option value="bal_desc">Baaki — zyada pehle</option>
+          <option value="bal_asc">Baaki — kam pehle</option>
+          <option value="name">Naam A–Z</option>
+          <option value="net_desc">Kul dena — zyada</option>
+          <option value="paid_desc">Diya — zyada</option>
+        </select>
+        <button type="button" class="btn btn-ghost" id="pt-csv-btn" onclick="exportPayTrackerCSV()" style="display:none">📥 CSV export</button>
+      </div>
+      <div class="tsc"><table>
+        <thead><tr><th>#</th><th>Farmer</th><th>Mobile</th><th>Kul Dena</th><th>Diya</th><th>Baaki</th><th>Status</th><th></th></tr></thead>
+        <tbody id="pt-tbody"></tbody>
+      </table></div>
+    </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div class="stl">👨‍🌾 Farmer <span>Directory</span></div>
       <input class="fi" style="width:200px" placeholder="Search..." id="j-s" oninput="renderJ()">
@@ -1162,7 +1199,7 @@ function goTab(t){
     document.getElementById('tab-'+x).classList.toggle('active',x===t);
   });
   if(t==='rec')applyF();
-  if(t==='jim')renderJ();
+  if(t==='jim'){renderPayTracker();renderJ();}
   if(t==='dash')updDash();
   if(t==='store')updStore();
   if(t==='own')updOwn();
@@ -2819,7 +2856,7 @@ function toast(msg,type='i'){
   c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(50px)';t.style.transition='all 0.3s';setTimeout(()=>t.remove(),300);},3500);
 }
 
-function updAll(){updDash();updFarm();setTimeout(applyPermissions,100);}
+function updAll(){updDash();updFarm();renderPayTracker();setTimeout(applyPermissions,100);}
 
 // ===== AUTH (Firebase Authentication) =====
 const REQUIRE_LOGIN=true;
@@ -2981,7 +3018,7 @@ async function checkSession(){
       // Map profile to currentUser format for compatibility
       currentUser={id:profile.id||fbUser.uid,name:profile.name||fbUser.email,username:fbUser.email,email:fbUser.email,role:profile.role||'viewer',permissions:profile.permissions||null};
       hideLoginUI();
-      applyPermissions();addUserBadge();setSt('ch');loadSheet();
+      applyPermissions();addUserBadge();setSt('ch');await loadPayments();loadSheet();
       toast('Welcome '+currentUser.name+'!','s');
     } else {
       // No user — show login
@@ -3031,6 +3068,7 @@ function applyPermissions(){
   document.querySelectorAll('.ab2.d').forEach(b=>b.style.display=hasPerm('delete')?'':'none');
   // Naya User button
   document.querySelectorAll('[onclick*="openUserModal()"]').forEach(b=>b.style.display=hasPerm('users')?'':'none');
+  renderPayTracker();
 }
 function openUserModal(id=null){
   editUserId=id;
@@ -3077,30 +3115,122 @@ function renderUsers(){const grid=document.getElementById('users-grid');if(!grid
 
 // ===== PAYMENTS =====
 let payments=[];
+let payListenerAttached=false;
 
-// Firebase se payments load
+function onPaymentsChanged(){
+  renderPayTracker();
+  const jim=document.getElementById('p-jim');
+  if(jim&&!jim.classList.contains('hidden'))renderJ();
+  updFarm();
+}
+
+/** Har farmer ka netPay, paid, balance — records + payments se */
+function farmerPaymentSummaries(){
+  const fm={};
+  recs.forEach(r=>{
+    const n=r.farmer;if(!n)return;
+    if(!fm[n])fm[n]={name:n,mobile:r.mobile||'',netPay:0,payCount:0};
+    fm[n].netPay+=(r.netPay||0);
+    if(r.mobile&&!fm[n].mobile)fm[n].mobile=r.mobile;
+  });
+  payments.forEach(p=>{
+    const n=p.farmer;if(!n)return;
+    if(!fm[n])fm[n]={name:n,mobile:'',netPay:0,payCount:0};
+    fm[n].payCount=(fm[n].payCount||0)+1;
+  });
+  return Object.values(fm).map(f=>{
+    const paid=payments.filter(p=>p.farmer===f.name).reduce((s,p)=>s+(Number(p.amount)||0),0);
+    const bal=f.netPay-paid;
+    let status='—';
+    if(f.netPay<=0&&paid<=0)status='—';
+    else if(bal<=0)status='Clear';
+    else if(paid>0)status='Partial';
+    else status='Pending';
+    return{...f,paid,bal,status};
+  });
+}
+
+function renderPayTracker(){
+  const tb=document.getElementById('pt-tbody');
+  const csvBtn=document.getElementById('pt-csv-btn');
+  if(!tb)return;
+  if(csvBtn)csvBtn.style.display=(currentUser&&hasPerm('export'))?'inline-flex':'none';
+  const q=(document.getElementById('pt-s')&&document.getElementById('pt-s').value||'').toLowerCase().trim();
+  const sort=(document.getElementById('pt-sort')&&document.getElementById('pt-sort').value)||'bal_desc';
+  let rows=farmerPaymentSummaries();
+  if(q)rows=rows.filter(f=>(f.name||'').toLowerCase().includes(q)||(f.mobile||'').includes(q));
+  if(sort==='bal_desc')rows.sort((a,b)=>b.bal-a.bal);
+  else if(sort==='bal_asc')rows.sort((a,b)=>a.bal-b.bal);
+  else if(sort==='name')rows.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  else if(sort==='net_desc')rows.sort((a,b)=>b.netPay-a.netPay);
+  else if(sort==='paid_desc')rows.sort((a,b)=>b.paid-a.paid);
+  const tNet=rows.reduce((s,x)=>s+x.netPay,0);
+  const tPaid=rows.reduce((s,x)=>s+x.paid,0);
+  const tBal=rows.reduce((s,x)=>s+Math.max(0,x.bal),0);
+  const owing=rows.filter(x=>x.bal>0).length;
+  const sn=document.getElementById('pt-sum-net');if(sn)sn.textContent='₹'+fmt(tNet);
+  const sp=document.getElementById('pt-sum-paid');if(sp)sp.textContent='₹'+fmt(tPaid);
+  const sb=document.getElementById('pt-sum-bal');if(sb)sb.textContent='₹'+fmt(tBal);
+  const so=document.getElementById('pt-sum-owing');if(so)so.textContent=String(owing);
+  if(!rows.length){tb.innerHTML='<tr><td colspan="8"><div class="empty" style="padding:20px"><div class="ei">💳</div><p style="font-size:13px;color:var(--text3)">Koi farmer record nahi — pehle entries add karo</p></div></td></tr>';return;}
+  tb.innerHTML=rows.map((f,i)=>{
+    const c=gc(f.name);
+    const balColor=f.bal>0?'var(--red)':(f.bal<0?'#166534':'var(--text2)');
+    const stClass=f.status==='Clear'?'ct2 A':(f.status==='Partial'?'ct2 B':(f.status==='Pending'?'ct2 D':''));
+    return`<tr>
+      <td style="color:var(--text3)">${i+1}</td>
+      <td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(f.name)}</div>${(f.name||'').replace(/</g,'&lt;')}</div></td>
+      <td class="mono" style="font-size:11px">${(f.mobile||'—').replace(/</g,'&lt;')}</td>
+      <td class="amt">₹${fmt(f.netPay)}</td>
+      <td style="color:#15803d;font-family:'Rajdhani',sans-serif;font-weight:700">₹${fmt(f.paid)}</td>
+      <td style="color:${balColor};font-family:'Rajdhani',sans-serif;font-weight:700">₹${fmt(Math.abs(f.bal))}${f.bal<0?' <span style="font-size:9px">(advance)</span>':''}</td>
+      <td>${f.status!=='—'?`<span class="${stClass}" style="font-size:10px">${f.status}</span>`:'—'}</td>
+      <td><button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px" onclick="showJD(${JSON.stringify(f.name)})">Ledger</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function exportPayTrackerCSV(){
+  if(!currentUser||!hasPerm('export')){toast('Export ki permission nahi','e');return;}
+  const rows=farmerPaymentSummaries().sort((a,b)=>b.bal-a.bal);
+  const hdr=['Farmer','Mobile','Kul_Dena','Diya','Baaki','Status'];
+  const lines=[hdr.join(',')];
+  rows.forEach(f=>{
+    lines.push([f.name,f.mobile||'',f.netPay,f.paid,f.bal,f.status].map(csvEscapeCell).join(','));
+  });
+  const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='payment_tracker_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Payment tracker CSV download ho gayi','s');
+}
+
+// Firebase se payments load (login ke baad call — FB_DB ready)
 async function loadPayments(){
-  // pehle localStorage se load (instant)
   const s=localStorage.getItem('cs_payments');
-  if(s)payments=JSON.parse(s);
-  // phir Firebase se sync
-  if(typeof FB_DB!=='undefined'&&FB_DB){
-    try{
-      const snap=await FB_DB.ref('cs/payments').once('value');
-      const val=snap.val();
-      if(val){
-        payments=Object.values(val).filter(Boolean);
-        localStorage.setItem('cs_payments',JSON.stringify(payments));
-      }
-      // Real-time listener
+  if(s)try{payments=JSON.parse(s);}catch(e){payments=[];}
+  await loadFB();
+  if(!FB_DB)return;
+  try{
+    const snap=await FB_DB.ref('cs/payments').once('value');
+    const val=snap.val();
+    if(val){
+      payments=Object.values(val).filter(Boolean);
+      localStorage.setItem('cs_payments',JSON.stringify(payments));
+    }
+    if(!payListenerAttached){
+      payListenerAttached=true;
       FB_DB.ref('cs/payments').on('value',snap2=>{
         const v=snap2.val();
         payments=v?Object.values(v).filter(Boolean):[];
         localStorage.setItem('cs_payments',JSON.stringify(payments));
-        updFarm();
+        onPaymentsChanged();
       });
-    }catch(e){console.log('Pay load err:',e);}
-  }
+    }
+    onPaymentsChanged();
+  }catch(e){console.log('Pay load err:',e);}
 }
 
 async function savePaymentFB(pay,action){
@@ -3201,7 +3331,7 @@ async function savePayment(){
     toast('Payment save ho gayi!','s');
   }
   closeM('pay-modal');
-  updFarm();
+  onPaymentsChanged();
   showJD(farmer);
 }
 
@@ -3226,7 +3356,7 @@ async function deletePayment(id,farmerName){
   payments=payments.filter(p=>p.id!==id);
   await savePaymentFB({id},'delete');
   toast('Payment delete ho gayi','i');
-  updFarm();
+  onPaymentsChanged();
   showJD(farmerName);
 }
 function setPreset(role){
@@ -3254,7 +3384,6 @@ function syncPerms(){
 }
 // ===== INIT =====
 loadUsers();
-loadPayments();
 checkSession();
 </script>
 </body>
