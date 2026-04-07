@@ -62,7 +62,7 @@ main{max-width:1600px;margin:0 auto;padding:16px 18px;}
 .sl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;font-weight:600;}
 .sv{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;line-height:1;}
 .ss2{font-size:11px;color:var(--text3);margin-top:2px;}
-.cbars{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px;}
+.cbars{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:11px;margin-bottom:16px;}
 .cbc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px;box-shadow:var(--sh);}
 .cbadge{font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700;padding:3px 9px;border-radius:5px;display:inline-block;}
 .cbadge.A{background:var(--gbg);color:var(--green);border:1px solid var(--gb);}
@@ -259,7 +259,15 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 .role-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
 .role-badge.admin{background:#e8f0fd;color:#1a5fc8;border:1px solid #c5d8f8;}
 .role-badge.manager{background:#e8f5ed;color:#1a7a3c;border:1px solid #c8ecd4;}
-.role-badge.viewer{background:#fef3e2;color:#b45309;border:1px solid #fde8b4;}.perm-lbl{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;background:var(--s1);transition:all 0.15s;}.perm-lbl:hover{background:#e8f0fd;border-color:#1a5fc8;}.perm-lbl input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:#1a5fc8;flex-shrink:0;}.perm-lbl.chk{background:#e8f0fd;border-color:#1a5fc8;color:#1a3a6b;font-weight:600;}
+.role-badge.viewer{background:#fef3e2;color:#b45309;border:1px solid #fde8b4;}
+.user-badge-wrap{position:relative;flex-shrink:0;z-index:120;}
+.user-menu-dd{display:none;position:absolute;top:calc(100% + 6px);right:0;min-width:200px;background:#fff;border:1px solid var(--border2);border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.15);overflow:hidden;}
+.user-menu-dd.open{display:block;}
+.user-menu-dd button{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:#fff;font-size:12px;font-family:'Noto Sans',sans-serif;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border);}
+.user-menu-dd button:last-child{border-bottom:none;}
+.user-menu-dd button:hover{background:var(--bluebg);color:var(--blue);}
+.gc-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;margin:4px 6px 4px 0;border:1px solid var(--border);background:var(--s2);}
+.perm-lbl{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;background:var(--s1);transition:all 0.15s;}.perm-lbl:hover{background:#e8f0fd;border-color:#1a5fc8;}.perm-lbl input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:#1a5fc8;flex-shrink:0;}.perm-lbl.chk{background:#e8f0fd;border-color:#1a5fc8;color:#1a3a6b;font-weight:600;}
 .users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
 .user-card{background:#fff;border:1px solid #dde1e9;border-radius:8px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
 .user-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -389,7 +397,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
           <input type="file" id="imp-file" accept=".csv" style="display:none" onchange="parseImpCSV(this)">
         </div>
         <div style="background:#fef3cd;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;font-size:11px;color:#854d0e;margin-bottom:10px">
-          <strong>Zaruri:</strong> UTF-8 CSV. <strong>Har class ek block:</strong> pehle A ke Bags+Dest+Rate phir usi class ke LocA_Chamber/Floor/Pillar, phir B ka block… (Z/K bhi waise hi). Neeche sample download — Purani fixed-column sheet bhi chalegi.
+          <strong>Zaruri:</strong> UTF-8 CSV. <strong>Har class ek block:</strong> CLASS_Bags, CLASS_Dest, CLASS_Rate, LocCLASS_Chamber, LocCLASS_Floor, LocCLASS_Pillar (CLASS = A, B, E1, … jo aapki entry form mein classes hain). Naya sample download = <b>aapki current class list</b> ke hisaab se. Purani fixed A–D+Z+K sheet bhi chalegi.
         </div>
         <button type="button" class="btn" onclick="downloadImportSampleCSV()" style="width:100%;background:#0f766e;color:#fff;font-weight:600">📥 Naya format — sample CSV download</button>
       </div>
@@ -406,6 +414,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     </div>
   </div>
 </div>
+
 <!-- CUSTOM REPORT BUILDER -->
 <div class="ov" id="custom-rep-modal" onclick="closeOut(event,'custom-rep-modal')">
   <div class="modal-box" style="max-width:520px;width:min(520px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
@@ -566,6 +575,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <button class="tab own-tab" onclick="goTab('own')" id="tab-own">🛒 Own Purchase</button>
     <button class="tab pay-tab" onclick="goTab('pay')" id="tab-pay">💳 Payment</button>
     <button class="tab" onclick="goTab('rep')" id="tab-rep">📈 Reports</button>
+    <button class="tab" onclick="goTab('gclass')" id="tab-gclass" style="display:none">⚖️ Grading Class</button>
     <button class="tab" onclick="goTab('users')" id="tab-users" style="display:none">👥 Users</button>
   </div>
 
@@ -606,7 +616,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="th2"><div class="ttl">📋 Grading Records <span class="rcnt" id="r-cnt">0</span></div>
       <div style="display:flex;gap:6px"><button class="btn" onclick="openBulkDel()" style="background:#dc2626;color:#fff">🗑 Bulk Delete</button><button class="btn" onclick="openImportModal()" style="background:#7c3aed;color:#fff">Import CSV</button><button class="btn btn-green" onclick="openExpModal()">Export CSV/PDF</button><button class="btn btn-blue" onclick="openM()">＋ Naya</button></div></div>
       <div class="tsc"><table>
-        <thead><tr><th>Sr</th><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th><th>Store A</th><th>Store B</th><th>Store C</th><th>Store D</th><th>Own C</th><th>Own D</th><th>Own A</th><th>Own B</th><th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Labour ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th></tr></thead>
+        <thead><tr id="main-thead-row"></tr></thead>
         <tbody id="main-tbody"></tbody>
       </table></div>
       <div class="pag"><div class="pi" id="p-info">0 records</div><div class="pbs" id="p-btns"></div></div>
@@ -640,12 +650,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
         <div style="text-align:center;background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:8px"><div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#fff" id="store-total-farmers">0</div><div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase">Farmers</div></div>
       </div>
     </div>
-    <div class="cbars" id="store-cbars">
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge A">CLASS A</span><span id="store-pct-a" style="font-size:11px;color:#8a95a8">0%</span></div><div id="store-bags-a" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--green)">0 bags</div><div class="pb"><div class="pf" id="store-bar-a" style="background:var(--green);width:0%"></div></div></div>
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge B">CLASS B</span><span id="store-pct-b" style="font-size:11px;color:#8a95a8">0%</span></div><div id="store-bags-b" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--yellow)">0 bags</div><div class="pb"><div class="pf" id="store-bar-b" style="background:var(--yellow);width:0%"></div></div></div>
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge C">CLASS C</span><span id="store-pct-c" style="font-size:11px;color:#8a95a8">0%</span></div><div id="store-bags-c" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--orange)">0 bags</div><div class="pb"><div class="pf" id="store-bar-c" style="background:var(--orange);width:0%"></div></div></div>
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge D">CLASS D</span><span id="store-pct-d" style="font-size:11px;color:#8a95a8">0%</span></div><div id="store-bags-d" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--red)">0 bags</div><div class="pb"><div class="pf" id="store-bar-d" style="background:var(--red);width:0%"></div></div></div>
-    </div>
+    <div class="cbars" id="store-cbars"></div>
     <div class="tw">
       <div class="th2">
         <div class="ttl">🏪 Store Records <span class="rcnt" id="store-cnt">0</span></div>
@@ -673,7 +678,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
         <button class="btn btn-ghost" onclick="clearStoreFilter()" style="padding:6px 10px;font-size:12px">✕ Clear</button>
       </div>
       <div class="tsc"><table>
-        <thead><tr><th>Farmer</th><th>Tarikh</th><th>Quality</th><th>A Bags</th><th>B Bags</th><th>C Bags</th><th>D Bags</th><th>Total Store</th><th>Chamber</th><th>Floor</th><th>Pillar</th></tr></thead>
+        <thead><tr id="store-thead-row"></tr></thead>
         <tbody id="store-tbody"></tbody>
       </table></div>
     </div>
@@ -688,12 +693,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
         <div style="text-align:center;background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:8px"><div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#fff" id="own-total-amt">₹0</div><div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase">Total Amount</div></div>
       </div>
     </div>
-    <div class="cbars">
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge A">CLASS A</span><span id="own-pct-a" style="font-size:11px;color:#8a95a8">0%</span></div><div id="own-bags-a" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--green)">0 bags</div><div class="pb"><div class="pf" id="own-bar-a" style="background:var(--green);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span id="own-avg-a" style="color:var(--green);font-weight:600">₹0</span></div></div>
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge B">CLASS B</span><span id="own-pct-b" style="font-size:11px;color:#8a95a8">0%</span></div><div id="own-bags-b" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--yellow)">0 bags</div><div class="pb"><div class="pf" id="own-bar-b" style="background:var(--yellow);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span id="own-avg-b" style="color:var(--yellow);font-weight:600">₹0</span></div></div>
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge C">CLASS C</span><span id="own-pct-c" style="font-size:11px;color:#8a95a8">0%</span></div><div id="own-bags-c" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--orange)">0 bags</div><div class="pb"><div class="pf" id="own-bar-c" style="background:var(--orange);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span id="own-avg-c" style="color:var(--orange);font-weight:600">₹0</span></div></div>
-      <div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge D">CLASS D</span><span id="own-pct-d" style="font-size:11px;color:#8a95a8">0%</span></div><div id="own-bags-d" style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:var(--red)">0 bags</div><div class="pb"><div class="pf" id="own-bar-d" style="background:var(--red);width:0%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span id="own-avg-d" style="color:var(--red);font-weight:600">₹0</span></div></div>
-    </div>
+    <div class="cbars" id="own-cbars"></div>
     <div class="tw">
       <div class="th2">
         <div class="ttl">🛒 Own Purchase Records <span class="rcnt" id="own-cnt">0</span></div>
@@ -719,7 +719,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
         <button class="btn btn-ghost" onclick="clearOwnFilter()" style="padding:6px 10px;font-size:12px">✕ Clear</button>
       </div>
       <div class="tsc"><table>
-        <thead><tr><th>Farmer</th><th>Tarikh</th><th>Quality</th><th>A Bags</th><th>A Rate</th><th>A Amt</th><th>B Bags</th><th>B Rate</th><th>B Amt</th><th>C Bags</th><th>C Rate</th><th>C Amt</th><th>D Bags</th><th>D Rate</th><th>D Amt</th><th>Total Bags</th><th>Total Amount</th></tr></thead>
+        <thead><tr id="own-thead-row"></tr></thead>
         <tbody id="own-tbody"></tbody>
       </table></div>
     </div>
@@ -800,9 +800,27 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <button class="btn" style="background:#c2410c;color:#fff" onclick="genR('by_pillar')">🏛 Pillar-wise</button>
       <button class="btn" style="background:#a16207;color:#fff" onclick="genR('by_quality')" title="Entry wali Potato Quality (Pukhraj, LR…) ke hisaab se">🥔 Quality-wise</button>
       <button class="btn" style="background:#92400e;color:#fff" onclick="genR('quality_matrix')" title="Har quality par Class A/B/C/D/Zero/Kaat kitne bags (grading total)">📊 Quality × Class (A–K)</button>
-      <button class="btn" style="background:#15803d;color:#fff" onclick="genR('by_grade')">🔤 Grade A–D (Full)</button>
+      <button class="btn" style="background:#15803d;color:#fff" onclick="genR('by_grade')">🔤 Grade-wise (Store + Own)</button>
     </div>
     <div id="r-out"><div class="empty" style="padding:50px"><div class="ei">📊</div><h3>Report select karo</h3></div></div>
+  </div>
+
+  <!-- GRADING CLASS (custom classes — Zero/Kaat ke upar) -->
+  <div id="p-gclass" class="hidden">
+    <div class="stl">⚖️ Grading Class <span>Setup</span></div>
+    <p style="font-size:12px;color:var(--text3);margin:-6px 0 14px;max-width:720px;line-height:1.5"><strong>A, B, C, D</strong> aur <strong>Zero (Z)</strong>, <strong>Kaat (K)</strong> hamesha rahenge. Sirf <strong>apni extra class</strong> yahan add karo — woh <strong>Zero aur Kaat ke upar</strong> dikhengi (jaise A B C D <mark>R</mark> Zero Kaat). Records se class <strong>khud add nahi</strong> hoti.</p>
+    <div class="fbox" style="margin-bottom:14px">
+      <div class="ftitle">Fixed classes (edit / delete nahi)</div>
+      <div id="gc-tab-fixed" style="display:flex;flex-wrap:wrap;gap:8px;font-size:13px;font-weight:600;color:var(--text2)"></div>
+    </div>
+    <div class="fbox">
+      <div class="ftitle">Aapki extra classes <span style="font-size:11px;font-weight:500;color:var(--text3)">(Zero/Kaat se pehle order)</span></div>
+      <div id="gc-tab-custom-list" style="margin-bottom:14px;min-height:32px"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input class="finp" id="gc-tab-inp" placeholder="Jaise R, E1, B2 (1–6 chars)" style="width:160px;max-width:100%" maxlength="6" onkeydown="if(event.key==='Enter'){event.preventDefault();addGradeClassFromInput('gc-tab-inp');}">
+        <button type="button" class="btn btn-green" onclick="addGradeClassFromInput('gc-tab-inp')">＋ Class add karo</button>
+      </div>
+    </div>
   </div>
 
   <!-- USERS -->
@@ -844,140 +862,27 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 
       <div class="div"></div>
 
-      <!-- SECTION 2: Grading -->
-      <div class="sec-title">⚖️ Grading — Har Class ka Destination Select Karo</div>
+      <!-- SECTION 2: Grading (classes — setup: ⚖️ Grading Class tab) -->
+      <div class="sec-title">⚖️ Grading — Har class ka destination select karo</div>
       <table class="grade-table">
         <thead>
           <tr>
-            <th style="width:80px">Class</th>
+            <th style="width:90px">Class</th>
             <th style="width:100px">Bags</th>
             <th>Destination (Farmer ki Choice)</th>
             <th style="width:110px">Rate ₹/bag <span style="color:var(--purple);font-size:9px">(Own ke liye)</span></th>
             <th style="width:110px">Amount</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><span class="cbadge A">A</span></td>
-            <td><input type="number" class="grade-inp" id="g-a-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
-            <td><div style="display:flex;gap:5px;flex-wrap:wrap">
-              <button class="dest-btn" id="da-store" onclick="setDest('A','store')">🏪 Store</button>
-              <button class="dest-btn" id="da-own" onclick="setDest('A','own')">🛒 Own Purchase</button>
-              <button class="dest-btn" id="da-ghar" onclick="setDest('A','ghar')">🏠 Ghar</button>
-            </div></td>
-            <td><input type="number" class="rate-inp" id="g-a-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
-            <td><span id="g-a-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
-          </tr>
-          <tr>
-            <td><span class="cbadge B">B</span></td>
-            <td><input type="number" class="grade-inp" id="g-b-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
-            <td><div style="display:flex;gap:5px;flex-wrap:wrap">
-              <button class="dest-btn" id="db-store" onclick="setDest('B','store')">🏪 Store</button>
-              <button class="dest-btn" id="db-own" onclick="setDest('B','own')">🛒 Own Purchase</button>
-              <button class="dest-btn" id="db-ghar" onclick="setDest('B','ghar')">🏠 Ghar</button>
-            </div></td>
-            <td><input type="number" class="rate-inp" id="g-b-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
-            <td><span id="g-b-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
-          </tr>
-          <tr>
-            <td><span class="cbadge C">C</span></td>
-            <td><input type="number" class="grade-inp" id="g-c-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
-            <td><div style="display:flex;gap:5px;flex-wrap:wrap">
-              <button class="dest-btn" id="dc-store" onclick="setDest('C','store')">🏪 Store</button>
-              <button class="dest-btn" id="dc-own" onclick="setDest('C','own')">🛒 Own Purchase</button>
-              <button class="dest-btn" id="dc-ghar" onclick="setDest('C','ghar')">🏠 Ghar</button>
-            </div></td>
-            <td><input type="number" class="rate-inp" id="g-c-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
-            <td><span id="g-c-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
-          </tr>
-          <tr>
-            <td><span class="cbadge D">D</span></td>
-            <td><input type="number" class="grade-inp" id="g-d-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
-            <td><div style="display:flex;gap:5px;flex-wrap:wrap">
-              <button class="dest-btn" id="dd-store" onclick="setDest('D','store')">🏪 Store</button>
-              <button class="dest-btn" id="dd-own" onclick="setDest('D','own')">🛒 Own Purchase</button>
-              <button class="dest-btn" id="dd-ghar" onclick="setDest('D','ghar')">🏠 Ghar</button>
-            </div></td>
-            <td><input type="number" class="rate-inp" id="g-d-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
-            <td><span id="g-d-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
-          </tr>
-          <tr>
-            <td><span class="cbadge Z">Zero</span></td>
-            <td><input type="number" class="grade-inp" id="g-z-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
-            <td><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="dest-btn" id="dz-store" onclick="setDest('Z','store')">🏪 Store</button><button class="dest-btn" id="dz-own" onclick="setDest('Z','own')">🛒 Own</button><button class="dest-btn" id="dz-ghar" onclick="setDest('Z','ghar')">🏠 Ghar</button></div></td>
-            <td><input type="number" class="rate-inp" id="g-z-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
-            <td><span id="g-z-amt" style="font-size:12px;color:var(--purple);font-weight:700">—</span></td>
-          </tr>
-          <tr>
-            <td><span class="cbadge K">Kaat</span></td>
-            <td><input type="number" class="grade-inp" id="g-k-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
-            <td><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="dest-btn" id="dk-store" onclick="setDest('K','store')">🏪 Store</button><button class="dest-btn" id="dk-own" onclick="setDest('K','own')">🛒 Own</button><button class="dest-btn" id="dk-ghar" onclick="setDest('K','ghar')">🏠 Ghar</button></div></td>
-            <td><input type="number" class="rate-inp" id="g-k-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
-            <td><span id="g-k-amt" style="font-size:12px;color:var(--purple);font-weight:700">—</span></td>
-          </tr>
-        </tbody>
+        <tbody id="grade-table-tbody"></tbody>
       </table>
 
       <div class="div"></div>
 
-      <!-- SECTION 3: Storage Location -->
+      <!-- SECTION 3: Storage Location (dynamic per class) -->
       <div class="sec-title">🏠 Storage Location <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(Store aur Own Purchase — har class ka alag location)</span></div>
       <div class="loc-box" id="loc-box-all">
-        <!-- Class A Location -->
-        <div id="loc-A" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--green)">
-          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px">CLASS A — Store Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-a" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-a" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-a" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Class B Location -->
-        <div id="loc-B" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--yellow)">
-          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:var(--yellow);margin-bottom:8px">CLASS B — Store Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-b" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-b" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-b" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Class C Location -->
-        <div id="loc-C" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--orange)">
-          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:8px">CLASS C — Store Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-c" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-c" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-c" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Class D Location -->
-        <div id="loc-D" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid var(--red)">
-          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px">CLASS D — Store Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-d" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-d" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-d" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Zero Location -->
-        <div id="loc-Z" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid #64748b">
-          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:8px">ZERO — Store Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-z" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-z" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-z" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Kaat Location -->
-        <div id="loc-K" style="display:none;margin-bottom:0;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid #7c3aed">
-          <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:#7c3aed;margin-bottom:8px">KAAT — Store Location</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-k" placeholder="1, 2, 3..."></div>
-            <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-k" placeholder="Ground..."></div>
-            <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-k" placeholder="P-1..."></div>
-          </div>
-        </div>
-        <!-- Hidden compat fields -->
+        <div id="loc-dynamic-inner"></div>
         <input type="hidden" id="fi-cham">
         <input type="hidden" id="fi-floor">
         <input type="hidden" id="fi-pillar">
@@ -1096,8 +1001,258 @@ function loadFB(){return new Promise(res=>{if(FB_ON){res();return;}const s1=docu
 let recs=[],filtered=[],editId=null,pg=1;
 const PP=15;
 let sField='date',sDir='desc',autoTimer=null;
-// Destination state for each class
-let dests={A:'',B:'',C:'',D:'',Z:'',K:''};
+const FIXED_GRADES_BEFORE=['A','B','C','D'];
+const FIXED_ZERO_KAAT=['Z','K'];
+const RESERVED_GRADE=new Set(['A','B','C','D','Z','K']);
+let customGradeClasses=[];
+let gradeClasses=[];
+let dests={};
+let gradeClassesFBListener=false;
+let gradeClassesSnapshot=null;
+
+function clsSlug(c){return String(c||'').replace(/[^a-zA-Z0-9]/g,'_');}
+/** Order: A B C D, phir baaki (alphabet), phir Z K — nayi classes Zero/Kaat ke upar */
+function sortGradeClassesList(arr){
+  const u=[...new Set((arr||[]).map(x=>String(x).trim().toUpperCase()).filter(Boolean))];
+  const fixedFirst=['A','B','C','D'];
+  const fixedLast=['Z','K'];
+  const setAll=new Set(u);
+  const mid=u.filter(c=>!fixedFirst.includes(c)&&!fixedLast.includes(c)).sort((a,b)=>a.localeCompare(b));
+  const out=[];
+  fixedFirst.forEach(c=>{if(setAll.has(c))out.push(c);});
+  out.push(...mid);
+  fixedLast.forEach(c=>{if(setAll.has(c))out.push(c);});
+  return out;
+}
+function sortCustomOnly(arr){
+  return [...new Set((arr||[]).map(x=>String(x).trim().toUpperCase()).filter(Boolean))]
+    .filter(c=>!RESERVED_GRADE.has(c))
+    .sort((a,b)=>a.localeCompare(b));
+}
+function buildFullGradeClassesList(){
+  return [...FIXED_GRADES_BEFORE,...sortCustomOnly(customGradeClasses),...FIXED_ZERO_KAAT];
+}
+function applyGradeClassesFromSettings(){
+  gradeClasses=buildFullGradeClassesList();
+  initDestsFromGradeClasses();
+}
+function isReservedGrade(c){return RESERVED_GRADE.has(String(c).toUpperCase());}
+function classDisplayLabel(cl){
+  const u=String(cl).toUpperCase();
+  if(u==='Z')return 'Zero';
+  if(u==='K')return 'Kaat';
+  return String(cl);
+}
+function mergeEditRecordGradeOrder(gAll){
+  const base=buildFullGradeClassesList();
+  const baseU=new Set(base.map(x=>String(x).toUpperCase()));
+  const fromRec=Object.keys(gAll||{}).filter(k=>{
+    const ku=String(k).toUpperCase();
+    const x=gAll[k];
+    return x&&(x.bags>0||x.dest)&&!baseU.has(ku);
+  }).map(k=>String(k).toUpperCase());
+  if(!fromRec.length)return base.slice();
+  fromRec.sort((a,b)=>a.localeCompare(b));
+  const zi=base.indexOf('Z');
+  return [...base.slice(0,zi),...fromRec,...base.slice(zi)];
+}
+function refreshGradeFormAfterDataSync(){
+  const m=document.getElementById('modal');
+  if(m&&!m.classList.contains('open'))rebuildEntryFormGradeUI();
+}
+function allClassKeysAcrossRecs(){
+  const s=new Set(buildFullGradeClassesList());
+  recs.forEach(r=>Object.keys(r.grading||{}).forEach(k=>{if(k)s.add(String(k).toUpperCase());}));
+  return sortGradeClassesList([...s]);
+}
+function reportGradeColumns(){return allClassKeysAcrossRecs();}
+function gradeCellCt2(cl,bags){
+  if(!bags)return'—';
+  const u=String(cl).toUpperCase();
+  if('ABCD'.includes(u)&&u.length===1)return`<span class="ct2 ${u}">${bags}</span>`;
+  const col=gc('CLASS:'+cl);
+  return`<span class="cbadge" style="background:${col}22;color:${col};border:1px solid ${col};font-weight:700">${bags}</span>`;
+}
+function gradeTitleBadgeHtml(gr){
+  const u=String(gr).toUpperCase();
+  const lab=classDisplayLabel(gr);
+  if('ABCD'.includes(u)&&u.length===1)return`<span class="ct2 ${gr}">${lab}</span>`;
+  const col=gc('CLASS:'+gr);
+  return`<span class="cbadge" style="background:${col}22;color:${col};border:1px solid ${col};font-size:11px;font-weight:700">${lab}</span>`;
+}
+function locRowsGradeOrder(locRows){
+  const rows=locRows||allLocRows();
+  const from=reportGradeColumns();
+  const seen=new Set(from.map(x=>String(x).toUpperCase()));
+  const extras=[];
+  rows.forEach(x=>{
+    const g=String(x.grade||'').trim();
+    if(!g)return;
+    const gu=g.toUpperCase();
+    if(!seen.has(gu)){seen.add(gu);extras.push(g);}
+  });
+  extras.sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+  return from.concat(extras);
+}
+function firstStoreLocTriple(r){
+  const locs=r.locations||{};
+  for(const cl of reportGradeColumns()){
+    const g=(r.grading||{})[cl];
+    if(g&&g.dest==='store'){
+      const L=locs[cl]||{};
+      if(L.chamber)return{ch:L.chamber,fl:L.floor||'',pl:L.pillar||''};
+    }
+  }
+  if(r.chamber)return{ch:r.chamber,fl:r.floor||'',pl:r.pillar||''};
+  return{ch:'',fl:'',pl:''};
+}
+function loadGradeClassesLS(){
+  try{
+    const jn=localStorage.getItem('cs_custom_grade_classes');
+    if(jn){const a=JSON.parse(jn);if(Array.isArray(a))customGradeClasses=sortCustomOnly(a);}
+    else{
+      const jo=localStorage.getItem('cs_grade_classes');
+      if(jo){const a=JSON.parse(jo);if(Array.isArray(a))customGradeClasses=sortCustomOnly(a.filter(c=>!RESERVED_GRADE.has(String(c).toUpperCase())));}
+    }
+  }catch(e){}
+  applyGradeClassesFromSettings();
+  rebuildEntryFormGradeUI();
+  renderGradingClassTab();
+}
+function saveGradeClassesLS(){
+  customGradeClasses=sortCustomOnly(customGradeClasses);
+  localStorage.setItem('cs_custom_grade_classes',JSON.stringify(customGradeClasses));
+  if(FB_ON&&FB_DB)FB_DB.ref('cs/settings/customGradeClasses').set(customGradeClasses).catch(e=>console.log('customGradeClasses FB',e));
+  applyGradeClassesFromSettings();
+}
+function initDestsFromGradeClasses(){
+  const nd={};
+  gradeClasses.forEach(c=>{nd[c]=dests[c]||'';});
+  dests=nd;
+}
+async function loadGradeClassesFB(){
+  await loadFB();
+  if(!FB_DB)return;
+  try{
+    const snap=await FB_DB.ref('cs/settings/customGradeClasses').once('value');
+    let v=snap.val();
+    if(Array.isArray(v))customGradeClasses=sortCustomOnly(v);
+    else{
+      const snapOld=await FB_DB.ref('cs/settings/gradeClasses').once('value');
+      const vOld=snapOld.val();
+      if(Array.isArray(vOld)&&vOld.length)customGradeClasses=sortCustomOnly(vOld.filter(c=>!RESERVED_GRADE.has(String(c).toUpperCase())));
+      else customGradeClasses=[];
+    }
+    localStorage.setItem('cs_custom_grade_classes',JSON.stringify(customGradeClasses));
+    applyGradeClassesFromSettings();
+    rebuildEntryFormGradeUI();
+    if(!gradeClassesFBListener){
+      gradeClassesFBListener=true;
+      FB_DB.ref('cs/settings/customGradeClasses').on('value',snap2=>{
+        const v2=snap2.val();
+        customGradeClasses=Array.isArray(v2)?sortCustomOnly(v2):[];
+        localStorage.setItem('cs_custom_grade_classes',JSON.stringify(customGradeClasses));
+        applyGradeClassesFromSettings();
+        rebuildEntryFormGradeUI();
+        renderGradingClassTab();
+      });
+    }
+  }catch(e){console.log('loadGradeClassesFB',e);}
+}
+function normalizeNewClass(raw){
+  const s=String(raw||'').trim().toUpperCase().replace(/\s+/g,'');
+  if(!s||s.length>6)return null;
+  if(!/^[A-Z0-9+\-]+$/.test(s))return null;
+  return s;
+}
+function addGradeClassFromInput(inputId){
+  if(!currentUser||!hasPerm('add')){toast('Login karke Add permission se class add karo','e');return;}
+  const id=inputId||'gc-tab-inp';
+  const el=document.getElementById(id);
+  const c=normalizeNewClass(el?el.value:'');
+  if(!c){toast('Class 1–6 chars: A–Z, 0–9, + -','e');return;}
+  if(isReservedGrade(c)){toast('A, B, C, D, Zero (Z), Kaat (K) pehle se fixed hain','e');return;}
+  if(sortCustomOnly(customGradeClasses).includes(c)){toast('Yeh class pehle se hai','e');return;}
+  customGradeClasses=sortCustomOnly([...customGradeClasses,c]);
+  dests[c]='';
+  saveGradeClassesLS();
+  rebuildEntryFormGradeUI();
+  renderGradingClassTab();
+  if(el)el.value='';
+  toast('Class '+c+' add ho gayi (Zero/Kaat ke upar)','s');
+}
+function removeGradeClassClick(btn){
+  const c=(btn&&btn.getAttribute('data-cl'))||'';
+  if(c)removeGradeClassConfirm(c);
+}
+function removeGradeClassConfirm(c){
+  if(!currentUser||!hasPerm('add')){toast('Class hataane ke liye Add permission chahiye','e');return;}
+  const cu=String(c).toUpperCase();
+  if(isReservedGrade(cu)){toast('A/B/C/D/Zero/Kaat hata nahi sakte','e');return;}
+  const used=recs.some(r=>{const g=(r.grading||{})[cu];return g&&(g.bags>0||g.dest);});
+  if(used&&!confirm('Is class ke purane records mein data hai. Hataoge to form se gayab — record andar safe. Aage?'))return;
+  customGradeClasses=customGradeClasses.filter(x=>String(x).toUpperCase()!==cu);
+  delete dests[cu];
+  saveGradeClassesLS();
+  rebuildEntryFormGradeUI();
+  renderGradingClassTab();
+  toast('Class '+cu+' hata di','i');
+}
+function renderGradingClassTab(){
+  const fixed=document.getElementById('gc-tab-fixed');
+  const box=document.getElementById('gc-tab-custom-list');
+  if(fixed){
+    fixed.innerHTML=['A','B','C','D','Z → Zero','K → Kaat'].map(t=>`<span class="gc-chip" style="border-color:var(--border);color:var(--text2)">${t}</span>`).join('');
+  }
+  if(!box)return;
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  const list=sortCustomOnly(customGradeClasses);
+  if(!list.length){box.innerHTML='<span style="font-size:12px;color:var(--text3)">Abhi koi extra class nahi — neeche naam daalo.</span>';return;}
+  box.innerHTML=list.map(cl=>{
+    const col=gc(cl);
+    return`<span class="gc-chip" style="border-color:${col};color:${col}">${esc(cl)} <button type="button" class="btn btn-ghost" style="padding:0 4px;font-size:10px;min-height:auto;line-height:1.2" data-cl="${esc(cl)}" onclick="removeGradeClassClick(this)">✕</button></span>`;
+  }).join('');
+}
+function rebuildEntryFormGradeUI(){
+  const tb=document.getElementById('grade-table-tbody');
+  const inner=document.getElementById('loc-dynamic-inner');
+  if(!tb||!inner)return;
+  const escAttr=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  const escJs=s=>String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  tb.innerHTML=gradeClasses.map(cl=>{
+    const slug=clsSlug(cl);
+    const col=gc(cl);
+    const cEsc=escAttr(classDisplayLabel(cl));
+    const cJs=escJs(cl);
+    const canDel=!isReservedGrade(cl);
+    return`<tr>
+      <td style="vertical-align:middle">${canDel?`<button type="button" class="btn btn-ghost" style="padding:2px 6px;font-size:10px;margin-right:4px" data-cl="${escAttr(cl)}" onclick="removeGradeClassClick(this)" title="Grading Class tab se bhi hata sakte ho">✕</button>`:''}<span class="cbadge" style="background:${col}22;color:${col};border:1px solid ${col};font-weight:700">${cEsc}</span></td>
+      <td><input type="number" class="grade-inp" id="g-${slug}-bags" placeholder="0" min="0" oninput="calcEntry()"></td>
+      <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button type="button" class="dest-btn" id="d${slug}-store" onclick="setDest('${cJs}','store')">🏪 Store</button>
+        <button type="button" class="dest-btn" id="d${slug}-own" onclick="setDest('${cJs}','own')">🛒 Own Purchase</button>
+        <button type="button" class="dest-btn" id="d${slug}-ghar" onclick="setDest('${cJs}','ghar')">🏠 Ghar</button>
+      </div></td>
+      <td><input type="number" class="rate-inp" id="g-${slug}-rate" placeholder="0" min="0" oninput="calcEntry()" style="display:none"></td>
+      <td><span id="g-${slug}-amt" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple);font-weight:700">—</span></td>
+    </tr>`;
+  }).join('');
+  inner.innerHTML=gradeClasses.map(cl=>{
+    const slug=clsSlug(cl);
+    const col=gc(cl);
+    const cEsc=escAttr(classDisplayLabel(cl));
+    return`<div id="loc-${slug}" class="loc-class-block" data-cl="${escAttr(cl)}" style="display:none;margin-bottom:10px;padding:10px;background:var(--s2);border-radius:8px;border-left:3px solid ${col}">
+      <div class="loc-cls-lbl" style="font-size:11px;font-weight:700;color:${col};margin-bottom:8px">CLASS ${cEsc} — Location</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div><label class="flbl">Chamber</label><input class="finp" id="fi-cham-${slug}" placeholder="1, 2, 3..."></div>
+        <div><label class="flbl">Floor</label><input class="finp" id="fi-floor-${slug}" placeholder="Ground..."></div>
+        <div><label class="flbl">Pillar</label><input class="finp" id="fi-pillar-${slug}" placeholder="P-1..."></div>
+      </div>
+    </div>`;
+  }).join('');
+  updLocBoxes();
+  calcEntry();
+}
 
 const FC=['#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16','#ef4444','#a855f7'];
 const FCM={};let fci=0;
@@ -1124,6 +1279,7 @@ async function loadSheet(){
       if(val&&Object.keys(val).length>0){
         recs=Object.values(val).filter(Boolean).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
         localStorage.setItem('cs_r',JSON.stringify(recs));
+        refreshGradeFormAfterDataSync();
         setSt('ok');updAll();applyF();
         toast('Firebase se '+recs.length+' records load!','s');
         startAR();return;
@@ -1145,6 +1301,7 @@ async function loadFromSheet(migrate){
       const data=JSON.parse(txt);
       if(data.status==='success'&&Array.isArray(data.records)){
         recs=data.records;localStorage.setItem('cs_r',JSON.stringify(recs));
+        refreshGradeFormAfterDataSync();
         setSt('ok');updAll();applyF();
         toast('Sheet se '+recs.length+' records load!','s');
         if(migrate&&FB_ON&&FB_DB&&recs.length>0){
@@ -1156,6 +1313,7 @@ async function loadFromSheet(migrate){
     }catch(e){console.log('Sheet proxy '+i+':',e.message);}
   }
   recs=JSON.parse(localStorage.getItem('cs_r')||'[]');
+  refreshGradeFormAfterDataSync();
   setSt('err');updAll();applyF();
   toast('Connect nahi - local data','e');
   setTimeout(loadSheet,15000);
@@ -1166,7 +1324,7 @@ function startAR(){
   if(FB_ON&&FB_DB){
     FB_DB.ref('cs/recs').on('value',snap=>{
       const val=snap.val();
-      if(val){const nr=Object.values(val).filter(Boolean).sort((a,b)=>(b.date||'').localeCompare(a.date||''));if(JSON.stringify(nr)!==JSON.stringify(recs)){recs=nr;localStorage.setItem('cs_r',JSON.stringify(recs));setSt('ok');updAll();applyF();}}
+      if(val){const nr=Object.values(val).filter(Boolean).sort((a,b)=>(b.date||'').localeCompare(a.date||''));if(JSON.stringify(nr)!==JSON.stringify(recs)){recs=nr;localStorage.setItem('cs_r',JSON.stringify(recs));refreshGradeFormAfterDataSync();setSt('ok');updAll();applyF();}}
     });
   } else {
     autoTimer=setInterval(async()=>{
@@ -1174,7 +1332,7 @@ function startAR(){
         const res=await fetch(SHEET_URL,{method:'GET',redirect:'follow'});let txt=await res.text();
         try{const w=JSON.parse(txt);if(w.contents)txt=w.contents;}catch(e){}
         const data=JSON.parse(txt);
-        if(data.status==='success'&&Array.isArray(data.records)){recs=data.records;localStorage.setItem('cs_r',JSON.stringify(recs));setSt('ok');updAll();applyF();}
+        if(data.status==='success'&&Array.isArray(data.records)){recs=data.records;localStorage.setItem('cs_r',JSON.stringify(recs));refreshGradeFormAfterDataSync();setSt('ok');updAll();applyF();}
       }catch(e){}
     },20000);
   }
@@ -1197,6 +1355,7 @@ async function saveToSheet(rec,action='add'){
 async function saveSheetBkp(rec,action='add'){
   const g=rec.grading||{A:{bags:0,dest:'',rate:0},B:{bags:0,dest:'',rate:0},C:{bags:0,dest:'',rate:0},D:{bags:0,dest:'',rate:0}};
   const p={action,id:rec.id,date:rec.date,farmer:rec.farmer,mobile:rec.mobile||'',quality:rec.quality||'',village:rec.village||'',receipt:rec.receipt||'',
+    grading_json:JSON.stringify(rec.grading||{}),locations_json:JSON.stringify(rec.locations||{}),
     gA_bags:g.A.bags||0, gA_dest:g.A.dest||'', gA_rate:g.A.rate||0,
     gB_bags:g.B.bags||0, gB_dest:g.B.dest||'', gB_rate:g.B.rate||0,
     gC_bags:g.C.bags||0, gC_dest:g.C.dest||'', gC_rate:g.C.rate||0,
@@ -1221,7 +1380,7 @@ function saveL(){localStorage.setItem('cs_r',JSON.stringify(recs));}
 
 // ===== TABS =====
 function goTab(t){
-  ['dash','rec','jim','store','own','pay','rep','users'].forEach(x=>{
+  ['dash','rec','jim','store','own','pay','rep','gclass','users'].forEach(x=>{
     const p=document.getElementById('p-'+x),tab=document.getElementById('tab-'+x);
     if(p)p.classList.toggle('hidden',x!==t);
     if(tab)tab.classList.toggle('active',x===t);
@@ -1232,39 +1391,37 @@ function goTab(t){
   if(t==='dash')updDash();
   if(t==='store')updStore();
   if(t==='own')updOwn();
+  if(t==='gclass')renderGradingClassTab();
   if(t==='users')renderUsers();
 }
 
 // ===== DESTINATION =====
 function setDest(cls,dest){
   dests[cls]=dest;
-  const lc=cls.toLowerCase();
+  const slug=clsSlug(cls);
   ['store','own','ghar'].forEach(d=>{
-    const btn=document.getElementById('d'+lc+'-'+d);
+    const btn=document.getElementById('d'+slug+'-'+d);
     if(btn){btn.className='dest-btn'+(d===dest?' '+d:'');}
   });
-  // Rate input show/hide
-  const rateInp=document.getElementById('g-'+lc+'-rate');
+  const rateInp=document.getElementById('g-'+slug+'-rate');
   if(rateInp)rateInp.style.display=dest==='own'?'block':'none';
-  // Location box show/hide — sirf store wale ke liye
   updLocBoxes();
   calcEntry();
 }
 function updLocBoxes(){
-  const classes=['A','B','C','D','Z','K'];
   let anyLoc=false;
-  classes.forEach(cls=>{
-    const box=document.getElementById('loc-'+cls);
+  gradeClasses.forEach(cls=>{
+    const box=document.getElementById('loc-'+clsSlug(cls));
     if(!box)return;
     const isStore=dests[cls]==='store';
     const isOwn=dests[cls]==='own';
     box.style.display=(isStore||isOwn)?'block':'none';
     if(isStore||isOwn)anyLoc=true;
-    // Label update — Store ya Own
     const lbl=box.querySelector('.loc-cls-lbl');
     if(lbl){
-      if(isStore)lbl.textContent='CLASS '+cls+' — Store Location';
-      else if(isOwn)lbl.textContent='CLASS '+cls+' — Own Purchase Location';
+      const dn=classDisplayLabel(cls);
+      if(isStore)lbl.textContent='CLASS '+dn+' — Store Location';
+      else if(isOwn)lbl.textContent='CLASS '+dn+' — Own Purchase Location';
     }
   });
   const noneEl=document.getElementById('loc-none');
@@ -1274,32 +1431,20 @@ function updLocBoxes(){
 // ===== CALC =====
 function calcEntry(){
   let totalBags=0,storeBags=0,ownBags=0,gharBags=0,ownAmt=0;
-  ['A','B','C','D'].forEach(cl=>{
-    const lc=cl.toLowerCase();
-    const bags=parseFloat(document.getElementById('g-'+lc+'-bags').value)||0;
-    const rate=parseFloat(document.getElementById('g-'+lc+'-rate').value)||0;
+  gradeClasses.forEach(cl=>{
+    const slug=clsSlug(cl);
+    const bEl=document.getElementById('g-'+slug+'-bags');
+    const rEl=document.getElementById('g-'+slug+'-rate');
+    const bags=parseFloat(bEl?bEl.value:0)||0;
+    const rate=parseFloat(rEl?rEl.value:0)||0;
     totalBags+=bags;
-    const dest=dests[cl];
+    const dest=dests[cl]||'';
     if(dest==='store')storeBags+=bags;
     else if(dest==='own'){ownBags+=bags;ownAmt+=bags*rate;}
     else if(dest==='ghar')gharBags+=bags;
-    const amtEl=document.getElementById('g-'+lc+'-amt');
+    const amtEl=document.getElementById('g-'+slug+'-amt');
     if(amtEl)amtEl.textContent=dest==='own'&&bags&&rate?'₹'+fmt(bags*rate):'—';
   });
-  // Zero & Kaat — destinations ke sath
-  const zeroBags=parseFloat(document.getElementById('g-z-bags').value)||0;
-  const kaatBags=parseFloat(document.getElementById('g-k-bags').value)||0;
-  const zRate=parseFloat(document.getElementById('g-z-rate').value)||0;
-  const kRate=parseFloat(document.getElementById('g-k-rate').value)||0;
-  if(dests['Z']==='store')storeBags+=zeroBags;
-  else if(dests['Z']==='own'){ownBags+=zeroBags;ownAmt+=zeroBags*zRate;}
-  else if(dests['Z']==='ghar')gharBags+=zeroBags;
-  if(dests['K']==='store')storeBags+=kaatBags;
-  else if(dests['K']==='own'){ownBags+=kaatBags;ownAmt+=kaatBags*kRate;}
-  else if(dests['K']==='ghar')gharBags+=kaatBags;
-  const zAmtEl=document.getElementById('g-z-amt');if(zAmtEl)zAmtEl.textContent=dests['Z']==='own'&&zeroBags&&zRate?'₹'+fmt(zeroBags*zRate):'—';
-  const kAmtEl=document.getElementById('g-k-amt');if(kAmtEl)kAmtEl.textContent=dests['K']==='own'&&kaatBags&&kRate?'₹'+fmt(kaatBags*kRate):'—';
-  totalBags+=zeroBags+kaatBags;
   // Editable bags — default total bags
   const gbEl=document.getElementById('fi-gbags'),bbEl=document.getElementById('fi-bbags'),lbEl=document.getElementById('fi-lbags');
   if(gbEl&&!gbEl.dataset.m)gbEl.value=totalBags||'';
@@ -1331,11 +1476,17 @@ function calcEntry(){
 // ===== MODAL =====
 function openM(id=null){
   editId=id;
+  gradeClassesSnapshot=gradeClasses.slice();
+  const gAll=id?(recs.find(x=>x.id===id)?.grading)||null:null;
+  gradeClasses=gAll?mergeEditRecordGradeOrder(gAll):buildFullGradeClassesList();
+  initDestsFromGradeClasses();
+  rebuildEntryFormGradeUI();
   document.getElementById('m-title').textContent=id?'Entry Edit':'Naya Grading Entry';
   document.getElementById('modal').classList.add('open');
   if(id){
     const r=recs.find(x=>x.id===id);
     if(r){
+      const gAll=r.grading||{};
       document.getElementById('fi-f').value=r.farmer||'';
       document.getElementById('fi-d').value=r.date||'';
       document.getElementById('fi-r').value=r.receipt||'';
@@ -1346,14 +1497,13 @@ function openM(id=null){
       document.getElementById('fi-cham').value=r.chamber||'';
       document.getElementById('fi-floor').value=r.floor||'';
       document.getElementById('fi-pillar').value=r.pillar||'';
-      // Per-class locations fill karo
       const locs=r.locations||{};
-      ['A','B','C','D','Z','K'].forEach(cls=>{
-        const lc=cls.toLowerCase();
+      gradeClasses.forEach(cls=>{
+        const slug=clsSlug(cls);
         const loc=locs[cls]||{};
-        const chamEl=document.getElementById('fi-cham-'+lc);
-        const floorEl=document.getElementById('fi-floor-'+lc);
-        const pillarEl=document.getElementById('fi-pillar-'+lc);
+        const chamEl=document.getElementById('fi-cham-'+slug);
+        const floorEl=document.getElementById('fi-floor-'+slug);
+        const pillarEl=document.getElementById('fi-pillar-'+slug);
         if(chamEl)chamEl.value=loc.chamber||'';
         if(floorEl)floorEl.value=loc.floor||'';
         if(pillarEl)pillarEl.value=loc.pillar||'';
@@ -1365,31 +1515,28 @@ function openM(id=null){
       if(r.gradingBags){const el=document.getElementById('fi-gbags');if(el){el.value=r.gradingBags;el.dataset.m='1';}}
       if(r.bardanaBags){const el=document.getElementById('fi-bbags');if(el){el.value=r.bardanaBags;el.dataset.m='1';}}
       if(r.labourBags){const el=document.getElementById('fi-lbags');if(el){el.value=r.labourBags;el.dataset.m='1';}}
-      document.getElementById('g-z-bags').value=r.zeroBags||'';
-      document.getElementById('g-k-bags').value=r.kaatBags||'';
-      ['A','B','C','D'].forEach(cl=>{
-        const lc=cl.toLowerCase();
-        const g=r.grading&&r.grading[cl]?r.grading[cl]:{bags:0,dest:'',rate:0};
-        const bEl=document.getElementById('g-'+lc+'-bags');if(bEl)bEl.value=g.bags||'';
-        const rEl=document.getElementById('g-'+lc+'-rate');if(rEl)rEl.value=g.rate||'';
+      gradeClasses.forEach(cl=>{
+        const slug=clsSlug(cl);
+        let g=gAll[cl];
+        if(!g&&cl==='Z'&&r.zeroBags)g={bags:r.zeroBags,dest:'',rate:0};
+        if(!g&&cl==='K'&&r.kaatBags)g={bags:r.kaatBags,dest:'',rate:0};
+        if(!g)g={bags:0,dest:'',rate:0};
+        const bEl=document.getElementById('g-'+slug+'-bags');if(bEl)bEl.value=g.bags||'';
+        const rEl=document.getElementById('g-'+slug+'-rate');if(rEl)rEl.value=g.rate||'';
         setDest(cl,g.dest||'');
       });
-      // Z aur K dest bhi restore karo
-      if(r.grading&&r.grading['Z'])setDest('Z',r.grading['Z'].dest||'');
-      if(r.grading&&r.grading['K'])setDest('K',r.grading['K'].dest||'');
     }
   }else{
-    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate','fi-cham-a','fi-floor-a','fi-pillar-a','fi-cham-b','fi-floor-b','fi-pillar-b','fi-cham-c','fi-floor-c','fi-pillar-c','fi-cham-d','fi-floor-d','fi-pillar-d','fi-cham-z','fi-floor-z','fi-pillar-z','fi-cham-k','fi-floor-k','fi-pillar-k'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
-    ['g-a-bags','g-b-bags','g-c-bags','g-d-bags','g-z-bags','g-k-bags','g-a-rate','g-b-rate','g-c-rate','g-d-rate','g-z-rate','g-k-rate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
+    ['fi-f','fi-r','fi-m','fi-v','fi-q','fi-n','fi-cham','fi-floor','fi-pillar','fi-grate','fi-brate','fi-lrate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
     ['fi-gbags','fi-bbags','fi-lbags'].forEach(x=>{const el=document.getElementById(x);if(el){el.value='';delete el.dataset.m;}});
     document.getElementById('fi-d').value=new Date().toISOString().split('T')[0];
     const rcNums=recs.map(r=>{const m=(r.receipt||'').match(/RC-?(\d+)/i);return m?parseInt(m[1]):0;});const nextRc=rcNums.length?Math.max(...rcNums)+1:1;document.getElementById('fi-r').value='RC-'+String(nextRc).padStart(3,'0');
-    dests={A:'',B:'',C:'',D:'',Z:'',K:''};
-    ['A','B','C','D','Z','K'].forEach(cl=>setDest(cl,''));
+    initDestsFromGradeClasses();
+    gradeClasses.forEach(cl=>setDest(cl,''));
   }
   calcEntry();
 }
-function closeM(id){document.getElementById(id).classList.remove('open');if(id==='modal')editId=null;}
+function closeM(id){document.getElementById(id).classList.remove('open');if(id==='modal'){editId=null;if(gradeClassesSnapshot){gradeClasses=gradeClassesSnapshot.slice();gradeClassesSnapshot=null;initDestsFromGradeClasses();}}}
 function closeOut(e,id){if(e.target===document.getElementById(id))closeM(id);}
 
 // ===== SAVE =====
@@ -1401,11 +1548,13 @@ function saveR(){
 
   const grading={};
   let totalBags=0,storeBags=0,ownBags=0,gharBags=0,ownAmt=0;
-  ['A','B','C','D'].forEach(cl=>{
-    const lc=cl.toLowerCase();
-    const bags=parseFloat(document.getElementById('g-'+lc+'-bags').value)||0;
-    const rate=parseFloat(document.getElementById('g-'+lc+'-rate').value)||0;
-    const dest=dests[cl];
+  gradeClasses.forEach(cl=>{
+    const slug=clsSlug(cl);
+    const bEl=document.getElementById('g-'+slug+'-bags');
+    const rEl2=document.getElementById('g-'+slug+'-rate');
+    const bags=parseFloat(bEl&&bEl.value)||0;
+    const rate=parseFloat(rEl2&&rEl2.value)||0;
+    const dest=dests[cl]||'';
     grading[cl]={bags,dest,rate};
     totalBags+=bags;
     if(dest==='store')storeBags+=bags;
@@ -1415,15 +1564,8 @@ function saveR(){
 
   if(totalBags===0){toast('Kam se kam ek class ki bags daalo!','e');return;}
 
-  const zeroBags=parseFloat(document.getElementById('g-z-bags').value)||0;
-  const kaatBags=parseFloat(document.getElementById('g-k-bags').value)||0;
-  const zRate2=parseFloat(document.getElementById('g-z-rate').value)||0;
-  const kRate2=parseFloat(document.getElementById('g-k-rate').value)||0;
-  if(dests['Z']==='store')storeBags+=zeroBags;else if(dests['Z']==='own'){ownBags+=zeroBags;ownAmt+=zeroBags*zRate2;}else if(dests['Z']==='ghar')gharBags+=zeroBags;
-  if(dests['K']==='store')storeBags+=kaatBags;else if(dests['K']==='own'){ownBags+=kaatBags;ownAmt+=kaatBags*kRate2;}else if(dests['K']==='ghar')gharBags+=kaatBags;
-  grading['Z']={bags:zeroBags,dest:dests['Z']||'',rate:zRate2};
-  grading['K']={bags:kaatBags,dest:dests['K']||'',rate:kRate2};
-  totalBags+=zeroBags+kaatBags;
+  const zeroBags=(grading['Z']&&grading['Z'].bags)||0;
+  const kaatBags=(grading['K']&&grading['K'].bags)||0;
   const gradingRate=parseFloat(document.getElementById('fi-grate').value)||0;
   const bardanaRate=parseFloat(document.getElementById('fi-brate').value)||0;
   const labourRate=parseFloat((document.getElementById('fi-lrate')||{}).value)||0;
@@ -1436,6 +1578,20 @@ function saveR(){
   const labourAmt=labourBags*labourRate;
   const netPay=ownAmt-gradingAmt-bardanaAmt-labourAmt;
 
+  const locations={};
+  let legCh='',legFl='',legPl='';
+  gradeClasses.forEach(cl=>{
+    const slug=clsSlug(cl);
+    const cEl=document.getElementById('fi-cham-'+slug);
+    const fEl=document.getElementById('fi-floor-'+slug);
+    const pEl=document.getElementById('fi-pillar-'+slug);
+    const ch=(cEl&&cEl.value)?String(cEl.value).trim():'';
+    const fl=(fEl&&fEl.value)?String(fEl.value).trim():'';
+    const pl=(pEl&&pEl.value)?String(pEl.value).trim():'';
+    locations[cl]={chamber:ch,floor:fl,pillar:pl};
+    if(ch&&!legCh){legCh=ch;legFl=fl;legPl=pl;}
+  });
+
   const rec={
     id:editId||Date.now().toString(),
     farmer,date,
@@ -1444,17 +1600,10 @@ function saveR(){
     quality:document.getElementById('fi-q').value.trim(),
     receipt:document.getElementById('fi-r').value.trim()||'RC-'+String(recs.length+1).padStart(3,'0'),
     notes:document.getElementById('fi-n').value.trim(),
-    chamber:document.getElementById('fi-cham-a').value.trim()||document.getElementById('fi-cham').value.trim(),
-    floor:document.getElementById('fi-floor-a').value.trim()||document.getElementById('fi-floor').value.trim(),
-    pillar:document.getElementById('fi-pillar-a').value.trim()||document.getElementById('fi-pillar').value.trim(),
-    locations:{
-      A:{chamber:document.getElementById('fi-cham-a').value.trim(),floor:document.getElementById('fi-floor-a').value.trim(),pillar:document.getElementById('fi-pillar-a').value.trim()},
-      B:{chamber:document.getElementById('fi-cham-b').value.trim(),floor:document.getElementById('fi-floor-b').value.trim(),pillar:document.getElementById('fi-pillar-b').value.trim()},
-      C:{chamber:document.getElementById('fi-cham-c').value.trim(),floor:document.getElementById('fi-floor-c').value.trim(),pillar:document.getElementById('fi-pillar-c').value.trim()},
-      D:{chamber:document.getElementById('fi-cham-d').value.trim(),floor:document.getElementById('fi-floor-d').value.trim(),pillar:document.getElementById('fi-pillar-d').value.trim()},
-      Z:{chamber:document.getElementById('fi-cham-z').value.trim(),floor:document.getElementById('fi-floor-z').value.trim(),pillar:document.getElementById('fi-pillar-z').value.trim()},
-      K:{chamber:document.getElementById('fi-cham-k').value.trim(),floor:document.getElementById('fi-floor-k').value.trim(),pillar:document.getElementById('fi-pillar-k').value.trim()}
-    },
+    chamber:legCh||document.getElementById('fi-cham').value.trim(),
+    floor:legFl||document.getElementById('fi-floor').value.trim(),
+    pillar:legPl||document.getElementById('fi-pillar').value.trim(),
+    locations,
     grading,zeroBags,kaatBags,
     gradingRate,bardanaRate,labourRate,
     gradingBags,bardanaBags,labourBags,
@@ -1466,7 +1615,8 @@ function saveR(){
 
   if(editId){recs=recs.map(x=>x.id===editId?rec:x);toast(farmer+' ka record update ho gaya!','s');}
   else{recs.unshift(rec);toast(farmer+' ki entry save ho gayi! 🥔','s');}
-  saveL();closeM('modal');updAll();applyF();
+  saveL();closeM('modal');
+  updAll();applyF();
   saveToSheet(rec,editId?'edit':'add');
 }
 
@@ -1617,17 +1767,35 @@ function updFarm(){
 
 // ===== RENDER TABLE =====
 function renderT(){
+  const GR=reportGradeColumns();
+  const thRow=document.getElementById('main-thead-row');
+  if(thRow){
+    thRow.innerHTML='<th>Sr</th><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th><th>Quality</th><th>Total Bags</th><th>Zero</th><th>Kaat</th>'
+      +GR.map(cl=>`<th style="white-space:nowrap" title="${cl}">🏪 ${classDisplayLabel(cl)}</th><th style="white-space:nowrap" title="${cl}">🛒 ${classDisplayLabel(cl)}</th>`).join('')
+      +'<th>Ghar</th><th>Grade ₹</th><th>Bardana ₹</th><th>Labour ₹</th><th>Own Amt</th><th>Net Dena</th><th>Chamber</th><th>Action</th>';
+  }
   const tot=filtered.length;
+  const colspan=17+2*GR.length;
   document.getElementById('r-cnt').textContent=tot+' records';
   document.getElementById('p-info').textContent=tot?`${Math.min((pg-1)*PP+1,tot)}-${Math.min(pg*PP,tot)} / ${tot}`:'0 records';
-  if(!tot){document.getElementById('main-tbody').innerHTML=`<tr><td colspan="24"><div class="empty"><div class="ei">🥔</div><h3>Koi record nahi</h3></div></td></tr>`;document.getElementById('p-btns').innerHTML='';return;}
+  if(!tot){document.getElementById('main-tbody').innerHTML=`<tr><td colspan="${colspan}"><div class="empty"><div class="ei">🥔</div><h3>Koi record nahi</h3></div></td></tr>`;document.getElementById('p-btns').innerHTML='';return;}
   const slice=filtered.slice((pg-1)*PP,pg*PP);
   document.getElementById('main-tbody').innerHTML=slice.map((r,i)=>{
     const c=gc(r.farmer);
-    const g=r.grading||{A:{bags:0,dest:'',rate:0},B:{bags:0,dest:'',rate:0},C:{bags:0,dest:'',rate:0},D:{bags:0,dest:'',rate:0}};
-    const destIcon={store:'🏪',own:'🛒',ghar:'🏠','':`—`};
-    const storeBags=(g.A.dest==='store'?g.A.bags:0)+(g.B.dest==='store'?g.B.bags:0)+(g.C.dest==='store'?g.C.bags:0)+(g.D.dest==='store'?g.D.bags:0);
-    const ownBags=(g.A.dest==='own'?g.A.bags:0)+(g.B.dest==='own'?g.B.bags:0)+(g.C.dest==='own'?g.C.bags:0)+(g.D.dest==='own'?g.D.bags:0);
+    const g=r.grading||{};
+    const locStr=(cls)=>{
+      const locs=r.locations||{};
+      const l=locs[cls]||{};
+      if(l.chamber)return'C-'+l.chamber+(l.floor?' F'+l.floor:'')+(l.pillar?' '+l.pillar:'');
+      if(cls==='A'&&r.chamber)return'C-'+r.chamber+(r.floor?' F'+r.floor:'')+(r.pillar?' '+r.pillar:'');
+      return'';
+    };
+    const dynCells=GR.map(cl=>{
+      const row=g[cl]||{bags:0,dest:'',rate:0};
+      const st=row.dest==='store'&&row.bags?gradeCellCt2(cl,row.bags)+(locStr(cl)?`<br><span style="font-size:9px;color:var(--text3)">${locStr(cl)}</span>`:''):'—';
+      const ow=row.dest==='own'&&row.bags?gradeCellCt2(cl,row.bags):'';
+      return`<td>${st}</td><td>${ow||'—'}</td>`;
+    }).join('');
     return`<tr>
       <td style="color:#8a95a8;font-size:11px">${(pg-1)*PP+i+1}</td>
       <td><span class="rtag">${r.receipt||'—'}</span></td>
@@ -1638,14 +1806,7 @@ function renderT(){
       <td><strong style="font-family:'Rajdhani',sans-serif">${r.totalBags||0}</strong></td>
       <td style="color:#64748b">${r.zeroBags||0}</td>
       <td style="color:#9d174d">${r.kaatBags||0}</td>
-      <td>${g.A.dest==='store'?`<span class="ct2 A">${g.A.bags}</span>`:'—'}</td>
-      <td>${g.B.dest==='store'?`<span class="ct2 B">${g.B.bags}</span>`:'—'}</td>
-      <td>${g.C.dest==='store'?`<span class="ct2 C">${g.C.bags}</span>`:'—'}</td>
-      <td>${g.D.dest==='store'?`<span class="ct2 D">${g.D.bags}</span>`:'—'}</td>
-      <td>${g.C.dest==='own'?`<span class="ct2 C">${g.C.bags}</span>`:''}</td>
-      <td>${g.D.dest==='own'?`<span class="ct2 D">${g.D.bags}</span>`:''}</td>
-      <td>${g.A.dest==='own'?`<span class="ct2 A">${g.A.bags}</span>`:''}</td>
-      <td>${g.B.dest==='own'?`<span class="ct2 B">${g.B.bags}</span>`:''}</td>
+      ${dynCells}
       <td style="color:var(--yellow)">${r.gharBags||0}</td>
       <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px">₹${fmt(r.gradingAmt||0)}</td>
       <td style="color:var(--orange);font-family:'JetBrains Mono',monospace;font-size:11px">₹${fmt(r.bardanaAmt||0)}</td>
@@ -1711,9 +1872,18 @@ function viewD(id){
     <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
       <thead><tr style="background:#f0f4fc"><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Class</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Bags</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Destination</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Rate</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid #dae4f8;color:var(--blue2);font-size:10px;text-transform:uppercase">Amount</th></tr></thead>
       <tbody>
-        ${['A','B','C','D'].map(cl=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px"><span class="cbadge ${cl}">${cl}</span></td><td style="padding:7px 10px;font-weight:700;font-family:'Rajdhani',sans-serif;font-size:15px">${g[cl].bags||0}</td><td style="padding:7px 10px;color:${destColor[g[cl].dest||'']}"><strong>${destIcon[g[cl].dest||'']}</strong></td><td style="padding:7px 10px">${g[cl].dest==='own'?'₹'+g[cl].rate+'/bag':'—'}</td><td style="padding:7px 10px;font-weight:700;color:var(--purple)">${g[cl].dest==='own'?'₹'+fmt(g[cl].bags*g[cl].rate):'—'}</td></tr>`).join('')}
-        <tr style="border-bottom:1px solid var(--border);background:#fdf2f8"><td style="padding:7px 10px"><span class="cbadge Z">Zero</span></td><td style="padding:7px 10px">${r.zeroBags||0}</td><td style="padding:7px 10px;color:#64748b">❌ Wastage</td><td></td><td></td></tr>
-        <tr style="border-bottom:1px solid var(--border);background:#fdf2f8"><td style="padding:7px 10px"><span class="cbadge K">Kaat</span></td><td style="padding:7px 10px">${r.kaatBags||0}</td><td style="padding:7px 10px;color:#64748b">❌ Wastage</td><td></td><td></td></tr>
+        ${(()=>{
+          const clsKeys=sortGradeClassesList([...new Set(Object.keys(g))]);
+          const lbl=c=>({Z:'Zero',K:'Kaat'}[c]||c);
+          return clsKeys.map(cl=>{
+            const row=g[cl]||{bags:0,dest:'',rate:0};
+            const col=gc('CLASS:'+cl);
+            const abcd='ABCD'.includes(cl)&&cl.length===1;
+            const badge=abcd?`<span class="cbadge ${cl}">${lbl(cl)}</span>`:`<span class="cbadge" style="background:${col}22;color:${col};border:1px solid ${col}">${lbl(cl)}</span>`;
+            const wast=!row.dest&&(cl==='Z'||cl==='K');
+            return`<tr style="border-bottom:1px solid var(--border)${wast?';background:#fdf2f8':''}"><td style="padding:7px 10px">${badge}</td><td style="padding:7px 10px;font-weight:700;font-family:'Rajdhani',sans-serif;font-size:15px">${row.bags||0}</td><td style="padding:7px 10px;color:${wast?'#64748b':destColor[row.dest||'']}"><strong>${wast?'❌ Wastage':destIcon[row.dest||'']}</strong></td><td style="padding:7px 10px">${row.dest==='own'?'₹'+row.rate+'/bag':'—'}</td><td style="padding:7px 10px;font-weight:700;color:var(--purple)">${row.dest==='own'?'₹'+fmt(row.bags*row.rate):'—'}</td></tr>`;
+          }).join('');
+        })()}
       </tbody>
     </table>
     <div style="background:linear-gradient(135deg,#1a3a6b,#1a5fc8);border-radius:9px;padding:13px 16px;color:#fff">
@@ -1796,30 +1966,50 @@ function clearStoreFilter(){
   applyStoreFilter();
 }
 function updStore(){
+  const sf=document.getElementById('sf-cls');
+  if(sf){
+    const cur=sf.value;
+    const keys=allClassKeysAcrossRecs();
+    sf.innerHTML='<option value="">All Class</option>'+keys.map(c=>`<option value="${c}">${classDisplayLabel(c)} (${c})</option>`).join('');
+    if(keys.includes(cur))sf.value=cur;
+  }
   const storeRecs=recs.filter(r=>r.storeBags>0);
   const total=storeRecs.reduce((s,r)=>s+(r.storeBags||0),0);
   const farmers=new Set(storeRecs.map(r=>r.farmer)).size;
   document.getElementById('store-total-bags').textContent=total;
   document.getElementById('store-total-farmers').textContent=farmers;
 
-  const cs={A:0,B:0,C:0,D:0};
+  const GR=reportGradeColumns();
+  const cs={};
+  GR.forEach(c=>{cs[c]=0;});
   storeRecs.forEach(r=>{
     const g=r.grading||{};
-    ['A','B','C','D'].forEach(cl=>{if(g[cl]&&g[cl].dest==='store')cs[cl]+=g[cl].bags;});
+    GR.forEach(cl=>{if(g[cl]&&g[cl].dest==='store')cs[cl]+=g[cl].bags;});
   });
-  const tot=(cs.A+cs.B+cs.C+cs.D)||1;
-  ['A','B','C','D'].forEach(cl=>{
-    const lc=cl.toLowerCase();
-    const pct=Math.round(cs[cl]/tot*100);
-    document.getElementById('store-bar-'+lc).style.width=pct+'%';
-    document.getElementById('store-pct-'+lc).textContent=pct+'%';
-    document.getElementById('store-bags-'+lc).textContent=cs[cl]+' bags';
-  });
+  const totB=GR.reduce((s,c)=>s+cs[c],0)||1;
+  const sbox=document.getElementById('store-cbars');
+  if(sbox){
+    sbox.innerHTML=GR.map(cl=>{
+      const n=cs[cl]||0;
+      const pct=Math.round(n/totB*100);
+      const slug=clsSlug(cl);
+      const col=gc('CLASS:'+cl);
+      return`<div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge" style="background:${col}22;color:${col};border:1px solid ${col}">${classDisplayLabel(cl)}</span><span style="font-size:11px;color:#8a95a8">${pct}%</span></div><div style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:${col}">${n} bags</div><div class="pb"><div class="pf" style="background:${col};width:${pct}%"></div></div></div>`;
+    }).join('');
+  }
 
   renderStoreTable(storeRecs);
   applyStoreFilter();
 }
 function renderStoreTable(rows){
+  const GR=reportGradeColumns();
+  const trh=document.getElementById('store-thead-row');
+  if(trh){
+    trh.innerHTML='<th>Farmer</th><th>Tarikh</th><th>Quality</th>'
+      +GR.map(cl=>`<th>🏪 ${classDisplayLabel(cl)}</th>`).join('')
+      +'<th>Total Store</th><th>Chamber</th><th>Floor</th><th>Pillar</th>';
+  }
+  const ncol=3+GR.length+4;
   const cnt=document.getElementById('store-cnt');if(cnt)cnt.textContent=rows.length;
   document.getElementById('store-tbody').innerHTML=rows.length?rows.map(r=>{
     const g=r.grading||{};const col=gc(r.farmer);
@@ -1828,24 +2018,26 @@ function renderStoreTable(rows){
       const l=locs[cls]||{};
       if(l.chamber)return'C-'+l.chamber+(l.floor?' F'+l.floor:'')+(l.pillar?' '+l.pillar:'');
       if(cls==='A'&&r.chamber)return'C-'+r.chamber+(r.floor?' F'+r.floor:'')+(r.pillar?' '+r.pillar:'');
-      return'—';
+      return'';
     };
+    const L0=firstStoreLocTriple(r);
+    const clsCells=GR.map(cl=>{
+      const row=g[cl];
+      if(!row||row.dest!=='store'||!row.bags)return'<td>—</td>';
+      const inner=gradeCellCt2(cl,row.bags)+(locStr(cl)?`<br><span style="font-size:9px;color:var(--text3)">${locStr(cl)}</span>`:'');
+      return`<td>${inner}</td>`;
+    }).join('');
     return`<tr>
       <td><div class="fc2"><div class="fa" style="background:${col}22;color:${col}">${ini(r.farmer)}</div>${r.farmer}</div></td>
       <td class="mono">${r.date}</td>
       <td>${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 6px;font-size:11px">${r.quality}</span>`:''}</td>
-      <td>${g.A&&g.A.dest==='store'?`<span class="ct2 A">${g.A.bags}</span><br><span style="font-size:9px;color:var(--text3)">${locStr('A')}</span>`:'—'}</td>
-      <td>${g.B&&g.B.dest==='store'?`<span class="ct2 B">${g.B.bags}</span><br><span style="font-size:9px;color:var(--text3)">${locStr('B')}</span>`:'—'}</td>
-      <td>${g.C&&g.C.dest==='store'?`<span class="ct2 C">${g.C.bags}</span><br><span style="font-size:9px;color:var(--text3)">${locStr('C')}</span>`:'—'}</td>
-      <td>${g.D&&g.D.dest==='store'?`<span class="ct2 D">${g.D.bags}</span><br><span style="font-size:9px;color:var(--text3)">${locStr('D')}</span>`:'—'}</td>
+      ${clsCells}
       <td><strong style="font-family:'Rajdhani',sans-serif">${r.storeBags}</strong></td>
-      <td colspan="3">${(()=>{
-        const allLocs=Object.keys(locs).filter(k=>locs[k]&&locs[k].chamber&&(r.grading?.[k]?.dest==='store'));
-        if(allLocs.length)return allLocs.map(k=>'<span style="background:var(--bluebg);color:var(--blue);padding:1px 5px;border-radius:3px;font-size:10px;margin:1px;display:inline-block"><b>'+k+'</b> C-'+locs[k].chamber+(locs[k].floor?' F'+locs[k].floor:'')+(locs[k].pillar?' '+locs[k].pillar:'')+'</span>').join('');
-        return r.chamber?'<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px">C-'+r.chamber+(r.floor?' F'+r.floor:'')+(r.pillar?' '+r.pillar:'')+'</span>':'—';
-      })()}</td>
+      <td>${L0.ch?`<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px">C-${L0.ch}</span>`:'—'}</td>
+      <td>${L0.fl||'—'}</td>
+      <td>${L0.pl||'—'}</td>
     </tr>`;
-  }).join(''):`<tr><td colspan="11"><div class="empty"><div class="ei">🏪</div><h3>Koi store record nahi</h3></div></td></tr>`;
+  }).join(''):`<tr><td colspan="${ncol}"><div class="empty"><div class="ei">🏪</div><h3>Koi store record nahi</h3></div></td></tr>`;
 }
 
 // ===== OWN PURCHASE DASHBOARD =====
@@ -1869,53 +2061,83 @@ function clearOwnFilter(){
   applyOwnFilter();
 }
 function updOwn(){
+  const of=document.getElementById('of-cls');
+  if(of){
+    const cur=of.value;
+    const keys=allClassKeysAcrossRecs();
+    of.innerHTML='<option value="">All Class</option>'+keys.map(c=>`<option value="${c}">${classDisplayLabel(c)} (${c})</option>`).join('');
+    if(keys.includes(cur))of.value=cur;
+  }
   const ownRecs=recs.filter(r=>r.ownBags>0);
   const totalBags=ownRecs.reduce((s,r)=>s+(r.ownBags||0),0);
   const totalAmt=ownRecs.reduce((s,r)=>s+(r.ownAmt||0),0);
   document.getElementById('own-total-bags').textContent=totalBags;
   document.getElementById('own-total-amt').textContent='₹'+fmtS(totalAmt);
 
-  const cs={A:{bags:0,amt:0},B:{bags:0,amt:0},C:{bags:0,amt:0},D:{bags:0,amt:0}};
+  const GR=reportGradeColumns();
+  const cs={};
+  GR.forEach(c=>{cs[c]={bags:0,amt:0};});
   ownRecs.forEach(r=>{
     const g=r.grading||{};
-    ['A','B','C','D'].forEach(cl=>{if(g[cl]&&g[cl].dest==='own'){cs[cl].bags+=g[cl].bags;cs[cl].amt+=g[cl].bags*g[cl].rate;}});
+    GR.forEach(cl=>{if(g[cl]&&g[cl].dest==='own'){cs[cl].bags+=g[cl].bags;cs[cl].amt+=g[cl].bags*g[cl].rate;}});
   });
   const tot=totalBags||1;
-  ['A','B','C','D'].forEach(cl=>{
-    const lc=cl.toLowerCase();
-    const pct=Math.round(cs[cl].bags/tot*100);
-    document.getElementById('own-bar-'+lc).style.width=pct+'%';
-    document.getElementById('own-pct-'+lc).textContent=pct+'%';
-    document.getElementById('own-bags-'+lc).textContent=cs[cl].bags+' bags';
-    const avg=cs[cl].bags?Math.round(cs[cl].amt/cs[cl].bags):0;
-    document.getElementById('own-avg-'+lc).textContent='₹'+avg;
-  });
+  const obox=document.getElementById('own-cbars');
+  if(obox){
+    obox.innerHTML=GR.map(cl=>{
+      const n=cs[cl].bags;
+      const pct=Math.round(n/tot*100);
+      const col=gc('CLASS:'+cl);
+      const avg=n?Math.round(cs[cl].amt/n):0;
+      return`<div class="cbc"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="cbadge" style="background:${col}22;color:${col};border:1px solid ${col}">${classDisplayLabel(cl)}</span><span style="font-size:11px;color:#8a95a8">${pct}%</span></div><div style="font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:${col}">${n} bags</div><div class="pb"><div class="pf" style="background:${col};width:${pct}%"></div></div><div style="font-size:11px;color:#8a95a8">Avg Rate: <span style="color:${col};font-weight:600">₹${avg}</span></div></div>`;
+    }).join('');
+  }
 
   renderOwnTable(ownRecs);
   applyOwnFilter();
 }
 function renderOwnTable(rows){
+  const GR=reportGradeColumns();
+  const trh=document.getElementById('own-thead-row');
+  if(trh){
+    trh.innerHTML='<th>Farmer</th><th>Tarikh</th><th>Quality</th>'
+      +GR.flatMap(cl=>[
+        `<th>${classDisplayLabel(cl)} Bags</th>`,
+        `<th>${classDisplayLabel(cl)} Rate</th>`,
+        `<th>${classDisplayLabel(cl)} Amt</th>`
+      ]).join('')
+      +'<th>Total Bags</th><th>Total Amount</th>';
+  }
+  const ncol=3+3*GR.length+2;
   const cnt=document.getElementById('own-cnt');if(cnt)cnt.textContent=rows.length;
   const locs_get=(r,cls)=>{const locs=r.locations||{};const l=locs[cls]||{};if(l.chamber)return'C-'+l.chamber+(l.floor?' F'+l.floor:'')+(l.pillar?' '+l.pillar:'');return'';};
   document.getElementById('own-tbody').innerHTML=rows.length?rows.map(r=>{
     const g=r.grading||{};const col=gc(r.farmer);
+    const clsPart=GR.map(cl=>{
+      const loc=locs_get(r,cl);
+      const row=g[cl]||{};
+      const bags=row.dest==='own'?row.bags:0;
+      const rate=row.dest==='own'?row.rate:0;
+      const u=String(cl).toUpperCase();
+      let bagCell='—';
+      if(bags){
+        if('ABCD'.includes(u)&&u.length===1)bagCell='<span class="ct2 '+cl+'">'+bags+'</span>';
+        else{const cc=gc('CLASS:'+cl);bagCell='<span class="cbadge" style="background:'+cc+'22;color:'+cc+';border:1px solid '+cc+';font-weight:700">'+bags+'</span>';}
+        if(loc)bagCell+='<br><span style="font-size:9px;color:var(--text3)">'+loc+'</span>';
+      }
+      return '<td>'+bagCell+'</td>'
+        +'<td style="font-size:11px">'+(rate?'₹'+rate:'')+'</td>'
+        +'<td style="color:var(--purple);font-family:\'JetBrains Mono\',monospace;font-size:11px">'+(bags&&rate?'₹'+fmt(bags*rate):'')+'</td>';
+    }).join('');
     return`<tr>
       <td><div class="fc2"><div class="fa" style="background:${col}22;color:${col}">${ini(r.farmer)}</div>${r.farmer}</div></td>
       <td class="mono">${r.date}</td>
       <td>${r.quality?`<span style="background:var(--pbg);color:var(--purple);border:1px solid var(--pb);border-radius:4px;padding:2px 6px;font-size:11px">${r.quality}</span>`:''}</td>
-      ${['A','B','C','D'].map(cl=>{
-        const loc=locs_get(r,cl);
-        const bags=g[cl]&&g[cl].dest==='own'?g[cl].bags:0;
-        const rate=g[cl]&&g[cl].dest==='own'?g[cl].rate:0;
-        const bagCell=bags?('<span class="ct2 '+cl+'">'+bags+'</span>'+(loc?'<br><span style="font-size:9px;color:var(--text3)">'+loc+'</span>':'')):'—';
-        return '<td>'+bagCell+'</td>'
-          +'<td style="font-size:11px">'+(rate?'₹'+rate:'')+'</td>'
-          +'<td style="color:var(--purple);font-family:\'JetBrains Mono\',monospace;font-size:11px">'+(bags?'₹'+fmt(bags*rate):'')+'</td>';
-      }).join('')}
+      ${clsPart}
       <td><strong style="font-family:'Rajdhani',sans-serif">${r.ownBags}</strong></td>
       <td class="amt">₹${fmt(r.ownAmt||0)}</td>
     </tr>`;
-  }).join(''):`<tr><td colspan="17"><div class="empty"><div class="ei">🛒</div><h3>Koi own purchase nahi</h3></div></td></tr>`;
+  }).join(''):`<tr><td colspan="${ncol}"><div class="empty"><div class="ei">🛒</div><h3>Koi own purchase nahi</h3></div></td></tr>`;
 }
 
 // ===== FARMER =====
@@ -2042,11 +2264,12 @@ function locForClass(r,cl){
 /** Store ya Own — class-wise line + rate (own par line amount = bags×rate) */
 function classRowsForDest(dest){
   const rows=[];
+  const clsList=allClassKeysAcrossRecs();
   recs.forEach(r=>{
     const g=r.grading||{};
     const rowOk=dest==='store'?(r.storeBags>0):(r.ownBags>0);
     if(!rowOk)return;
-    ['A','B','C','D','Z','K'].forEach(cl=>{
+    clsList.forEach(cl=>{
       const gc=g[cl];
       if(!gc||gc.dest!==dest||!(gc.bags>0))return;
       const L=locForClass(r,cl);
@@ -2145,31 +2368,47 @@ function genR(type){
   if(type==='quality_matrix'){
     if(!recs.length){out.innerHTML='<div class="empty"><div class="ei">🥔</div><h3>Koi record nahi</h3></div>';return;}
     const gb=(r,cl)=>{const g=r.grading||{};if(cl==='Z')return Number((g.Z&&g.Z.bags)||r.zeroBags)||0;if(cl==='K')return Number((g.K&&g.K.bags)||r.kaatBags)||0;return Number((g[cl]&&g[cl].bags)||0)||0;};
+    const CLS=reportGradeColumns();
     const byQ={};
     recs.forEach(r=>{
       const q=String(r.quality||'').trim()||'—';
-      if(!byQ[q])byQ[q]={n:0,tb:0,A:0,B:0,C:0,D:0,Z:0,K:0,list:[]};
+      if(!byQ[q]){
+        const o={n:0,tb:0,list:[]};
+        CLS.forEach(cl=>{o[cl]=0;});
+        byQ[q]=o;
+      }
       const o=byQ[q];
       o.list.push(r);
       o.n++;
       o.tb+=Number(r.totalBags)||0;
-      ['A','B','C','D','Z','K'].forEach(cl=>{o[cl]+=gb(r,cl);});
+      CLS.forEach(cl=>{o[cl]+=gb(r,cl);});
     });
     const keys=Object.keys(byQ).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
-    const CLS=['A','B','C','D','Z','K'];
-    const hdrQ=['Potato_Quality','Entries','Class_A','Class_B','Class_C','Class_D','Zero','Kaat','Sum_A_K','Sum_TotalBags_Rows'];
+    const hdrQ=['Potato_Quality','Entries',...CLS.map(cl=>'Class_'+cl),'Sum_All_Classes','Sum_TotalBags_Rows'];
     const rowQ=keys.map(k=>{
       const o=byQ[k];
       const sumG=CLS.reduce((s,cl)=>s+o[cl],0);
-      return[k,String(o.n),String(o.A),String(o.B),String(o.C),String(o.D),String(o.Z),String(o.K),String(sumG),String(o.tb)];
+      return[k,String(o.n),...CLS.map(cl=>String(o[cl])),String(sumG),String(o.tb)];
     });
-    const T=keys.reduce((s,k)=>{const o=byQ[k];return{n:s.n+o.n,tb:s.tb+o.tb,A:s.A+o.A,B:s.B+o.B,C:s.C+o.C,D:s.D+o.D,Z:s.Z+o.Z,K:s.K+o.K};},{n:0,tb:0,A:0,B:0,C:0,D:0,Z:0,K:0});
+    const T={n:0,tb:0};
+    CLS.forEach(cl=>{T[cl]=0;});
+    keys.forEach(k=>{
+      const o=byQ[k];
+      T.n+=o.n;T.tb+=o.tb;
+      CLS.forEach(cl=>{T[cl]+=o[cl];});
+    });
     const sumGT=CLS.reduce((s,cl)=>s+T[cl],0);
-    rowQ.push(['TOTAL',String(T.n),String(T.A),String(T.B),String(T.C),String(T.D),String(T.Z),String(T.K),String(sumGT),String(T.tb)]);
-    const hdrD=['Receipt','Tarikh','Farmer','Mobile','A','B','C','D','Z','K','Sum_A_K_row','Total_Bags','Store','Own','Ghar','Net_Dena'];
+    rowQ.push(['TOTAL',String(T.n),...CLS.map(cl=>String(T[cl])),String(sumGT),String(T.tb)]);
+    const hdrD=['Receipt','Tarikh','Farmer','Mobile',...CLS.map(cl=>classDisplayLabel(cl)),'Sum_Row','Total_Bags','Store','Own','Ghar','Net_Dena'];
     const expSections=[{sectionTitle:'SUMMARY (sab qualities)',headers:hdrQ,rows:rowQ}];
     const eq=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const thCls=CLS.map(cl=>`<th style="text-align:center;white-space:nowrap"><span class="ct2 ${cl}">${cl}</span></th>`).join('');
+    const thCls=CLS.map(cl=>{
+      const u=String(cl).toUpperCase();
+      const lab=classDisplayLabel(cl);
+      if('ABCD'.includes(u)&&u.length===1)return`<th style="text-align:center;white-space:nowrap"><span class="ct2 ${cl}">${lab}</span></th>`;
+      const col=gc('CLASS:'+cl);
+      return`<th style="text-align:center;white-space:nowrap"><span class="cbadge" style="background:${col}22;color:${col};border:1px solid ${col};font-size:10px">${lab}</span></th>`;
+    }).join('');
     const qmRowSum=r=>CLS.reduce((s,cl)=>s+gb(r,cl),0);
     keys.forEach(k=>{
       const o=byQ[k];
@@ -2180,7 +2419,7 @@ function genR(type){
         const sr=cells.reduce((s,x)=>s+x,0);
         return[r.receipt||'',r.date||'',r.farmer||'',r.mobile||'',...cells.map(String),String(sr),String(r.totalBags||0),String(r.storeBags||0),String(r.ownBags||0),String(r.gharBags||0),'₹'+fmt(r.netPay||0)];
       });
-      expSections.push({sectionTitle:'DETAIL: Quality "'+k+'" | '+o.n+' entries | Sum A–K '+sumG+' | Σ TB '+o.tb,headers:hdrD,rows:rowsD});
+      expSections.push({sectionTitle:'DETAIL: Quality "'+k+'" | '+o.n+' entries | Sum classes '+sumG+' | Σ TB '+o.tb,headers:hdrD,rows:rowsD});
     });
     setViewReportExport('📊 Advance: Potato Quality × Class (summary + detail)','Quality_Class_Matrix',expSections);
     const blocks=keys.map(k=>{
@@ -2196,18 +2435,28 @@ function genR(type){
         <div style="background:linear-gradient(135deg,rgba(26,58,107,0.12),rgba(124,58,237,0.08));border-bottom:2px solid var(--border);padding:11px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px">
           <span style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--blue)">${eq(k)}</span>
           <span style="font-size:12px;color:var(--text3)"><strong style="color:var(--text)">${o.n}</strong> entries</span>
-          <span style="font-size:11px;color:var(--text3)">${CLS.map(cl=>`<span style="margin-right:8px"><span class="ct2 ${cl}" style="font-size:9px">${cl}</span> <strong style="font-family:'Rajdhani',sans-serif">${o[cl]}</strong></span>`).join('')}</span>
-          <span style="font-size:12px;font-weight:700;font-family:'Rajdhani',sans-serif">Sum A–K: ${sumG}</span>
+          <span style="font-size:11px;color:var(--text3)">${CLS.map(cl=>{
+            const u=String(cl).toUpperCase();
+            const lab=classDisplayLabel(cl);
+            const chip=('ABCD'.includes(u)&&u.length===1)?`<span class="ct2 ${cl}" style="font-size:9px">${lab}</span>`:(()=>{const col=gc('CLASS:'+cl);return`<span class="cbadge" style="background:${col}22;color:${col};border:1px solid ${col};font-size:9px">${lab}</span>`;})();
+            return`<span style="margin-right:8px">${chip} <strong style="font-family:'Rajdhani',sans-serif">${o[cl]}</strong></span>`;
+          }).join('')}</span>
+          <span style="font-size:12px;font-weight:700;font-family:'Rajdhani',sans-serif">Sum classes: ${sumG}</span>
           <span style="font-size:11px;color:var(--text3)">Σ Total Bags: <strong>${o.tb}</strong></span>
         </div>
-        <div class="tsc" style="max-height:none"><table style="width:100%;min-width:980px"><thead><tr><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th>${thCls}<th>Sum A–K</th><th>Total</th><th>Store</th><th>Own</th><th>Ghar</th><th>Net ₹</th></tr></thead><tbody>${dbody}</tbody></table></div>
+        <div class="tsc" style="max-height:none"><table style="width:100%;min-width:980px"><thead><tr><th>Receipt</th><th>Tarikh</th><th>Farmer</th><th>Mobile</th>${thCls}<th>Sum</th><th>Total</th><th>Store</th><th>Own</th><th>Ghar</th><th>Net ₹</th></tr></thead><tbody>${dbody}</tbody></table></div>
       </div>`;
     }).join('');
     const grandBar=`<div style="margin-top:8px;padding:12px 14px;background:var(--s2);border:1px solid var(--border);border-radius:10px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-weight:700">
       <span style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--blue2)">SAB MILA KAR</span>
       <span style="font-size:12px;color:var(--text3)">${T.n} entries</span>
-      ${CLS.map(cl=>`<span style="font-size:11px"><span class="ct2 ${cl}">${cl}</span> ${T[cl]}</span>`).join('')}
-      <span style="font-family:'Rajdhani',sans-serif">Sum A–K: ${sumGT}</span>
+      ${CLS.map(cl=>{
+        const u=String(cl).toUpperCase();
+        const lab=classDisplayLabel(cl);
+        const chip=('ABCD'.includes(u)&&u.length===1)?`<span class="ct2 ${cl}">${lab}</span>`:(()=>{const col=gc('CLASS:'+cl);return`<span class="cbadge" style="background:${col}22;color:${col};border:1px solid ${col};font-size:10px">${lab}</span>`;})();
+        return`<span style="font-size:11px">${chip} ${T[cl]}</span>`;
+      }).join('')}
+      <span style="font-family:'Rajdhani',sans-serif">Sum classes: ${sumGT}</span>
       <span style="color:var(--text3)">Σ Total Bags: ${T.tb}</span>
     </div>`;
     out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">📊 Advance: Potato Quality × Grading Class</div><div style="font-size:12px;color:var(--text3);max-width:780px">Har <b>Quality</b> ke neeche pehle <b>jod (header)</b>, phir usi quality ki <b>saari entries</b> (receipt, tarikh, farmer, class bags…). CSV mein pehle summary sheet jaisa block, phir har quality ka detail block.</div></div>${blocks}${grandBar}</div>`;
@@ -2224,7 +2473,7 @@ function genR(type){
       const c=gc(x.r.farmer);
       const rateShow=x.kind==='own'||x.rate?('₹'+fmt(x.rate)):'—';
       const lineShow=x.kind==='own'&&x.lineAmt?('₹'+fmt(x.lineAmt)):'—';
-      return`<tr><td>${typeBadge(x)}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${x.r.farmer}</div></td><td><span class="ct2 ${x.grade}">${x.grade}</span></td><td><strong>${x.bags}</strong></td><td class="mono" style="font-weight:700;color:${x.kind==='own'?'var(--purple)':'inherit'}">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${x.chamber}</td><td>${x.floor}</td><td>${x.pillar}</td><td class="mono" style="font-size:11px">${x.r.receipt||'—'}</td><td class="mono" style="font-size:11px">${x.r.date||'—'}</td><td>${x.r.quality||'—'}</td></tr>`;
+      return`<tr><td>${typeBadge(x)}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${x.r.farmer}</div></td><td>${gradeTitleBadgeHtml(x.grade)}</td><td><strong>${x.bags}</strong></td><td class="mono" style="font-weight:700;color:${x.kind==='own'?'var(--purple)':'inherit'}">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${x.chamber}</td><td>${x.floor}</td><td>${x.pillar}</td><td class="mono" style="font-size:11px">${x.r.receipt||'—'}</td><td class="mono" style="font-size:11px">${x.r.date||'—'}</td><td>${x.r.quality||'—'}</td></tr>`;
     }).join('');
     const totStore=sorted.filter(x=>x.kind==='store').reduce((s,x)=>s+x.bags,0);
     const totOwnB=sorted.filter(x=>x.kind==='own').reduce((s,x)=>s+x.bags,0);
@@ -2267,7 +2516,7 @@ function genR(type){
         const c=gc(x.r.farmer);
         const rateShow=x.kind==='own'||x.rate?('₹'+fmt(x.rate)):'—';
         const lineShow=x.kind==='own'&&x.lineAmt?('₹'+fmt(x.lineAmt)):'—';
-        return`<tr><td>${typeBadge(x)}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${x.r.farmer}</div></td><td><span class="ct2 ${x.grade}">${x.grade}</span></td><td><strong>${x.bags}</strong></td><td class="mono" style="font-weight:700;color:${x.kind==='own'?'var(--purple)':'inherit'}">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${x.chamber}</td><td>${x.floor}</td><td>${x.pillar}</td><td class="mono" style="font-size:11px">${x.r.date||'—'}</td><td>${x.r.receipt||'—'}</td></tr>`;
+        return`<tr><td>${typeBadge(x)}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${x.r.farmer}</div></td><td>${gradeTitleBadgeHtml(x.grade)}</td><td><strong>${x.bags}</strong></td><td class="mono" style="font-weight:700;color:${x.kind==='own'?'var(--purple)':'inherit'}">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${x.chamber}</td><td>${x.floor}</td><td>${x.pillar}</td><td class="mono" style="font-size:11px">${x.r.date||'—'}</td><td>${x.r.receipt||'—'}</td></tr>`;
       }).join('');
       return`<div style="margin-bottom:22px"><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--blue);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--border)">${keyLabel}: <span style="color:var(--text)">${k}</span> <span style="font-size:12px;font-weight:600;color:var(--text3)">${sub} bags</span> <span style="font-size:12px;font-weight:700;color:var(--purple)">· Own ₹${fmt(subOwnRs)}</span></div><div class="tsc"><table><thead><tr><th>Type</th><th>Farmer</th><th>Grade</th><th>Bags</th><th>₹/bag</th><th>Line ₹</th><th>Chamber</th><th>Floor</th><th>Pillar</th><th>Tarikh</th><th>Receipt</th></tr></thead><tbody>${tb}</tbody></table></div></div>`;
     }).join('');
@@ -2280,13 +2529,13 @@ function genR(type){
   if(type==='by_quality')groupLocReport('🥔 Potato Quality-wise — Store + Own (class lines)',x=>String((x.r&&x.r.quality)||'').trim()||'—','Quality','QualityWise');
   if(type==='by_grade'){
     if(!locRows.length){out.innerHTML=emptyLoc;return;}
-    const order=['A','B','C','D','Z','K'];
-    const labels={A:'Class A',B:'Class B',C:'Class C',D:'Class D',Z:'Zero',K:'Kaat'};
+    const order=locRowsGradeOrder(locRows);
     const hdrGr=['Type','Farmer','Bags','Rs_per_bag','Line_Rs','Chamber','Floor','Pillar','Receipt','Tarikh','Quality','Mobile','Row_Store','Row_Own','Net_Dena'];
     const expGradeSections=[];
     const parts=order.map(gr=>{
-      const arr=locRows.filter(x=>x.grade===gr);
-      if(!arr.length)return`<div style="margin-bottom:18px;opacity:0.75"><div style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px"><span class="ct2 ${gr}">${gr}</span> ${labels[gr]||gr} — <span style="color:var(--text3);font-weight:500">koi store/own line nahi</span></div></div>`;
+      const arr=locRows.filter(x=>String(x.grade||'').toUpperCase()===String(gr).toUpperCase());
+      const grLabel=classDisplayLabel(gr);
+      if(!arr.length)return`<div style="margin-bottom:18px;opacity:0.75"><div style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">${gradeTitleBadgeHtml(gr)} ${grLabel} — <span style="color:var(--text3);font-weight:500">koi store/own line nahi</span></div></div>`;
       arr.sort((a,b)=>{const fa=(a.r.farmer||'').localeCompare(b.r.farmer||'');if(fa)return fa;return a.kind===b.kind?0:a.kind==='store'?-1:1;});
       const subSt=arr.filter(x=>x.kind==='store').reduce((s,x)=>s+x.bags,0);
       const subOw=arr.filter(x=>x.kind==='own').reduce((s,x)=>s+x.bags,0);
@@ -2300,14 +2549,14 @@ function genR(type){
       ]);
       const subBags=arr.reduce((s,x)=>s+x.bags,0);
       rowsCsv.push(['Subtotal','',String(subBags),'','₹'+fmt(subOwRs),'','','','','','','','','','']);
-      expGradeSections.push({sectionTitle:gr+' — '+labels[gr]+' | Store '+subSt+' bags | Own '+subOw+' bags | Own Rs '+fmt(subOwRs),headers:hdrGr,rows:rowsCsv});
+      expGradeSections.push({sectionTitle:gr+' — '+grLabel+' | Store '+subSt+' bags | Own '+subOw+' bags | Own Rs '+fmt(subOwRs),headers:hdrGr,rows:rowsCsv});
       const tb=arr.map(x=>{
         const c=gc(x.r.farmer);
         const rateShow=x.kind==='own'||x.rate?('₹'+fmt(x.rate)):'—';
         const lineShow=x.kind==='own'&&x.lineAmt?('₹'+fmt(x.lineAmt)):'—';
         return`<tr><td>${typeBadge(x)}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${x.r.farmer}</div></td><td><strong>${x.bags}</strong></td><td class="mono" style="font-weight:700;color:${x.kind==='own'?'var(--purple)':'inherit'}">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${x.chamber}</td><td>${x.floor}</td><td>${x.pillar}</td><td class="mono" style="font-size:11px">${x.r.receipt||'—'}</td><td class="mono" style="font-size:11px">${x.r.date||'—'}</td><td>${x.r.quality||'—'}</td><td style="font-size:11px">${x.r.mobile||'—'}</td><td style="color:var(--teal)">${x.r.storeBags||0}</td><td style="color:var(--purple)">${x.r.ownBags||0}</td><td class="amt" style="font-size:11px">₹${fmt(x.r.netPay||0)}</td></tr>`;
       }).join('');
-      return`<div style="margin-bottom:24px"><div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="ct2 ${gr}">${gr}</span> ${labels[gr]||gr} <span style="font-size:13px;font-weight:600;color:var(--text3)">${arr.length} lines</span> <span style="font-size:12px;color:var(--teal)">Store ${subSt} bags</span> <span style="font-size:12px;color:var(--purple)">· Own ${subOw} bags · ₹${fmt(subOwRs)}</span></div><div class="tsc"><table><thead><tr><th>Type</th><th>Farmer</th><th>Bags</th><th>₹/bag</th><th>Line ₹</th><th>Chamber</th><th>Floor</th><th>Pillar</th><th>Receipt</th><th>Tarikh</th><th>Quality</th><th>Mobile</th><th>Row Store</th><th>Row Own</th><th>Net Dena</th></tr></thead><tbody>${tb}</tbody><tfoot><tr style="background:var(--s2);font-weight:700"><td colspan="2">Subtotal</td><td>${arr.reduce((s,x)=>s+x.bags,0)}</td><td></td><td class="amt">₹${fmt(subOwRs)}</td><td colspan="10"></td></tr></tfoot></table></div></div>`;
+      return`<div style="margin-bottom:24px"><div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">${gradeTitleBadgeHtml(gr)} ${grLabel} <span style="font-size:13px;font-weight:600;color:var(--text3)">${arr.length} lines</span> <span style="font-size:12px;color:var(--teal)">Store ${subSt} bags</span> <span style="font-size:12px;color:var(--purple)">· Own ${subOw} bags · ₹${fmt(subOwRs)}</span></div><div class="tsc"><table><thead><tr><th>Type</th><th>Farmer</th><th>Bags</th><th>₹/bag</th><th>Line ₹</th><th>Chamber</th><th>Floor</th><th>Pillar</th><th>Receipt</th><th>Tarikh</th><th>Quality</th><th>Mobile</th><th>Row Store</th><th>Row Own</th><th>Net Dena</th></tr></thead><tbody>${tb}</tbody><tfoot><tr style="background:var(--s2);font-weight:700"><td colspan="2">Subtotal</td><td>${arr.reduce((s,x)=>s+x.bags,0)}</td><td></td><td class="amt">₹${fmt(subOwRs)}</td><td colspan="10"></td></tr></tfoot></table></div></div>`;
     }).join('');
     setViewReportExport('🔤 Grade-wise — Store + Own (full)','GradeWise',expGradeSections);
     out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">🔤 Grade-wise — Store + Own (full)</div><div style="font-size:11px;color:var(--text3);max-width:720px">Har grade: Type, <b>₹/bag</b>, <b>Line ₹</b> (bags×rate) Own ke liye, location, entry snapshot.</div></div>${parts}</div>`;
@@ -2390,7 +2639,7 @@ function renderCustomReportHtml(node,depth){
       const c=gc(x.r.farmer);
       const rateShow=x.kind==='own'||x.rate?('₹'+fmt(x.rate)):'—';
       const lineShow=x.kind==='own'&&x.lineAmt?('₹'+fmt(x.lineAmt)):'—';
-      return`<tr><td class="mono" style="font-size:11px">${crEsc(x.r.receipt||'—')}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${crEsc(x.r.farmer||'')}</div></td><td class="mono" style="font-size:11px">${crEsc(x.r.date||'—')}</td><td>${crEsc(x.r.quality||'—')}</td><td><span class="ct2 ${x.grade}">${x.grade}</span></td><td>${crRowBadge(x)}</td><td style="text-align:center;font-weight:700">${x.bags}</td><td class="mono">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${crEsc(x.chamber)}</td><td>${crEsc(x.floor)}</td><td>${crEsc(x.pillar)}</td></tr>`;
+      return`<tr><td class="mono" style="font-size:11px">${crEsc(x.r.receipt||'—')}</td><td><div class="fc2"><div class="fa" style="background:${c}22;color:${c}">${ini(x.r.farmer)}</div>${crEsc(x.r.farmer||'')}</div></td><td class="mono" style="font-size:11px">${crEsc(x.r.date||'—')}</td><td>${crEsc(x.r.quality||'—')}</td><td>${gradeTitleBadgeHtml(x.grade)}</td><td>${crRowBadge(x)}</td><td style="text-align:center;font-weight:700">${x.bags}</td><td class="mono">${rateShow}</td><td class="mono" style="color:var(--purple)">${lineShow}</td><td>${crEsc(x.chamber)}</td><td>${crEsc(x.floor)}</td><td>${crEsc(x.pillar)}</td></tr>`;
     }).join('');
     return`<div style="margin:10px 0 18px 0"><div style="font-size:12px;font-weight:700;margin-bottom:6px;color:var(--text2)">${sub.length} lines · <span style="color:var(--teal)">${bags} bags</span> · <span style="color:var(--purple)">Own line ₹${fmt(ownRs)}</span></div><div class="tsc"><table style="min-width:900px"><thead><tr><th>Receipt</th><th>Farmer</th><th>Tarikh</th><th>Quality</th><th>Class</th><th>Type</th><th>Bags</th><th>₹/bag</th><th>Line ₹</th><th>Chamber</th><th>Floor</th><th>Pillar</th></tr></thead><tbody>${tb}</tbody></table></div></div>`;
   }
@@ -2443,48 +2692,75 @@ function runCustomReport(){
   toast('Custom report tayyar — 📥 CSV / 📄 PDF yahin se','s');
 }
 
-// ===== EXPORT SYSTEM =====
-const EXP_FIELDS=[
-  {key:'sr',label:'Sr No',fn:(r,i)=>i+1},
-  {key:'receipt',label:'Receipt',fn:r=>r.receipt||''},
-  {key:'date',label:'Tarikh',fn:r=>r.date||''},
-  {key:'farmer',label:'Farmer',fn:r=>r.farmer||''},
-  {key:'mobile',label:'Mobile',fn:r=>r.mobile||''},
-  {key:'village',label:'Gaon',fn:r=>r.village||''},
-  {key:'quality',label:'Quality',fn:r=>r.quality||''},
-  {key:'totalBags',label:'Total Bags',fn:r=>r.totalBags||0},
-  {key:'aBags',label:'A Bags',fn:r=>(r.grading&&r.grading.A&&r.grading.A.bags)||0},
-  {key:'aDest',label:'A Dest',fn:r=>(r.grading&&r.grading.A&&r.grading.A.dest)||''},
-  {key:'aRate',label:'A Rate',fn:r=>(r.grading&&r.grading.A&&r.grading.A.rate)||0},
-  {key:'bBags',label:'B Bags',fn:r=>(r.grading&&r.grading.B&&r.grading.B.bags)||0},
-  {key:'bDest',label:'B Dest',fn:r=>(r.grading&&r.grading.B&&r.grading.B.dest)||''},
-  {key:'bRate',label:'B Rate',fn:r=>(r.grading&&r.grading.B&&r.grading.B.rate)||0},
-  {key:'cBags',label:'C Bags',fn:r=>(r.grading&&r.grading.C&&r.grading.C.bags)||0},
-  {key:'cDest',label:'C Dest',fn:r=>(r.grading&&r.grading.C&&r.grading.C.dest)||''},
-  {key:'cRate',label:'C Rate',fn:r=>(r.grading&&r.grading.C&&r.grading.C.rate)||0},
-  {key:'dBags',label:'D Bags',fn:r=>(r.grading&&r.grading.D&&r.grading.D.bags)||0},
-  {key:'dDest',label:'D Dest',fn:r=>(r.grading&&r.grading.D&&r.grading.D.dest)||''},
-  {key:'dRate',label:'D Rate',fn:r=>(r.grading&&r.grading.D&&r.grading.D.rate)||0},
-  {key:'zeroBags',label:'Zero Bags',fn:r=>r.zeroBags||0},
-  {key:'kaatBags',label:'Kaat Bags',fn:r=>r.kaatBags||0},
-  {key:'storeBags',label:'Store Bags',fn:r=>r.storeBags||0},
-  {key:'ownBags',label:'Own Bags',fn:r=>r.ownBags||0},
-  {key:'gharBags',label:'Ghar Bags',fn:r=>r.gharBags||0},
-  {key:'ownAmt',label:'Own Amount',fn:r=>r.ownAmt||0},
-  {key:'gradingRate',label:'Grading Rate',fn:r=>r.gradingRate||0},
-  {key:'gradingAmt',label:'Grading Amt',fn:r=>r.gradingAmt||0},
-  {key:'bardanaRate',label:'Bardana Rate',fn:r=>r.bardanaRate||0},
-  {key:'bardanaAmt',label:'Bardana Amt',fn:r=>r.bardanaAmt||0},
-  {key:'labourRate',label:'Labour Rate',fn:r=>r.labourRate||0},
-  {key:'labourAmt',label:'Labour Amt',fn:r=>r.labourAmt||0},
-  {key:'netPay',label:'Net Dena',fn:r=>r.netPay||0},
-  {key:'chamber',label:'Chamber',fn:r=>r.chamber||''},
-  {key:'floor',label:'Floor',fn:r=>r.floor||''},
-  {key:'pillar',label:'Pillar',fn:r=>r.pillar||''},
-  {key:'notes',label:'Notes',fn:r=>r.notes||''}
-];
-const EXP_DEFAULT=['receipt','date','farmer','mobile','village','quality','totalBags','aBags','aDest','aRate','bBags','bDest','bRate','cBags','cDest','cRate','dBags','dDest','dRate','storeBags','ownBags','gharBags','zeroBags','kaatBags','ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay','chamber'];
-const EXP_SUM_KEYS=new Set(['totalBags','storeBags','ownBags','gharBags','zeroBags','kaatBags','ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay','aBags','bBags','cBags','dBags']);
+// ===== EXPORT SYSTEM (grading columns = reportGradeColumns()) =====
+function buildExpFields(){
+  const cols=reportGradeColumns();
+  const out=[
+    {key:'sr',label:'Sr No',fn:(r,i)=>i+1},
+    {key:'receipt',label:'Receipt',fn:r=>r.receipt||''},
+    {key:'date',label:'Tarikh',fn:r=>r.date||''},
+    {key:'farmer',label:'Farmer',fn:r=>r.farmer||''},
+    {key:'mobile',label:'Mobile',fn:r=>r.mobile||''},
+    {key:'village',label:'Gaon',fn:r=>r.village||''},
+    {key:'quality',label:'Quality',fn:r=>r.quality||''},
+    {key:'totalBags',label:'Total Bags',fn:r=>r.totalBags||0}
+  ];
+  cols.forEach(cl=>{
+    const u=String(cl).toUpperCase();
+    const lab=classDisplayLabel(cl);
+    if(u==='Z'){
+      out.push({key:'zeroBags',label:lab+' (bags)',fn:r=>Number((r.grading&&r.grading.Z&&r.grading.Z.bags)||r.zeroBags)||0});
+      return;
+    }
+    if(u==='K'){
+      out.push({key:'kaatBags',label:lab+' (bags)',fn:r=>Number((r.grading&&r.grading.K&&r.grading.K.bags)||r.kaatBags)||0});
+      return;
+    }
+    const slug=clsSlug(cl);
+    out.push({key:'g_'+slug+'_bags',label:lab+' Bags',fn:r=>Number((r.grading&&r.grading[cl]&&r.grading[cl].bags)||0)||0});
+    out.push({key:'g_'+slug+'_dest',label:lab+' Dest',fn:r=>(r.grading&&r.grading[cl]&&r.grading[cl].dest)||''});
+    out.push({key:'g_'+slug+'_rate',label:lab+' Rate',fn:r=>(r.grading&&r.grading[cl]&&r.grading[cl].rate)||0});
+  });
+  out.push(
+    {key:'storeBags',label:'Store Bags',fn:r=>r.storeBags||0},
+    {key:'ownBags',label:'Own Bags',fn:r=>r.ownBags||0},
+    {key:'gharBags',label:'Ghar Bags',fn:r=>r.gharBags||0},
+    {key:'ownAmt',label:'Own Amount',fn:r=>r.ownAmt||0},
+    {key:'gradingRate',label:'Grading Rate',fn:r=>r.gradingRate||0},
+    {key:'gradingAmt',label:'Grading Amt',fn:r=>r.gradingAmt||0},
+    {key:'bardanaRate',label:'Bardana Rate',fn:r=>r.bardanaRate||0},
+    {key:'bardanaAmt',label:'Bardana Amt',fn:r=>r.bardanaAmt||0},
+    {key:'labourRate',label:'Labour Rate',fn:r=>r.labourRate||0},
+    {key:'labourAmt',label:'Labour Amt',fn:r=>r.labourAmt||0},
+    {key:'netPay',label:'Net Dena',fn:r=>r.netPay||0},
+    {key:'chamber',label:'Chamber',fn:r=>r.chamber||''},
+    {key:'floor',label:'Floor',fn:r=>r.floor||''},
+    {key:'pillar',label:'Pillar',fn:r=>r.pillar||''},
+    {key:'notes',label:'Notes',fn:r=>r.notes||''}
+  );
+  return out;
+}
+function buildExpDefaultSelKeys(){
+  const def=['receipt','date','farmer','mobile','village','quality','totalBags'];
+  reportGradeColumns().forEach(cl=>{
+    const u=String(cl).toUpperCase();
+    if(u==='Z')def.push('zeroBags');
+    else if(u==='K')def.push('kaatBags');
+    else{
+      const slug=clsSlug(cl);
+      def.push('g_'+slug+'_bags','g_'+slug+'_dest','g_'+slug+'_rate');
+    }
+  });
+  def.push('storeBags','ownBags','gharBags','ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay','chamber');
+  return def;
+}
+function expFieldIsSummable(f){
+  const k=f.key;
+  if(['ownAmt','gradingAmt','bardanaAmt','labourAmt','netPay'].includes(k))return true;
+  if(k==='totalBags'||k==='storeBags'||k==='ownBags'||k==='gharBags'||k==='zeroBags'||k==='kaatBags')return true;
+  if(k.endsWith('_bags'))return true;
+  return false;
+}
 
 function openExpModal(){
   if(!recs.length){toast('Koi record nahi','e');return;}
@@ -2495,17 +2771,19 @@ function openExpModal(){
   sel.innerHTML='<option value="">-- Sab Farmers --</option>';
   [...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort().forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=f;sel.appendChild(o);});
   const fd=document.getElementById('exp-fields');
-  fd.innerHTML=EXP_FIELDS.map(f=>`<label style="display:flex;align-items:center;gap:5px;cursor:pointer;padding:3px 6px;border-radius:4px;background:var(--s1);border:1px solid var(--border)"><input type="checkbox" id="expf-${f.key}" ${EXP_DEFAULT.includes(f.key)?'checked':''}> ${f.label}</label>`).join('');
+  const expFields=buildExpFields();
+  const expDef=buildExpDefaultSelKeys();
+  fd.innerHTML=expFields.map(f=>`<label style="display:flex;align-items:center;gap:5px;cursor:pointer;padding:3px 6px;border-radius:4px;background:var(--s1);border:1px solid var(--border)"><input type="checkbox" id="expf-${f.key}" ${expDef.includes(f.key)?'checked':''}> ${f.label}</label>`).join('');
   document.getElementById('exp-modal').classList.add('open');
 }
 
-function expSelAll(v){EXP_FIELDS.forEach(f=>{const el=document.getElementById('expf-'+f.key);if(el)el.checked=v;});}
+function expSelAll(v){buildExpFields().forEach(f=>{const el=document.getElementById('expf-'+f.key);if(el)el.checked=v;});}
 
 function getExpData(){
   const from=document.getElementById('exp-from').value;
   const to=document.getElementById('exp-to').value;
   const farmer=document.getElementById('exp-farmer').value;
-  const selFields=EXP_FIELDS.filter(f=>{const el=document.getElementById('expf-'+f.key);return el&&el.checked;});
+  const selFields=buildExpFields().filter(f=>{const el=document.getElementById('expf-'+f.key);return el&&el.checked;});
   if(!selFields.length){toast('Koi field select nahi!','e');return null;}
   let data=recs.filter(r=>{
     if(from&&r.date<from)return false;
@@ -2527,7 +2805,7 @@ function doExport(type){
     const rows=data.map((r,i)=>selFields.map(f=>String(f.fn(r,i)).replace(/,/g,' ')));
     const totalLine=selFields.map((f,idx)=>{
       if(idx===0)return'TOTAL ('+data.length+' rows)';
-      if(EXP_SUM_KEYS.has(f.key)){
+      if(expFieldIsSummable(f)){
         const t=data.reduce((s,r,i)=>s+(Number(f.fn(r,i))||0),0);
         return String(t).replace(/,/g,' ');
       }
@@ -2547,7 +2825,7 @@ function expPDF(data,selFields,fname,from,to,farmer){
   const rows=data.map((r,i)=>`<tr>${selFields.map(f=>`<td>${f.fn(r,i)}</td>`).join('')}</tr>`).join('');
   const totRow=selFields.map((f,i)=>{
     if(i===0)return'<td><strong>TOTAL</strong></td>';
-    if(EXP_SUM_KEYS.has(f.key)){
+    if(expFieldIsSummable(f)){
       const t=data.reduce((s,r,idx)=>s+(Number(f.fn(r,idx))||0),0);
       const isMoney=f.key.includes('Amt')||f.key.includes('Pay')||f.key==='ownAmt';
       return`<td><strong>${isMoney?'₹'+fmt(t):t.toLocaleString('en-IN')}</strong></td>`;
@@ -2632,7 +2910,7 @@ function impGradeCell(row,h2i,letter){
 }
 function impTotalsFromGrading(grading){
   let totalBags=0,storeBags=0,ownBags=0,gharBags=0,ownAmt=0;
-  ['A','B','C','D','Z','K'].forEach(cl=>{
+  Object.keys(grading||{}).forEach(cl=>{
     const g=grading[cl]||{bags:0,dest:'',rate:0};
     const n=g.bags||0;
     totalBags+=n;
@@ -2643,23 +2921,39 @@ function impTotalsFromGrading(grading){
   });
   return{totalBags,storeBags,ownBags,gharBags,ownAmt};
 }
+function discoverImpClassesFromHeaders(h2i){
+  const found=new Set(['A','B','C','D','Z','K']);
+  Object.keys(h2i).forEach(k=>{
+    const m=k.match(/^([a-z0-9]+)_bags$/);
+    if(m&&m[1])found.add(m[1].toUpperCase());
+    const m2=k.match(/^loc([a-z0-9]+)_(chamber|floor|pillar)$/);
+    if(m2&&m2[1])found.add(m2[1].toUpperCase());
+  });
+  return sortGradeClassesList([...found]);
+}
 function isNewImportLayout(h2i){
   if(h2i.loca_chamber!=null||h2i.locb_chamber!=null||h2i.locc_chamber!=null||h2i.locd_chamber!=null||
     h2i.locz_chamber!=null||h2i.lock_chamber!=null||h2i.z_dest!=null||h2i.k_dest!=null||h2i.firebase_id!=null)
     return true;
+  if(Object.keys(h2i).some(k=>/^loc[a-z0-9]+_chamber$/.test(k)))return true;
+  const skipAggBags=new Set(['grading','bardana','labour','total','store','own','ghar','zero','kaat']);
+  if(Object.keys(h2i).some(k=>{const m=k.match(/^([a-z0-9]+)_bags$/);return m&&m[1]&&!skipAggBags.has(m[1]);}))return true;
   /* Purani sheet: col0 = Sr / Sr No, Receipt aage column par. Naya: pehla column Receipt */
   if(h2i.receipt===0)return true;
   return false;
 }
 function rowToRecV2(vals,h2i,rowIndex){
   const row=vals;
-  const gA=impGradeCell(row,h2i,'A'),gB=impGradeCell(row,h2i,'B'),gC=impGradeCell(row,h2i,'C'),gD=impGradeCell(row,h2i,'D');
-  const gZ=impGradeCell(row,h2i,'Z'),gK=impGradeCell(row,h2i,'K');
-  const grading={A:gA,B:gB,C:gC,D:gD,Z:gZ,K:gK};
+  const clsList=discoverImpClassesFromHeaders(h2i);
+  const grading={};
+  clsList.forEach(L=>{grading[L]=impGradeCell(row,h2i,L);});
+  const gZ=grading.Z||{bags:0,dest:'',rate:0},gK=grading.K||{bags:0,dest:'',rate:0};
   const zb=gZ.bags||parseInt(impGv(row,h2i,'zero_bags','zerobags'),10)||0;
   const kb=gK.bags||parseInt(impGv(row,h2i,'kaat_bags','kaatbags'),10)||0;
-  if(!gZ.bags&&zb)grading.Z={bags:zb,dest:grading.Z.dest,rate:grading.Z.rate};
-  if(!gK.bags&&kb)grading.K={bags:kb,dest:grading.K.dest,rate:grading.K.rate};
+  if(!grading.Z)grading.Z={bags:0,dest:'',rate:0};
+  if(!grading.K)grading.K={bags:0,dest:'',rate:0};
+  if(!grading.Z.bags&&zb)grading.Z={bags:zb,dest:grading.Z.dest||'',rate:grading.Z.rate||0};
+  if(!grading.K.bags&&kb)grading.K={bags:kb,dest:grading.K.dest||'',rate:grading.K.rate||0};
   const tcalc=impTotalsFromGrading(grading);
   let gradingBags=parseInt(impGv(row,h2i,'grading_bags','gradingbags'),10)||0;
   const gradingRate=parseFloat(impGv(row,h2i,'grading_rate','gradingrate'))||0;
@@ -2685,14 +2979,15 @@ function rowToRecV2(vals,h2i,rowIndex){
   if(!bardanaAmt)bardanaAmt=bardanaBags*bardanaRate;
   if(!labourAmt)labourAmt=labourBags*labourRate;
   if(netPay===0&&ownAmt)netPay=ownAmt-gradingAmt-bardanaAmt-labourAmt;
-  const locations={
-    A:impLocFromRow(row,h2i,'A'),B:impLocFromRow(row,h2i,'B'),C:impLocFromRow(row,h2i,'C'),D:impLocFromRow(row,h2i,'D'),
-    Z:impLocFromRow(row,h2i,'Z'),K:impLocFromRow(row,h2i,'K')
-  };
+  const locations={};
+  clsList.forEach(L=>{locations[L]=impLocFromRow(row,h2i,L);});
   const legCh=impGv(row,h2i,'chamber','legacy_chamber');
   const legF=impGv(row,h2i,'floor','legacy_floor');
   const legP=impGv(row,h2i,'pillar','legacy_pillar');
-  const chA=locations.A.chamber||legCh,flA=locations.A.floor||legF,plA=locations.A.pillar||legP;
+  let chA='',flA='',plA='';
+  if(locations.A){chA=locations.A.chamber||'';flA=locations.A.floor||'';plA=locations.A.pillar||'';}
+  if(!chA){for(let li=0;li<clsList.length;li++){const loc=locations[clsList[li]]||{};if(loc.chamber){chA=loc.chamber;flA=loc.floor||'';plA=loc.pillar||'';break;}}}
+  if(!chA){chA=legCh;flA=legF;plA=legP;}
   const existId=impGv(row,h2i,'firebase_id','id','record_id');
   const farmer=impGv(row,h2i,'farmer','farmer_naam');
   const receipt=impGv(row,h2i,'receipt','receipt_no');
@@ -2719,38 +3014,30 @@ function rowToRecV2(vals,h2i,rowIndex){
   };
 }
 function downloadImportSampleCSV(){
-  const hdr=[
-    'Receipt','Tarikh','Farmer','Mobile','Gaon','Quality',
-    'A_Bags','A_Dest','A_Rate','LocA_Chamber','LocA_Floor','LocA_Pillar',
-    'B_Bags','B_Dest','B_Rate','LocB_Chamber','LocB_Floor','LocB_Pillar',
-    'C_Bags','C_Dest','C_Rate','LocC_Chamber','LocC_Floor','LocC_Pillar',
-    'D_Bags','D_Dest','D_Rate','LocD_Chamber','LocD_Floor','LocD_Pillar',
-    'Z_Bags','Z_Dest','Z_Rate','LocZ_Chamber','LocZ_Floor','LocZ_Pillar',
-    'K_Bags','K_Dest','K_Rate','LocK_Chamber','LocK_Floor','LocK_Pillar',
-    'Grading_Bags','Grading_Rate','Grading_Amt','Bardana_Bags','Bardana_Rate','Bardana_Amt','Labour_Bags','Labour_Rate','Labour_Amt',
-    'Total_Bags','Store_Bags','Own_Bags','Ghar_Bags','Own_Amt','Net_Dena',
-    'Notes','Firebase_ID'
-  ];
-  const ex=[
-    'RC-SAMPLE-001','2026-04-05','Ram Singh','9876543210','Ludhiana','Pukhraj',
-    '100','store','0','1','G','P12',
-    '40','own','850','2','1','P03',
-    '0','','0','','','',
-    '0','','0','','','',
-    '8','store','0','7','G','Z1',
-    '5','ghar','0','','','',
-    '153','30','4590','153','16','2448','0','0','0',
-    '153','108','40','5','34000','26962',
-    'Har class ek saath: bags dest rate + us class ki location',
-    ''
-  ];
+  const gcs=buildFullGradeClassesList();
+  const hdr=['Receipt','Tarikh','Farmer','Mobile','Gaon','Quality'];
+  gcs.forEach(cl=>{
+    const U=String(cl).toUpperCase();
+    hdr.push(U+'_Bags',U+'_Dest',U+'_Rate','Loc'+U+'_Chamber','Loc'+U+'_Floor','Loc'+U+'_Pillar');
+  });
+  hdr.push('Grading_Bags','Grading_Rate','Grading_Amt','Bardana_Bags','Bardana_Rate','Bardana_Amt','Labour_Bags','Labour_Rate','Labour_Amt','Total_Bags','Store_Bags','Own_Bags','Ghar_Bags','Own_Amt','Net_Dena','Notes','Firebase_ID');
+  const ex=['RC-SAMPLE-001','2026-04-05','Ram Singh','9876543210','Ludhiana','Pukhraj'];
+  gcs.forEach((cl,i)=>{
+    const U=String(cl).toUpperCase();
+    if(U==='A')ex.push('100','store','0','1','G','P12');
+    else if(U==='B')ex.push('40','own','850','2','1','P03');
+    else if(U==='Z')ex.push('8','store','0','7','G','Z1');
+    else if(U==='K')ex.push('5','ghar','0','','','');
+    else ex.push('0','','0','','','');
+  });
+  ex.push('153','30','4590','153','16','2448','0','0','0','153','108','40','5','34000','26962','Har class: bags+dest+rate + LocCLASS_Chamber/Floor/Pillar','');
   const esc=(c)=>{const s=String(c);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
   const csv='\uFEFF'+[hdr.map(esc).join(','),ex.map(esc).join(',')].join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-  a.download='PrimeColdStore_import_sample_naya_format.csv';
+  a.download='PrimeColdStore_import_sample_classes.csv';
   a.click();
-  toast('Sample CSV download ho gayi!','s');
+  toast('Sample CSV (aapki '+gcs.length+' classes) download!','s');
 }
 function parseImpCSV(input){
   const file=input.files[0];
@@ -3047,7 +3334,7 @@ async function checkSession(){
       // Map profile to currentUser format for compatibility
       currentUser={id:profile.id||fbUser.uid,name:profile.name||fbUser.email,username:fbUser.email,email:fbUser.email,role:profile.role||'viewer',permissions:profile.permissions||null};
       hideLoginUI();
-      applyPermissions();addUserBadge();setSt('ch');await loadPayments();loadSheet();
+      applyPermissions();addUserBadge();setSt('ch');await loadPayments();await loadGradeClassesFB();loadSheet();
       toast('Welcome '+currentUser.name+'!','s');
     } else {
       // No user — show login
@@ -3075,7 +3362,21 @@ async function logout(){
   document.getElementById('login-success').style.display='none';
   toast('Logout ho gaye!','i');
 }
-function addUserBadge(){const hdr=document.querySelector('.hdr-r');if(!hdr||!currentUser)return;const existing=document.getElementById('user-badge');if(existing)existing.remove();const badge=document.createElement('div');badge.id='user-badge';badge.style.cssText='display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer;';badge.innerHTML=`<span style="font-size:12px;color:#fff;font-weight:600">${currentUser.name}</span><span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">${currentUser.role}</span>`;badge.onclick=()=>{if(confirm('Logout karna chahte hain?'))logout();};hdr.insertBefore(badge,hdr.firstChild);}
+function addUserBadge(){
+  const hdr=document.querySelector('.hdr-r');
+  if(!hdr||!currentUser)return;
+  const existing=document.getElementById('user-badge-wrap');
+  if(existing)existing.remove();
+  const esc=n=>String(n||'').replace(/</g,'&lt;').replace(/&/g,'&amp;');
+  const wrap=document.createElement('div');
+  wrap.id='user-badge-wrap';
+  wrap.className='user-badge-wrap';
+  wrap.innerHTML='<div id="user-badge" onclick="if(confirm(\'Logout karna chahte hain?\'))logout()" style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 10px;cursor:pointer" title="Logout">'
+    +'<span style="font-size:12px;color:#fff;font-weight:600">'+esc(currentUser.name)+'</span>'
+    +'<span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:10px;color:#fff">'+esc(currentUser.role)+'</span>'
+    +'</div>';
+  hdr.insertBefore(wrap,hdr.firstChild);
+}
 function hasPerm(p){
   if(!currentUser)return false;
   const perms=currentUser.permissions||({'admin':['view','add','edit','delete','payment','export','import','users'],'manager':['view','add','edit','payment','export'],'viewer':['view']}[currentUser.role]||['view']);
@@ -3092,6 +3393,7 @@ function applyPermissions(){
   document.querySelectorAll('[onclick*="openExpModal"]').forEach(b=>b.style.display=hasPerm('export')?'':'none');
   // Users tab
   const usersTab=document.getElementById('tab-users');if(usersTab)usersTab.style.display=hasPerm('users')?'':'none';
+  const gclassTab=document.getElementById('tab-gclass');if(gclassTab)gclassTab.style.display=hasPerm('add')?'':'none';
   // Edit/Delete buttons in table
   document.querySelectorAll('.ab2.e').forEach(b=>b.style.display=hasPerm('edit')?'':'none');
   document.querySelectorAll('.ab2.d').forEach(b=>b.style.display=hasPerm('delete')?'':'none');
@@ -3436,6 +3738,7 @@ function syncPerms(){
 }
 // ===== INIT =====
 loadUsers();
+loadGradeClassesLS();
 checkSession();
 </script>
 </body>
