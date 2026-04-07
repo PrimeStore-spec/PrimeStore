@@ -43,6 +43,7 @@ main{max-width:1600px;margin:0 auto;padding:16px 18px;}
 .tab.active{background:var(--blue);color:#fff;}
 .tab.store-tab.active{background:var(--teal);}
 .tab.own-tab.active{background:var(--purple);}
+.tab.pay-tab.active{background:#15803d;color:#fff;}
 .btn{padding:7px 13px;border:none;border-radius:6px;cursor:pointer;font-family:'Noto Sans',sans-serif;font-size:12px;font-weight:500;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
 .btn-blue{background:var(--blue);color:#fff;}
 .btn-blue:hover{background:var(--blue2);}
@@ -309,8 +310,8 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     </div>
   </div>
 </div>
-<!-- PAYMENT MODAL -->
-<div class="ov" id="pay-modal" onclick="closeOut(event,'pay-modal')">
+<!-- PAYMENT MODAL (z-index detail modal se upar) -->
+<div class="ov" id="pay-modal" onclick="closeOut(event,'pay-modal')" style="z-index:750">
   <div class="modal-box" style="max-width:420px;width:min(420px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
     <div class="mh" style="flex-shrink:0"><div class="mt" id="pay-modal-title">Payment Add Karo</div><button class="mx" onclick="closeM('pay-modal')">✕</button></div>
     <div class="mb" style="overflow-y:auto;flex:1;padding:14px">
@@ -563,6 +564,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <button class="tab" onclick="goTab('jim')" id="tab-jim">👨‍🌾 Farmer</button>
     <button class="tab store-tab" onclick="goTab('store')" id="tab-store">🏪 Store</button>
     <button class="tab own-tab" onclick="goTab('own')" id="tab-own">🛒 Own Purchase</button>
+    <button class="tab pay-tab" onclick="goTab('pay')" id="tab-pay">💳 Payment</button>
     <button class="tab" onclick="goTab('rep')" id="tab-rep">📈 Reports</button>
     <button class="tab" onclick="goTab('users')" id="tab-users" style="display:none">👥 Users</button>
   </div>
@@ -613,42 +615,14 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 
   <!-- FARMER -->
   <div id="p-jim" class="hidden">
-    <div class="fbox" style="margin-bottom:14px">
-      <div class="ftitle">💳 Payment Tracker — sab farmers (Firebase sync)</div>
-      <p style="font-size:11px;color:var(--text3);margin:-4px 0 10px">Har farmer: kul dena, kitna diya, kitna baaki. Mobile/laptop par same data — login ke baad cloud se sync.</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px">
-        <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:8px;padding:10px;text-align:center">
-          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Kul Dena</div>
-          <div id="pt-sum-net" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--green)">₹0</div>
+    <div class="fbox" style="margin-bottom:14px;background:linear-gradient(135deg,#ecfdf5,#fff);border-color:#86efac">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div class="ftitle" style="color:#15803d">💳 Payments</div>
+          <p style="font-size:11px;color:var(--text3);margin:4px 0 0">Farmer card khol kar <strong>+ Payment</strong> — ab payment window detail ke <strong>upar</strong> khulegi. Poora balance tracker <strong>Payment</strong> tab par.</p>
         </div>
-        <div style="background:#ecfdf5;border:1px solid #86efac;border-radius:8px;padding:10px;text-align:center">
-          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Diya (paid)</div>
-          <div id="pt-sum-paid" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#15803d">₹0</div>
-        </div>
-        <div style="background:var(--rbg);border:1px solid var(--rb);border-radius:8px;padding:10px;text-align:center">
-          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Baaki (pending)</div>
-          <div id="pt-sum-bal" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--red)">₹0</div>
-        </div>
-        <div style="background:var(--ybg);border:1px solid var(--yb);border-radius:8px;padding:10px;text-align:center">
-          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Farmers (balance &gt; 0)</div>
-          <div id="pt-sum-owing" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--yellow)">0</div>
-        </div>
+        <button type="button" class="btn" style="background:#15803d;color:#fff" onclick="goTab('pay')">💳 Payment tab</button>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
-        <input class="fi" id="pt-s" placeholder="🔍 Farmer naam / mobile..." oninput="renderPayTracker()" style="flex:1;min-width:160px">
-        <select class="fi" id="pt-sort" onchange="renderPayTracker()" style="width:190px">
-          <option value="bal_desc">Baaki — zyada pehle</option>
-          <option value="bal_asc">Baaki — kam pehle</option>
-          <option value="name">Naam A–Z</option>
-          <option value="net_desc">Kul dena — zyada</option>
-          <option value="paid_desc">Diya — zyada</option>
-        </select>
-        <button type="button" class="btn btn-ghost" id="pt-csv-btn" onclick="exportPayTrackerCSV()" style="display:none">📥 CSV export</button>
-      </div>
-      <div class="tsc"><table>
-        <thead><tr><th>#</th><th>Farmer</th><th>Mobile</th><th>Kul Dena</th><th>Diya</th><th>Baaki</th><th>Status</th><th></th></tr></thead>
-        <tbody id="pt-tbody"></tbody>
-      </table></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div class="stl">👨‍🌾 Farmer <span>Directory</span></div>
@@ -747,6 +721,59 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div class="tsc"><table>
         <thead><tr><th>Farmer</th><th>Tarikh</th><th>Quality</th><th>A Bags</th><th>A Rate</th><th>A Amt</th><th>B Bags</th><th>B Rate</th><th>B Amt</th><th>C Bags</th><th>C Rate</th><th>C Amt</th><th>D Bags</th><th>D Rate</th><th>D Amt</th><th>Total Bags</th><th>Total Amount</th></tr></thead>
         <tbody id="own-tbody"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- PAYMENT (tracker + jaldi payment) -->
+  <div id="p-pay" class="hidden">
+    <div class="stl">💳 Payments &amp; <span>Balance</span></div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Kul dena / diya / baaki — Firebase sync. Neeche farmer chun kar seedha payment add karo; table se <strong>Ledger</strong> ya nayi entry.</p>
+    <div class="fbox" style="margin-bottom:14px">
+      <div class="ftitle">⚡ Jaldi payment</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <select class="fi" id="pay-tab-farm" style="min-width:220px;max-width:100%;flex:1">
+          <option value="">— Farmer chuno —</option>
+        </select>
+        <button type="button" class="btn btn-green" id="pay-tab-paybtn" onclick="openPayModalFromPayTab()">＋ Payment daalo</button>
+        <button type="button" class="btn btn-ghost" onclick="goTab('jim')">👨‍🌾 Farmer directory</button>
+      </div>
+    </div>
+    <div class="fbox" style="margin-bottom:14px">
+      <div class="ftitle">📊 Payment Tracker — sab farmers</div>
+      <p style="font-size:11px;color:var(--text3);margin:-4px 0 10px">Har farmer: kul dena, kitna diya, kitna baaki.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px">
+        <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Kul Dena</div>
+          <div id="pt-sum-net" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--green)">₹0</div>
+        </div>
+        <div style="background:#ecfdf5;border:1px solid #86efac;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Diya (paid)</div>
+          <div id="pt-sum-paid" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#15803d">₹0</div>
+        </div>
+        <div style="background:var(--rbg);border:1px solid var(--rb);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Baaki (pending)</div>
+          <div id="pt-sum-bal" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--red)">₹0</div>
+        </div>
+        <div style="background:var(--ybg);border:1px solid var(--yb);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Farmers (balance &gt; 0)</div>
+          <div id="pt-sum-owing" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--yellow)">0</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+        <input class="fi" id="pt-s" placeholder="🔍 Farmer naam / mobile..." oninput="renderPayTracker()" style="flex:1;min-width:160px">
+        <select class="fi" id="pt-sort" onchange="renderPayTracker()" style="width:190px">
+          <option value="bal_desc">Baaki — zyada pehle</option>
+          <option value="bal_asc">Baaki — kam pehle</option>
+          <option value="name">Naam A–Z</option>
+          <option value="net_desc">Kul dena — zyada</option>
+          <option value="paid_desc">Diya — zyada</option>
+        </select>
+        <button type="button" class="btn btn-ghost" id="pt-csv-btn" onclick="exportPayTrackerCSV()" style="display:none">📥 CSV export</button>
+      </div>
+      <div class="tsc"><table>
+        <thead><tr><th>#</th><th>Farmer</th><th>Mobile</th><th>Kul Dena</th><th>Diya</th><th>Baaki</th><th>Status</th><th></th></tr></thead>
+        <tbody id="pt-tbody"></tbody>
       </table></div>
     </div>
   </div>
@@ -1016,7 +1043,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
 </div>
 
 <!-- DETAIL MODAL -->
-<div class="ov" id="d-modal" onclick="closeOut(event,'d-modal')">
+<div class="ov" id="d-modal" onclick="closeOut(event,'d-modal')" style="z-index:450">
   <div class="modal" style="max-width:700px">
     <div class="mh"><div class="mt">📋 <span id="d-title">Detail</span></div><button class="mx" onclick="closeM('d-modal')">✕</button></div>
     <div class="mb" id="d-body"></div>
@@ -1194,12 +1221,14 @@ function saveL(){localStorage.setItem('cs_r',JSON.stringify(recs));}
 
 // ===== TABS =====
 function goTab(t){
-  ['dash','rec','jim','store','own','rep','users'].forEach(x=>{
-    document.getElementById('p-'+x).classList.toggle('hidden',x!==t);
-    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  ['dash','rec','jim','store','own','pay','rep','users'].forEach(x=>{
+    const p=document.getElementById('p-'+x),tab=document.getElementById('tab-'+x);
+    if(p)p.classList.toggle('hidden',x!==t);
+    if(tab)tab.classList.toggle('active',x===t);
   });
   if(t==='rec')applyF();
-  if(t==='jim'){renderPayTracker();renderJ();}
+  if(t==='jim')renderJ();
+  if(t==='pay'){renderPayTracker();fillPayTabFarmers();}
   if(t==='dash')updDash();
   if(t==='store')updStore();
   if(t==='own')updOwn();
@@ -3068,6 +3097,7 @@ function applyPermissions(){
   document.querySelectorAll('.ab2.d').forEach(b=>b.style.display=hasPerm('delete')?'':'none');
   // Naya User button
   document.querySelectorAll('[onclick*="openUserModal()"]').forEach(b=>b.style.display=hasPerm('users')?'':'none');
+  const ptb=document.getElementById('pay-tab-paybtn');if(ptb)ptb.style.display=(currentUser&&hasPerm('payment'))?'inline-flex':'none';
   renderPayTracker();
 }
 function openUserModal(id=null){
@@ -3153,7 +3183,7 @@ function farmerPaymentSummaries(){
 function renderPayTracker(){
   const tb=document.getElementById('pt-tbody');
   const csvBtn=document.getElementById('pt-csv-btn');
-  if(!tb)return;
+  if(!tb){fillPayTabFarmers();return;}
   if(csvBtn)csvBtn.style.display=(currentUser&&hasPerm('export'))?'inline-flex':'none';
   const q=(document.getElementById('pt-s')&&document.getElementById('pt-s').value||'').toLowerCase().trim();
   const sort=(document.getElementById('pt-sort')&&document.getElementById('pt-sort').value)||'bal_desc';
@@ -3172,7 +3202,7 @@ function renderPayTracker(){
   const sp=document.getElementById('pt-sum-paid');if(sp)sp.textContent='₹'+fmt(tPaid);
   const sb=document.getElementById('pt-sum-bal');if(sb)sb.textContent='₹'+fmt(tBal);
   const so=document.getElementById('pt-sum-owing');if(so)so.textContent=String(owing);
-  if(!rows.length){tb.innerHTML='<tr><td colspan="8"><div class="empty" style="padding:20px"><div class="ei">💳</div><p style="font-size:13px;color:var(--text3)">Koi farmer record nahi — pehle entries add karo</p></div></td></tr>';return;}
+  if(!rows.length){tb.innerHTML='<tr><td colspan="8"><div class="empty" style="padding:20px"><div class="ei">💳</div><p style="font-size:13px;color:var(--text3)">Koi farmer record nahi — pehle entries add karo</p></div></td></tr>';fillPayTabFarmers();return;}
   tb.innerHTML=rows.map((f,i)=>{
     const c=gc(f.name);
     const balColor=f.bal>0?'var(--red)':(f.bal<0?'#166534':'var(--text2)');
@@ -3188,6 +3218,28 @@ function renderPayTracker(){
       <td><button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px" onclick="showJD(${JSON.stringify(f.name)})">Ledger</button></td>
     </tr>`;
   }).join('');
+  fillPayTabFarmers();
+}
+
+function fillPayTabFarmers(){
+  const sel=document.getElementById('pay-tab-farm');
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— Farmer chuno —</option>';
+  [...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort().forEach(f=>{
+    const o=document.createElement('option');
+    o.value=f;
+    o.textContent=f;
+    sel.appendChild(o);
+  });
+  if(cur&&[...sel.options].some(o=>o.value===cur))sel.value=cur;
+}
+
+function openPayModalFromPayTab(){
+  const sel=document.getElementById('pay-tab-farm');
+  if(!sel||!sel.value){toast('Pehle farmer select karo','e');return;}
+  if(!currentUser||!hasPerm('payment')){toast('Payment ki permission nahi','e');return;}
+  openPayModal(sel.value);
 }
 
 function exportPayTrackerCSV(){
