@@ -4395,16 +4395,41 @@ function renderRequests(){
   const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   list.innerHTML=filtered.map(r=>{
     const typeCls=r.action==='edit'?'edit-req':r.action==='delete'?'delete-req':r.action==='payment'?'payment-req':'other-req';
-    let targetDesc='';
+
+    /* --- Compact entry summary + View button --- */
+    let detailHtml='';
     if(r.targetType==='record'){
       const rec=recs.find(x=>x.id===r.targetId);
-      targetDesc=rec?(rec.farmer+' — '+rec.date+' (RC '+(rec.receipt||'')+')'):r.targetId;
+      if(rec){
+        detailHtml=`<div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+          <div style="display:flex;align-items:center;gap:8px;min-width:0">
+            <div style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#1a3a6b,#1a5fc8);display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;color:#fff;font-size:11px;flex-shrink:0">${ini(rec.farmer)}</div>
+            <div style="min-width:0"><div style="font-family:Rajdhani,sans-serif;font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(rec.farmer)}</div>
+            <div style="font-size:9px;color:var(--text3)">RC ${esc(rec.receipt||'—')} • ${esc(rec.date)} • ${rec.totalBags||0} Bags • \u20B9${fmt(rec.netPay||0)}</div></div>
+          </div>
+          <button onclick="viewRequestEntry('${esc(r.targetId)}','record')" style="flex-shrink:0;background:var(--blue);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap">👁 View Entry</button>
+        </div>`;
+      }else{
+        detailHtml='<div style="margin-top:8px;font-size:12px;color:var(--red)">⚠ Record nahi mila (delete ho chuka hai ya ID: '+esc(r.targetId)+')</div>';
+      }
     }else if(r.targetType==='payment'){
       const pay=payments.find(p=>p.id===r.targetId);
-      targetDesc=pay?(pay.farmer+' — ₹'+(pay.amount||0)):r.targetId;
+      if(pay){
+        detailHtml=`<div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+          <div style="display:flex;align-items:center;gap:8px;min-width:0">
+            <div style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#15803d,#16a34a);display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;color:#fff;font-size:11px;flex-shrink:0">${ini(pay.farmer)}</div>
+            <div style="min-width:0"><div style="font-family:Rajdhani,sans-serif;font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(pay.farmer)}</div>
+            <div style="font-size:9px;color:var(--text3)">${esc(pay.date)} • ${esc(pay.mode||'Cash')} • \u20B9${fmt(pay.amount||0)}</div></div>
+          </div>
+          <button onclick="viewRequestEntry('${esc(r.targetId)}','payment')" style="flex-shrink:0;background:var(--green);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap">👁 View Payment</button>
+        </div>`;
+      }else{
+        detailHtml='<div style="margin-top:8px;font-size:12px;color:var(--red)">⚠ Payment nahi mili (delete ho chuki hai ya ID: '+esc(r.targetId)+')</div>';
+      }
     }else{
-      targetDesc=r.targetId;
+      detailHtml='<div style="margin-top:8px;font-size:12px;color:var(--text)">Target: '+esc(r.targetId)+'</div>';
     }
+
     const timeAgo=formatTimeAgo(r.requestedAt);
     let expiry='';
     if(r.status==='approved'&&r.approvedAt){
@@ -4427,13 +4452,177 @@ function renderRequests(){
         </div>
         <div style="font-size:10px;color:var(--text3)">${timeAgo}</div>
       </div>
-      <div style="margin-top:8px;font-size:12px;color:var(--text)"><strong>${esc(r.targetType)}:</strong> ${esc(targetDesc)}</div>
-      <div style="margin-top:4px;font-size:11px;color:var(--text2)">👤 <strong>${esc(r.requestedByName||r.requestedBy)}</strong></div>
-      <div class="req-reason">📝 ${esc(r.reason)}</div>
+      <div style="margin-top:4px;font-size:11px;color:var(--text2)">👤 Request by: <strong>${esc(r.requestedByName||r.requestedBy)}</strong></div>
+      ${detailHtml}
+      <div class="req-reason">📝 <strong>Wajah:</strong> ${esc(r.reason)}</div>
       ${r.adminNote?'<div style="margin-top:6px;font-size:11px;color:var(--blue);background:var(--bluebg);padding:6px 8px;border-radius:4px">🛡 Admin: '+esc(r.adminNote)+'</div>':''}
       ${actionBtns}
     </div>`;
   }).join('');
+}
+
+/* --- View Entry Modal for Request Approval --- */
+function viewRequestEntry(targetId,targetType){
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const clsColors={A:'#1a7a3c',B:'#b45309',C:'#c2410c',D:'#b91c1c',Z:'#64748b',K:'#7c3aed'};
+  const clsBg={A:'#e8f5ed',B:'#fef3e2',C:'#fff0eb',D:'#fef0f0',Z:'#f1f5f9',K:'#f3e8ff'};
+  const clsBdr={A:'#c8ecd4',B:'#fde8b4',C:'#fdd5c0',D:'#fcc8c8',Z:'#e2e8f0',K:'#ddd6fe'};
+  const destLabel={store:'Store',own:'Own',ghar:'Ghar'};
+  let html='';
+  if(targetType==='record'){
+    const rec=recs.find(x=>x.id===targetId);
+    if(!rec){toast('Record nahi mila — shayad delete ho chuka hai','e');return;}
+    const deductions=(Number(rec.gradingAmt)||0)+(Number(rec.bardanaAmt)||0)+(Number(rec.labourAmt)||0);
+
+    /* --- Build class-wise grading rows --- */
+    let gradingRowsHtml='';
+    const gAll=rec.grading||{};
+    const gKeys=Object.keys(gAll);
+    if(gKeys.length>0){
+      gradingRowsHtml=gKeys.map(k=>{
+        const g=gAll[k];
+        const bags=Number(g.bags)||0;
+        if(bags===0) return '';
+        const dest=g.dest||'';
+        const rate=Number(g.rate)||0;
+        const cc=clsColors[k]||'#1a5fc8';
+        const bg=clsBg[k]||'#e8f0fd';
+        const bd=clsBdr[k]||'#b6d4fe';
+        const loc=rec.locations&&rec.locations[k]?rec.locations[k]:null;
+        let locStr='';
+        if(loc){
+          const parts=[];
+          if(loc.chamber) parts.push('Ch: '+loc.chamber);
+          if(loc.floor) parts.push('Fl: '+loc.floor);
+          if(loc.pillar) parts.push('Pl: '+loc.pillar);
+          if(parts.length) locStr=parts.join(' | ');
+        }
+        return '<div style="background:'+bg+';border:1px solid '+bd+';border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:4px">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center">'
+            +'<div style="display:flex;align-items:center;gap:8px">'
+              +'<span style="background:'+cc+';color:#fff;font-family:Rajdhani,sans-serif;font-weight:700;font-size:13px;padding:2px 10px;border-radius:4px">'+esc(k)+'</span>'
+              +'<span style="font-family:Rajdhani,sans-serif;font-size:18px;font-weight:700;color:'+cc+'">'+bags+' <span style="font-size:10px;font-weight:500;color:var(--text3)">bags</span></span>'
+            +'</div>'
+            +(dest?'<span style="background:'+('own'===dest?'var(--pbg)':'store'===dest?'var(--tbg)':'var(--ybg)')+';color:'+('own'===dest?'var(--purple)':'store'===dest?'var(--teal)':'var(--yellow)')+';font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;text-transform:uppercase">'+(destLabel[dest]||dest)+'</span>':'')
+          +'</div>'
+          +(dest==='own'&&rate>0?'<div style="font-size:11px;color:var(--text2)">Rate: <strong style="color:'+cc+'">\u20B9'+fmt(rate)+'/bag</strong> = <strong>\u20B9'+fmt(bags*rate)+'</strong></div>':'')
+          +(locStr?'<div style="font-size:10px;color:var(--text3)">\uD83D\uDCCD '+locStr+'</div>':'')
+        +'</div>';
+      }).filter(Boolean).join('');
+    }
+
+    /* --- Info row helper --- */
+    const infoRow=(label,val,icon)=>val?'<div style="display:flex;align-items:center;gap:6px;font-size:12px;padding:4px 0"><span style="color:var(--text3);min-width:80px">'+icon+' '+label+'</span><span style="color:var(--text);font-weight:500">'+esc(val)+'</span></div>':'';
+
+    html=`
+    <div style="background:linear-gradient(135deg,#1a3a6b,#1a5fc8);padding:16px 20px;display:flex;align-items:center;gap:12px">
+      <div style="width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;color:#fff;font-size:16px">${ini(rec.farmer)}</div>
+      <div style="flex:1"><div style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;color:#fff">${esc(rec.farmer)}</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.7)">RC ${esc(rec.receipt||'\u2014')} &bull; ${esc(rec.date)}</div></div>
+    </div>
+
+    <div style="padding:16px 20px">
+      <!-- Basic Info -->
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px">
+        ${infoRow('Village',rec.village||'','\uD83C\uDFD8')}
+        ${infoRow('Quality',rec.quality||'','\uD83E\uDD54')}
+        ${infoRow('Mobile',rec.mobile||'','\uD83D\uDCF1')}
+        ${infoRow('Chamber',rec.chamber||'','\uD83C\uDFED')}
+        ${infoRow('Floor',rec.floor||'','\uD83C\uDFDA')}
+        ${infoRow('Pillar',rec.pillar||'','\uD83D\uDCCD')}
+        ${infoRow('Added By',rec.addedBy||'','\uD83D\uDC64')}
+        ${infoRow('Created',rec.createdAt?new Date(rec.createdAt).toLocaleString('en-IN'):'','\uD83D\uDD52')}
+      </div>
+
+      <!-- Bags Summary -->
+      <div style="font-family:Rajdhani,sans-serif;font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Bags Summary</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:14px">
+        <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center">
+          <div style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700">${rec.totalBags||0}</div>
+          <div style="font-size:8px;color:var(--text3);text-transform:uppercase">Total</div>
+        </div>
+        <div style="background:var(--tbg);border:1px solid var(--tb);border-radius:8px;padding:8px;text-align:center">
+          <div style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;color:var(--teal)">${rec.storeBags||0}</div>
+          <div style="font-size:8px;color:var(--text3);text-transform:uppercase">Store</div>
+        </div>
+        <div style="background:var(--pbg);border:1px solid var(--pb);border-radius:8px;padding:8px;text-align:center">
+          <div style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;color:var(--purple)">${rec.ownBags||0}</div>
+          <div style="font-size:8px;color:var(--text3);text-transform:uppercase">Own</div>
+        </div>
+        ${(rec.gharBags||0)>0?'<div style="background:var(--ybg);border:1px solid var(--yb);border-radius:8px;padding:8px;text-align:center"><div style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;color:var(--yellow)">'+(rec.gharBags)+'</div><div style="font-size:8px;color:var(--text3);text-transform:uppercase">Ghar</div></div>':''}
+        ${(rec.zeroBags||0)>0?'<div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:8px;text-align:center"><div style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;color:#64748b">'+(rec.zeroBags)+'</div><div style="font-size:8px;color:var(--text3);text-transform:uppercase">Zero</div></div>':''}
+        ${(rec.kaatBags||0)>0?'<div style="background:#f3e8ff;border:1px solid #ddd6fe;border-radius:8px;padding:8px;text-align:center"><div style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;color:#7c3aed">'+(rec.kaatBags)+'</div><div style="font-size:8px;color:var(--text3);text-transform:uppercase">Kaat</div></div>':''}
+      </div>
+
+      <!-- Class-wise Grading Breakdown -->
+      ${gKeys.length>0?'<div style="font-family:Rajdhani,sans-serif;font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Class-wise Grading</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">'+gradingRowsHtml+'</div>':''}
+
+      <!-- Own Amount -->
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;font-weight:600;color:var(--green)">Own Purchase Amount</span>
+        <span style="font-family:Rajdhani,sans-serif;font-size:22px;font-weight:700;color:var(--green)">\u20B9${fmt(rec.ownAmt||0)}</span>
+      </div>
+
+      <!-- Deductions -->
+      <div style="font-family:Rajdhani,sans-serif;font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Deductions</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+        ${(Number(rec.gradingAmt)||0)>0?'<div style="display:flex;justify-content:space-between;align-items:center;background:#fef3e2;border:1px solid #fde8b4;border-radius:6px;padding:8px 12px"><div><span style="font-weight:600;color:#92400e">Grading</span><span style="font-size:10px;color:var(--text3);margin-left:8px">'+(rec.gradingBags||rec.totalBags||0)+' bags \u00D7 \u20B9'+(rec.gradingRate||0)+'/bag</span></div><span style="font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:#92400e">\u20B9'+fmt(rec.gradingAmt)+'</span></div>':''}
+        ${(Number(rec.bardanaAmt)||0)>0?'<div style="display:flex;justify-content:space-between;align-items:center;background:#fff0eb;border:1px solid #fdd5c0;border-radius:6px;padding:8px 12px"><div><span style="font-weight:600;color:#c2410c">Bardana</span><span style="font-size:10px;color:var(--text3);margin-left:8px">'+(rec.bardanaBags||rec.totalBags||0)+' bags \u00D7 \u20B9'+(rec.bardanaRate||0)+'/bag</span></div><span style="font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:#c2410c">\u20B9'+fmt(rec.bardanaAmt)+'</span></div>':''}
+        ${(Number(rec.labourAmt)||0)>0?'<div style="display:flex;justify-content:space-between;align-items:center;background:#f3e8ff;border:1px solid #ddd6fe;border-radius:6px;padding:8px 12px"><div><span style="font-weight:600;color:#7c3aed">Labour</span><span style="font-size:10px;color:var(--text3);margin-left:8px">'+(rec.labourBags||0)+' bags \u00D7 \u20B9'+(rec.labourRate||0)+'/bag</span></div><span style="font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:#7c3aed">\u20B9'+fmt(rec.labourAmt)+'</span></div>':''}
+        ${deductions>0?'<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 12px;border-top:1px dashed var(--border);font-size:12px"><span style="color:var(--text2);font-weight:600">Total Deductions</span><span style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700;color:var(--red)">\u20B9'+fmt(deductions)+'</span></div>':''}
+      </div>
+
+      <!-- Net Pay -->
+      <div style="background:linear-gradient(135deg,#1a3a6b,#1a5fc8);border-radius:10px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;color:rgba(255,255,255,0.8)">Net Farmer ko Dena</span>
+        <span style="font-family:Rajdhani,sans-serif;font-size:26px;font-weight:700;color:#fff">\u20B9${fmt(rec.netPay||0)}</span>
+      </div>
+      ${rec.notes?'<div style="margin-top:10px;font-size:12px;color:var(--text2);background:var(--s2);border:1px solid var(--border);padding:8px 12px;border-radius:6px">\uD83D\uDCDD <strong>Notes:</strong> '+esc(rec.notes)+'</div>':''}
+    </div>`;
+  }else if(targetType==='payment'){
+    const pay=payments.find(p=>p.id===targetId);
+    if(!pay){toast('Payment nahi mili — shayad delete ho chuki hai','e');return;}
+    const infoRow=(label,val,icon)=>val?'<div style="display:flex;align-items:center;gap:6px;font-size:12px;padding:4px 0"><span style="color:var(--text3);min-width:80px">'+icon+' '+label+'</span><span style="color:var(--text);font-weight:500">'+esc(String(val))+'</span></div>':'';
+    html=`
+    <div style="background:linear-gradient(135deg,#15803d,#16a34a);padding:16px 20px;display:flex;align-items:center;gap:12px">
+      <div style="width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;color:#fff;font-size:16px">${ini(pay.farmer)}</div>
+      <div style="flex:1"><div style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;color:#fff">${esc(pay.farmer)}</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.7)">${esc(pay.date)} &bull; ${esc(pay.mode||'Cash')}${pay.journalRole?' &bull; Journal ('+esc(pay.journalRole)+')':''}</div></div>
+    </div>
+    <div style="padding:20px">
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-family:Rajdhani,sans-serif;font-size:36px;font-weight:700;color:var(--green)">\u20B9${fmt(pay.amount||0)}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">${esc(pay.mode||'Cash')} Payment</div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px 14px">
+        ${infoRow('Date',pay.date||'','\uD83D\uDCC5')}
+        ${infoRow('Mode',pay.mode||'Cash','\uD83D\uDCB3')}
+        ${pay.journalRole?infoRow('Journal',pay.journalRole,'\uD83D\uDD04'):''}
+        ${pay.counterparty?infoRow('Counter',pay.counterparty,'\u2194'):''}
+        ${pay.note?infoRow('Note',pay.note,'\uD83D\uDCDD'):''}
+        ${infoRow('Added By',pay.addedBy||'','\uD83D\uDC64')}
+        ${pay.createdAt?infoRow('Created',new Date(pay.createdAt).toLocaleString('en-IN'),'\uD83D\uDD52'):''}
+      </div>
+    </div>`;
+  }else{
+    toast('Unknown entry type','e');return;
+  }
+  /* Show in overlay modal */
+  let ov=document.getElementById('view-entry-overlay');
+  if(!ov){
+    ov=document.createElement('div');
+    ov.id='view-entry-overlay';
+    ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)';
+    ov.onclick=function(e){if(e.target===ov)ov.style.display='none';};
+    document.body.appendChild(ov);
+  }
+  ov.innerHTML='<div style="background:#fff;border-radius:14px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)">'
+    +'<div style="position:sticky;top:0;z-index:1">'
+      +'<button onclick="document.getElementById(\'view-entry-overlay\').style.display=\'none\'" style="background:rgba(0,0,0,0.3);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;position:absolute;top:12px;right:12px;z-index:2">&times;</button>'
+    +'</div>'
+    +html
+  +'</div>';
+  ov.style.display='flex';
 }
 
 function approveRequest(reqId){
