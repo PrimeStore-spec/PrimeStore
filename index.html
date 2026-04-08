@@ -218,6 +218,31 @@ td{padding:8px 11px;white-space:nowrap;color:var(--text);}
 .toast.e{border-left:3px solid var(--danger);}
 .toast.i{border-left:3px solid var(--blue);}
 .hidden{display:none!important;}
+/* Ledger print: file:// / popup-block — same page se system print dialog */
+.ledger-print-layer{position:fixed;inset:0;z-index:10050;background:#fff;overflow:auto;padding:18px 20px 24px;display:none;font-family:Segoe UI,Arial,sans-serif;color:#111;font-size:12px;box-shadow:0 0 0 1px #e5e7eb;}
+.ledger-print-layer.is-on{display:block;}
+@media print{
+  body *{visibility:hidden!important;}
+  .ledger-print-layer,.ledger-print-layer *{visibility:visible!important;}
+  .ledger-print-layer{position:absolute;inset:0;display:block!important;background:#fff;box-shadow:none;padding:10mm;}
+  .ledger-print-noprint{display:none!important;}
+}
+/* Request system */
+.req-badge{position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;line-height:1;}
+.req-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;box-shadow:var(--sh);transition:all 0.2s;}
+.req-card:hover{border-color:var(--blue);box-shadow:0 4px 14px rgba(26,95,200,0.1);}
+.req-card .req-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:4px;display:inline-block;}
+.req-type.edit-req{background:#fef3c7;color:#92400e;border:1px solid #fde68a;}
+.req-type.delete-req{background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;}
+.req-type.payment-req{background:#e8f5ed;color:#1a7a3c;border:1px solid #c8ecd4;}
+.req-type.other-req{background:#e8f0fd;color:#1a5fc8;border:1px solid #c5d8f8;}
+.req-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;}
+.req-status.pending{background:#fef3c7;color:#92400e;}
+.req-status.approved{background:#e8f5ed;color:#1a7a3c;}
+.req-status.rejected{background:#fee2e2;color:#b91c1c;}
+.req-status.expired{background:#f1f5f9;color:#64748b;}
+.req-status.used{background:#e8f0fd;color:#1a5fc8;}
+.req-reason{background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:8px 10px;font-size:12px;margin-top:8px;line-height:1.4;color:var(--text2);}
 mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding:0 2px;font-weight:600;}
 .stl{font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
 .stl span{color:var(--blue);}
@@ -370,6 +395,20 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       <div style="margin-bottom:11px">
         <label class="flbl">Note (optional)</label>
         <input class="finp" id="pay-note" placeholder="Jaise: RC-001 ka payment, UPI..." style="margin-top:5px">
+      </div>
+      <!-- Journal: Party A → Party B (dono farmers ke ledger mein) -->
+      <div style="margin-bottom:11px;padding:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:7px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:600;color:#92400e">
+          <input type="checkbox" id="pay-is-journal" onchange="togglePayJournalUI()">
+          Journal — ek farmer se doosre farmer ko transfer (Tally jaisa)
+        </label>
+        <div id="pay-journal-wrap" style="display:none;margin-top:10px">
+          <label class="flbl">Dusra farmer / party (jisko / jisse)</label>
+          <select class="finp" id="pay-journal-partner" style="margin-top:5px">
+            <option value="">— Chuno —</option>
+          </select>
+          <p style="font-size:10px;color:#a16207;margin-top:6px;line-height:1.4">Upar wale farmer se amount <strong>niklegi</strong> (Cr) aur neeche chune hue farmer ki deni <strong>badhegi</strong> (Dr). Ek hi entry dono ledgers par lagegi.</p>
+        </div>
       </div>
       <!-- Preview -->
       <div id="pay-preview" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:7px;padding:9px 12px;margin-bottom:11px">
@@ -577,6 +616,7 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     <button class="tab" onclick="goTab('rep')" id="tab-rep">📈 Reports</button>
     <button class="tab" onclick="goTab('gclass')" id="tab-gclass" style="display:none">⚖️ Grading Class</button>
     <button class="tab" onclick="goTab('users')" id="tab-users" style="display:none">👥 Users</button>
+    <button class="tab" onclick="goTab('reqs')" id="tab-reqs" style="display:none;position:relative">📩 Requests <span id="req-badge" class="req-badge" style="display:none">0</span></button>
   </div>
 
   <!-- MAIN DASHBOARD -->
@@ -831,6 +871,20 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
     </div>
     <div class="users-grid" id="users-grid"></div>
   </div>
+
+  <!-- REQUESTS PANEL -->
+  <div id="p-reqs" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div class="stl">📩 Requests <span>Approval System</span></div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="sb on" onclick="filterReqs('all')" id="rf-all">Sab</button>
+        <button class="sb" onclick="filterReqs('pending')" id="rf-pending">⏳ Pending</button>
+        <button class="sb" onclick="filterReqs('approved')" id="rf-approved">✅ Approved</button>
+        <button class="sb" onclick="filterReqs('rejected')" id="rf-rejected">❌ Rejected</button>
+      </div>
+    </div>
+    <div id="reqs-list"></div>
+  </div>
 </main>
 
 <!-- MAIN ENTRY MODAL -->
@@ -987,6 +1041,27 @@ mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding
       </div>
     </div>
     <div class="mf" style="flex-shrink:0"><div></div><div style="display:flex;gap:6px"><button class="btn btn-ghost" onclick="closeM('user-modal')">Cancel</button><button class="btn btn-green" onclick="saveUser()">✓ Save</button></div></div>
+  </div>
+</div>
+
+<!-- REQUEST REASON MODAL -->
+<div class="ov" id="req-modal" onclick="closeOut(event,'req-modal')" style="z-index:650">
+  <div class="modal" style="max-width:440px">
+    <div class="mh"><div class="mt">📩 <span id="req-modal-title">Request bhejo</span></div><button class="mx" onclick="closeM('req-modal')">✕</button></div>
+    <div class="mb">
+      <input type="hidden" id="req-target-id">
+      <input type="hidden" id="req-action-type">
+      <input type="hidden" id="req-target-type">
+      <div class="fg2" style="margin-bottom:12px">
+        <label class="flbl">Kya karna chahte ho?</label>
+        <div id="req-action-display" style="font-size:13px;font-weight:600;color:var(--blue);padding:6px 0"></div>
+      </div>
+      <div class="fg2" style="margin-bottom:12px">
+        <label class="flbl">Wajah (Reason) *</label>
+        <textarea class="finp" id="req-reason" rows="3" placeholder="Admin ko batao ki kyun edit/delete chahiye..." style="resize:vertical"></textarea>
+      </div>
+    </div>
+    <div class="mf"><div style="font-size:10px;color:var(--text3)">Admin ko request jaayegi</div><div style="display:flex;gap:6px"><button class="btn btn-ghost" onclick="closeM('req-modal')">Cancel</button><button class="btn btn-green" onclick="submitRequest()">📩 Request Bhejo</button></div></div>
   </div>
 </div>
 
@@ -1380,7 +1455,7 @@ function saveL(){localStorage.setItem('cs_r',JSON.stringify(recs));}
 
 // ===== TABS =====
 function goTab(t){
-  ['dash','rec','jim','store','own','pay','rep','gclass','users'].forEach(x=>{
+  ['dash','rec','jim','store','own','pay','rep','gclass','users','reqs'].forEach(x=>{
     const p=document.getElementById('p-'+x),tab=document.getElementById('tab-'+x);
     if(p)p.classList.toggle('hidden',x!==t);
     if(tab)tab.classList.toggle('active',x===t);
@@ -1393,6 +1468,7 @@ function goTab(t){
   if(t==='own')updOwn();
   if(t==='gclass')renderGradingClassTab();
   if(t==='users')renderUsers();
+  if(t==='reqs')renderRequests();
 }
 
 // ===== DESTINATION =====
@@ -1613,7 +1689,7 @@ function saveR(){
     createdAt:editId?recs.find(x=>x.id===editId)?.createdAt:new Date().toISOString()
   };
 
-  if(editId){recs=recs.map(x=>x.id===editId?rec:x);toast(farmer+' ka record update ho gaya!','s');}
+  if(editId){recs=recs.map(x=>x.id===editId?rec:x);toast(farmer+' ka record update ho gaya!','s');markRequestUsed(editId,'edit','record');}
   else{recs.unshift(rec);toast(farmer+' ki entry save ho gayi! 🥔','s');}
   saveL();closeM('modal');
   updAll();applyF();
@@ -1626,6 +1702,7 @@ function delR(id){
   recs=recs.filter(x=>x.id!==id);
   saveL();updAll();applyF();
   if(rec)saveToSheet(rec,'delete');
+  markRequestUsed(id,'delete','record');
   toast('Record delete ho gaya','i');
   closeM('d-modal');
 }
@@ -1816,7 +1893,7 @@ function renderT(){
       <td>${r.chamber?`<span style="background:var(--bluebg);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">C${r.chamber}${r.floor?' F'+r.floor:''}${r.pillar?' '+r.pillar:''}</span>`:'—'}</td>
       <td><div class="ab">
         <button class="ab2 v" onclick="viewD('${r.id}')">👁</button>
-        ${currentUser&&currentUser.role==='admin'?`<button class="ab2 e" onclick="openM('${r.id}')">✏</button><button class="ab2 d" onclick="delR('${r.id}')">🗑</button>`:''}
+        ${currentUser&&(hasPerm('edit')||hasApprovedRequest(r.id,'edit','record'))?`<button class="ab2 e" onclick="openM('${r.id}')">✏</button>`:''}${currentUser&&!hasPerm('edit')&&!hasApprovedRequest(r.id,'edit','record')?`<button class="ab2 e" onclick="openReqModal('${r.id}','edit','record')" title="Edit Request bhejo" style="color:#b45309;border-color:#fde68a;background:#fef3c7">📩</button>`:''}${currentUser&&(hasPerm('delete')||hasApprovedRequest(r.id,'delete','record'))?`<button class="ab2 d" onclick="delR('${r.id}')">🗑</button>`:''}${currentUser&&!hasPerm('delete')&&!hasApprovedRequest(r.id,'delete','record')?`<button class="ab2 d" onclick="openReqModal('${r.id}','delete','record')" title="Delete Request bhejo" style="color:#b45309;border-color:#fde68a;background:#fef3c7">📩</button>`:''}
       </div></td>
     </tr>`;
   }).join('');
@@ -1901,7 +1978,7 @@ function viewD(id){
     </div>
     ${r.notes?`<div style="margin-top:11px;padding:9px;background:var(--s2);border-radius:6px;font-size:12px;color:var(--text2)">📝 ${r.notes}</div>`:''}
     <div style="margin-top:11px;display:flex;gap:6px;justify-content:flex-end">
-      ${currentUser&&currentUser.role==='admin'?`<button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button><button class="btn btn-red" onclick="delR('${r.id}')">🗑 Delete</button>`:''}
+      ${currentUser&&(hasPerm('edit')||hasApprovedRequest(r.id,'edit','record'))?`<button class="btn btn-ghost" onclick="openM('${r.id}');closeM('d-modal')">✏ Edit</button>`:''}${currentUser&&!hasPerm('edit')&&!hasApprovedRequest(r.id,'edit','record')?`<button class="btn" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a" onclick="openReqModal('${r.id}','edit','record')">📩 Edit Request</button>`:''}${currentUser&&(hasPerm('delete')||hasApprovedRequest(r.id,'delete','record'))?`<button class="btn btn-red" onclick="delR('${r.id}')">🗑 Delete</button>`:''}${currentUser&&!hasPerm('delete')&&!hasApprovedRequest(r.id,'delete','record')?`<button class="btn" style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5" onclick="openReqModal('${r.id}','delete','record')">📩 Delete Request</button>`:''}
     </div>`;
   document.getElementById('d-modal').classList.add('open');
 }
@@ -2140,6 +2217,276 @@ function renderOwnTable(rows){
   }).join(''):`<tr><td colspan="${ncol}"><div class="empty"><div class="ei">🛒</div><h3>Koi own purchase nahi</h3></div></td></tr>`;
 }
 
+/** Kul dena (recs) + journal Dr − payments − journal Cr — har farmer ka balance */
+function farmerBalanceParts(name){
+  const net=recs.filter(r=>r.farmer===name).reduce((s,r)=>s+(Number(r.netPay)||0),0);
+  let credit=0,jDebit=0;
+  payments.filter(p=>p.farmer===name).forEach(p=>{
+    const a=Number(p.amount)||0;
+    if(p.journalRole==='to')jDebit+=a;
+    else credit+=a;
+  });
+  const totalDebit=net+jDebit;
+  const balance=totalDebit-credit;
+  return{net,credit,jDebit,totalDebit,balance};
+}
+
+/** Tally-style lines: date, particulars, vch, dr, cr, running balance */
+function getFarmerLedgerLines(name){
+  /* Tally convention for Party (Sundry Creditor) Ledger:
+     Purchase from party → Cr (gross purchase amount — ownAmt)
+     Deductions (grading/bardana/labour) → Dr (reduce what we owe)
+     Payment to party → Dr (we paid them)
+     Balance negative = Cr balance = we owe; positive = Dr balance = overpaid */
+  const lines=[];
+  recs.filter(r=>r.farmer===name).forEach(r=>{
+    const rc='RC '+(r.receipt||'—');
+    const bags=r.totalBags||0;
+    const ownAmt=Number(r.ownAmt)||0;
+    const gradingAmt=Number(r.gradingAmt)||0;
+    const bardanaAmt=Number(r.bardanaAmt)||0;
+    const labourAmt=Number(r.labourAmt)||0;
+
+    /* 1. Gross Purchase — Cr (full ownAmt before deductions) */
+    lines.push({
+      date:r.date||'',
+      sort:1,
+      sub:0,
+      particulars:'Purchase — '+rc+' | '+bags+' Bags (St:'+(r.storeBags||0)+' Ow:'+(r.ownBags||0)+' Gh:'+(r.gharBags||0)+')',
+      dr:0,
+      cr:ownAmt,
+      vch:'Purchase',
+      payId:null
+    });
+
+    /* 2. Grading deduction — Dr */
+    if(gradingAmt>0){
+      lines.push({
+        date:r.date||'',
+        sort:1,
+        sub:1,
+        particulars:'  Grading — '+rc+' | '+(r.gradingBags||bags)+' bags × ₹'+(r.gradingRate||0)+'/bag',
+        dr:gradingAmt,
+        cr:0,
+        vch:'Grading',
+        payId:null
+      });
+    }
+
+    /* 3. Bardana deduction — Dr */
+    if(bardanaAmt>0){
+      lines.push({
+        date:r.date||'',
+        sort:1,
+        sub:2,
+        particulars:'  Bardana — '+rc+' | '+(r.bardanaBags||bags)+' bags × ₹'+(r.bardanaRate||0)+'/bag',
+        dr:bardanaAmt,
+        cr:0,
+        vch:'Bardana',
+        payId:null
+      });
+    }
+
+    /* 4. Labour deduction — Dr */
+    if(labourAmt>0){
+      lines.push({
+        date:r.date||'',
+        sort:1,
+        sub:3,
+        particulars:'  Labour — '+rc+' | '+(r.labourBags||bags)+' bags × ₹'+(r.labourRate||0)+'/bag',
+        dr:labourAmt,
+        cr:0,
+        vch:'Labour',
+        payId:null
+      });
+    }
+  });
+  payments.filter(p=>p.farmer===name).forEach(p=>{
+    const a=Number(p.amount)||0;
+    if(p.journalRole==='to'){
+      /* Dena badha (owe more) = Cr in party ledger */
+      lines.push({
+        date:p.date||'',
+        sort:2,
+        particulars:'Journal (Cr) — '+String(p.counterparty||'?')+' se transfer — dena badha',
+        dr:0,
+        cr:a,
+        vch:'Journal',
+        payId:p.id
+      });
+    }else if(p.journalRole==='from'){
+      /* Transfer out / dena ghata = Dr in party ledger */
+      lines.push({
+        date:p.date||'',
+        sort:3,
+        particulars:'Journal (Dr) — '+String(p.counterparty||'?')+' ko transfer',
+        dr:a,
+        cr:0,
+        vch:'Journal',
+        payId:p.id
+      });
+    }else{
+      /* Regular payment = Dr in party ledger */
+      lines.push({
+        date:p.date||'',
+        sort:3,
+        particulars:((p.mode||'Cash')+(p.note?': '+p.note:'')).trim()||'Payment',
+        dr:a,
+        cr:0,
+        vch:'Payment',
+        payId:p.id
+      });
+    }
+  });
+  lines.sort((a,b)=>{const c=String(a.date).localeCompare(String(b.date));if(c)return c;if(a.sort!==b.sort)return a.sort-b.sort;return(a.sub||0)-(b.sub||0);});
+  let bal=0;
+  return lines.map(l=>{bal+=l.dr-l.cr;return{...l,balance:bal};});
+}
+
+function closeLedgerPrintLayer(){
+  if(typeof window.__ledgerAfterPrint==='function'){
+    window.removeEventListener('afterprint',window.__ledgerAfterPrint);
+    window.__ledgerAfterPrint=null;
+  }
+  const layer=document.getElementById('ledger-print-layer');
+  if(!layer)return;
+  layer.classList.remove('is-on');
+  layer.innerHTML='';
+  document.body.style.overflow='';
+}
+
+/** Direct print from farmer detail — Tally Prime style ledger print */
+function printFarmerLedgerDirect(name){
+  const lines=getFarmerLedgerLines(name);
+  const bp=farmerBalanceParts(name);
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const today=new Date().toISOString().slice(0,10);
+
+  let html='<div class="ledger-print-noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">'
+    +'<button type="button" style="background:#1a3a6b;color:#fff;border:none;padding:9px 20px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600" onclick="window.print()">🖨 Print / Save as PDF</button>'
+    +'<button type="button" style="background:#e5e7eb;color:#333;border:1px solid #cbd5e1;padding:9px 16px;border-radius:6px;cursor:pointer;font-size:13px" onclick="closeLedgerPrintLayer()">✕ Band karo</button>'
+    +'<span style="font-size:11px;color:#64748b;margin-left:8px">Ctrl+P bhi use kar sakte ho</span></div>';
+
+  html+='<div style="border-bottom:3px solid #1a3a6b;padding-bottom:10px;margin-bottom:14px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px">'
+    +'<div><div style="font-size:20px;font-weight:700;color:#1a3a6b;font-family:Rajdhani,sans-serif">'+esc(name)+'</div>'
+    +'<div style="font-size:11px;color:#64748b">Party Ledger</div></div>'
+    +'<div style="text-align:right"><div style="font-size:10px;color:#64748b">Print date: '+today+'</div>'
+    +'<div style="font-size:10px;color:#64748b">Prime ColdStore Pro</div></div></div></div>';
+
+  const drTotal=lines.reduce((s,l)=>s+l.dr,0);
+  const crTotal=lines.reduce((s,l)=>s+l.cr,0);
+  const closingBal=lines.length?lines[lines.length-1].balance:0;
+
+  html+='<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:16px">'
+    +'<thead><tr style="background:#1a3a6b">'
+    +'<th style="padding:7px 8px;text-align:left;color:#fff;font-size:10px;font-weight:600">Date</th>'
+    +'<th style="padding:7px 8px;text-align:left;color:#fff;font-size:10px;font-weight:600">Particulars</th>'
+    +'<th style="padding:7px 8px;text-align:center;color:#fff;font-size:10px;font-weight:600">Vch Type</th>'
+    +'<th style="padding:7px 8px;text-align:right;color:#fff;font-size:10px;font-weight:600">Debit (Dr)</th>'
+    +'<th style="padding:7px 8px;text-align:right;color:#fff;font-size:10px;font-weight:600">Credit (Cr)</th>'
+    +'<th style="padding:7px 8px;text-align:right;color:#fff;font-size:10px;font-weight:600">Balance</th>'
+    +'</tr></thead><tbody>';
+
+  if(lines.length){
+    lines.forEach((l,i)=>{
+      const isSub=l.sub&&l.sub>0;
+      html+='<tr style="background:'+(isSub?'#f9fafb':i%2?'#f8fafc':'#fff')+';border-bottom:1px solid #e5e7eb">'
+        +'<td style="padding:6px 8px;font-family:JetBrains Mono,monospace;white-space:nowrap;font-size:10px">'+(isSub?'':esc(l.date))+'</td>'
+        +'<td style="padding:6px 8px;max-width:280px;white-space:normal;line-height:1.35;'+(isSub?'color:#64748b;font-size:10px;padding-left:20px':'')+'">'+esc(l.particulars)+'</td>'
+        +'<td style="padding:6px 8px;text-align:center;font-size:10px;'+(isSub?'color:#94a3b8':'')+'">'+esc(l.vch)+'</td>'
+        +'<td style="padding:6px 8px;text-align:right;font-family:Rajdhani,sans-serif;font-weight:600;'+(isSub?'color:#dc2626':'')+'\">'+(l.dr?'\u20B9'+fmt(l.dr):'\u2014')+'</td>'
+        +'<td style="padding:6px 8px;text-align:right;font-family:Rajdhani,sans-serif;font-weight:600;color:#15803d">'+(l.cr?'\u20B9'+fmt(l.cr):'\u2014')+'</td>'
+        +'<td style="padding:6px 8px;text-align:right;font-family:Rajdhani,sans-serif;font-weight:700;color:'+(l.balance>=0?'#166534':'#dc2626')+'">\u20B9'+fmt(Math.abs(l.balance))+' '+(l.balance<0?'Cr':l.balance>0?'Dr':'')+'</td>'
+        +'</tr>';
+    });
+  }else{
+    html+='<tr><td colspan="6" style="padding:20px;text-align:center;color:#8a95a8">Koi ledger entry nahi</td></tr>';
+  }
+
+  html+='</tbody><tfoot><tr style="background:#f0f4fc;border-top:2px solid #1a3a6b;font-weight:700">'
+    +'<td colspan="3" style="padding:8px;font-size:11px;font-weight:700">Saransh (Summary)</td>'
+    +'<td style="padding:8px;text-align:right;font-family:Rajdhani,sans-serif;font-size:13px">\u20B9'+fmt(drTotal)+'</td>'
+    +'<td style="padding:8px;text-align:right;font-family:Rajdhani,sans-serif;font-size:13px;color:#dc2626">\u20B9'+fmt(crTotal)+'</td>'
+    +'<td style="padding:8px;text-align:right;font-family:Rajdhani,sans-serif;font-size:14px;color:'+(closingBal>=0?'#166534':'#dc2626')+'">\u20B9'+fmt(Math.abs(closingBal))+' '+(closingBal<0?'Cr':closingBal>0?'Dr':'')+'</td>'
+    +'</tr></tfoot></table>';
+
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e5e7eb;padding-top:8px;font-size:10px;color:#94a3b8">'
+    +'<span>Dr Total: \u20B9'+fmt(drTotal)+' | Cr Total: \u20B9'+fmt(crTotal)+' | Baaki: \u20B9'+fmt(Math.abs(closingBal))+' '+(closingBal<0?'Cr':closingBal>0?'Dr':'')+'</span>'
+    +'<span>Generated by Prime ColdStore Pro</span></div>';
+
+  const layer=document.getElementById('ledger-print-layer');
+  if(!layer){toast('Print layer nahi mila','e');return;}
+  layer.innerHTML=html;
+  document.body.style.overflow='hidden';
+  layer.classList.add('is-on');
+  if(typeof window.__ledgerAfterPrint==='function')window.removeEventListener('afterprint',window.__ledgerAfterPrint);
+  window.__ledgerAfterPrint=function(){closeLedgerPrintLayer();};
+  window.addEventListener('afterprint',window.__ledgerAfterPrint);
+  toast('Print preview ready — Print / Save as PDF dabao','s');
+}
+
+/** Baqi reports jaisa: VIEW_REPORT_EXPORT + #r-out (CSV/PDF = uper wale buttons) */
+function prepareFarmerLedgerForReportExport(name){
+  const lines=getFarmerLedgerLines(name);
+  const drTotal=lines.reduce((s,l)=>s+l.dr,0);
+  const crTotal=lines.reduce((s,l)=>s+l.cr,0);
+  const closingBal=lines.length?lines[lines.length-1].balance:0;
+  const hdr=['Date','Particulars','Vch Type','Debit (Dr)','Credit (Cr)','Balance'];
+  const rows=lines.map(l=>[
+    (l.sub&&l.sub>0)?'':l.date,
+    l.particulars,
+    l.vch,
+    l.dr?'₹'+fmt(l.dr):'',
+    l.cr?'₹'+fmt(l.cr):'',
+    '₹'+fmt(Math.abs(l.balance))+(l.balance<0?' Cr':l.balance>0?' Dr':'')
+  ]);
+  rows.push(['','','— SARANSH —','Dr: ₹'+fmt(drTotal),'Cr: ₹'+fmt(crTotal),'Baaki: ₹'+fmt(Math.abs(closingBal))+(closingBal<0?' Cr':closingBal>0?' Dr':'')]);
+  let fslug=String(name).replace(/[^\w\u0900-\u0C7F\-]+/g,'_').replace(/^_|_$/g,'').slice(0,48);
+  if(!fslug)fslug='Party';
+  const title='📒 Party Ledger — '+name;
+  setViewReportExport(title,'Ledger_'+fslug,[{sectionTitle:null,headers:hdr,rows}]);
+  const out=document.getElementById('r-out');
+  if(!out)return;
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const tbody=lines.map(l=>{
+    const isSub=l.sub&&l.sub>0;
+    return`<tr style="${isSub?'background:#f9fafb':''}">
+    <td class="mono">${isSub?'':esc(l.date)}</td>
+    <td style="max-width:300px;white-space:normal;line-height:1.35;font-size:11px;${isSub?'color:#64748b;padding-left:24px;font-size:10px':''}">${esc(l.particulars)}</td>
+    <td style="${isSub?'color:#94a3b8;font-size:10px':''}">${esc(l.vch)}</td>
+    <td style="text-align:right;font-family:Rajdhani,sans-serif;font-weight:600;${isSub?'color:#dc2626':''}">${l.dr?'₹'+fmt(l.dr):'—'}</td>
+    <td style="text-align:right;color:#15803d;font-family:Rajdhani,sans-serif;font-weight:600">${l.cr?'₹'+fmt(l.cr):'—'}</td>
+    <td style="text-align:right;font-family:Rajdhani,sans-serif;font-weight:700;color:${l.balance>=0?'#166534':'#dc2626'}">₹${fmt(Math.abs(l.balance))} ${l.balance<0?'Cr':l.balance>0?'Dr':''}</td>
+  </tr>`;}).join('');
+  out.innerHTML=`<div class="tw"><div class="th2"><div class="ttl">${esc(title)}</div></div>
+  <div style="padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.45;border-bottom:1px solid var(--border)">
+    <strong>Baqi reports jaisa:</strong> uper row mein pehle <strong style="color:#047857">📥 Isi report → CSV</strong> dabao, phir <strong style="color:#b91c1c">📄 Isi report → PDF</strong> (Print / Save as PDF).
+    <br><span style="font-size:11px;color:var(--text3)">Dr Total: ₹${fmt(drTotal)} · Cr Total: ₹${fmt(crTotal)} · Baaki: ₹${fmt(Math.abs(closingBal))} ${closingBal<0?'Cr':closingBal>0?'Dr':''}</span>
+  </div>
+  <div class="tsc"><table><thead><tr>
+    <th>Date</th><th>Particulars</th><th>Vch</th><th style="text-align:right">Dr</th><th style="text-align:right">Cr</th><th style="text-align:right">Balance</th>
+  </tr></thead><tbody>${tbody}</tbody>
+  <tfoot><tr style="background:var(--s2);font-weight:700"><td colspan="3">Saransh</td>
+    <td style="text-align:right">₹${fmt(drTotal)}</td>
+    <td style="text-align:right;color:#dc2626">₹${fmt(crTotal)}</td>
+    <td style="text-align:right;color:${closingBal>=0?'#166534':'#dc2626'}">₹${fmt(Math.abs(closingBal))} ${closingBal<0?'Cr':closingBal>0?'Dr':''}</td>
+  </tr></tfoot></table></div></div>`;
+}
+
+function showFarmerLedgerInReports(name,alsoDownloadCsv){
+  prepareFarmerLedgerForReportExport(name);
+  goTab('rep');
+  if(typeof closeM==='function')try{closeM('d-modal');}catch(e){}
+  if(alsoDownloadCsv)exportViewReportCSV();
+  toast(alsoDownloadCsv?'Reports + CSV ho gayi — PDF ke liye uper 📄 dabao':'Reports tab khuli — uper 📥 CSV phir 📄 PDF (baqi reports jaisa)','s');
+}
+
+function downloadFarmerLedgerCSVReportStyle(name){
+  prepareFarmerLedgerForReportExport(name);
+  exportViewReportCSV();
+}
+
 // ===== FARMER =====
 function renderJ(){
   const s=document.getElementById('j-s').value.toLowerCase();
@@ -2148,7 +2495,7 @@ function renderJ(){
     if(!fm[r.farmer])fm[r.farmer]={name:r.farmer,village:r.village||'',mobile:r.mobile||'',storeBags:0,ownBags:0,gharBags:0,entries:0,last:r.date,netPay:0};
     const f=fm[r.farmer];
     f.storeBags+=(r.storeBags||0);f.ownBags+=(r.ownBags||0);f.gharBags+=(r.gharBags||0);
-    f.entries++;f.netPay+=(r.netPay||0);f.paid=payments.filter(p=>p.farmer===f.name).reduce((s,p)=>s+p.amount,0);
+    f.entries++;f.netPay+=(r.netPay||0);
     if(r.mobile&&!f.mobile)f.mobile=r.mobile;
     if(r.date>f.last)f.last=r.date;
   });
@@ -2159,7 +2506,8 @@ function renderJ(){
   if(!fs.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="ei">👨‍🌾</div><h3>Koi farmer nahi</h3></div>`;return;}
   grid.innerHTML=fs.map(f=>{
     const c=gc(f.name);
-    return`<div class="jcard" onclick="showJD('${f.name}')">
+    const bal=farmerBalanceParts(f.name).balance;
+    return`<div class="jcard" onclick='showJD(${JSON.stringify(f.name)})'>
       <div class="jh"><div class="jav" style="background:${c}22;color:${c}">${ini(f.name)}</div>
       <div><div class="jn" style="color:${c}">${f.name}</div>
       <div class="jm">📍 ${f.village||'N/A'}${f.mobile?' • 📱'+f.mobile:''}</div>
@@ -2168,32 +2516,64 @@ function renderJ(){
         <div class="jst"><div class="jsv" style="color:var(--teal)">${f.storeBags}</div><div class="jsl">🏪 Store Bags</div></div>
         <div class="jst"><div class="jsv" style="color:var(--purple)">${f.ownBags}</div><div class="jsl">🛒 Own Purchase</div></div>
         <div class="jst"><div class="jsv" style="color:var(--yellow)">${f.gharBags}</div><div class="jsl">🏠 Ghar Gaya</div></div>
-        <div class="jst"><div class="jsv" style="color:var(--green)">₹${fmtS(f.netPay-f.paid)}</div><div class="jsl">💰 Baaki Balance</div></div>
+        <div class="jst"><div class="jsv" style="color:var(--green)">₹${fmtS(bal)}</div><div class="jsl">💰 Baaki Balance</div></div>
       </div>
     </div>`;
   }).join('');
 }
 
 function showJD(name){
+  const escH=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const rs=recs.filter(r=>r.farmer===name).sort((a,b)=>b.date.localeCompare(a.date));
   const c=gc(name);
   const storeBags=rs.reduce((s,r)=>s+(r.storeBags||0),0);
   const ownBags=rs.reduce((s,r)=>s+(r.ownBags||0),0);
-  const netPay=rs.reduce((s,r)=>s+(r.netPay||0),0);
-  const farmerPays=payments.filter(p=>p.farmer===name);
-  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
-  const balance=netPay-totalPaid;
+  const bp=farmerBalanceParts(name);
+  const netPay=bp.net;
+  const totalPaid=bp.credit;
+  const balance=bp.balance;
+  const ledgerLines=getFarmerLedgerLines(name);
+  const payLines=ledgerLines.filter(l=>l.vch!=='Purchase');
+  const jn=JSON.stringify(name);
   document.getElementById('d-title').textContent=name;
   document.getElementById('d-body').innerHTML=`
-    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px;flex-wrap:wrap">
       <div class="jav" style="width:44px;height:44px;font-size:16px;border-radius:8px;background:${c}22;color:${c}">${ini(name)}</div>
-      <div><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:${c}">${name}</div>
+      <div style="flex:1;min-width:160px"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:${c}">${name}</div>
       <div style="font-size:11px;color:#8a95a8">${rs.length} entries • Store: ${storeBags} bags • Own: ${ownBags} bags</div></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <button type="button" class="btn" style="font-size:11px;padding:6px 10px;background:#1a3a6b;color:#fff" onclick='printFarmerLedgerDirect(${jn})'>🖨 Print / PDF</button>
+        <button type="button" class="btn" style="font-size:11px;padding:6px 10px;background:#0f766e;color:#fff" onclick='downloadFarmerLedgerCSVReportStyle(${jn})'>📥 CSV</button>
+        <button type="button" class="btn" style="font-size:11px;padding:6px 10px;background:#047857;color:#fff" onclick='showFarmerLedgerInReports(${jn},false)'>📈 Reports tab</button>
+      </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px">
       <div style="background:var(--tbg);border:1px solid var(--tb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--teal)">${storeBags}</div><div style="font-size:10px;color:var(--text3)">🏪 Store Bags</div></div>
       <div style="background:var(--pbg);border:1px solid var(--pb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--purple)">${ownBags}</div><div style="font-size:10px;color:var(--text3)">🛒 Own Purchase</div></div>
-      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--green)">₹${fmt(netPay)}</div><div style="font-size:10px;color:var(--text3)">💰 Kul Dena</div></div>
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:7px;padding:11px;text-align:center"><div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--green)">₹${fmt(bp.totalDebit)}</div><div style="font-size:10px;color:var(--text3)">💰 Kul Dena (+Journal Dr)</div></div>
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="font-family:Rajdhani,sans-serif;font-size:12px;font-weight:700;color:var(--blue2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">📒 Party Ledger (Tally style)</div>
+      <div style="overflow-x:auto;max-height:340px;overflow-y:auto;border:1px solid var(--border);border-radius:7px;background:#fff">
+        <table style="width:100%;border-collapse:collapse;font-size:11px">
+          <thead><tr style="background:#1a3a6b;color:#fff;position:sticky;top:0">
+            <th style="padding:6px 8px;text-align:left;font-size:9px">Date</th>
+            <th style="padding:6px 8px;text-align:left;font-size:9px">Particulars</th>
+            <th style="padding:6px 8px;text-align:left;font-size:9px">Vch</th>
+            <th style="padding:6px 8px;text-align:right;font-size:9px">Dr</th>
+            <th style="padding:6px 8px;text-align:right;font-size:9px">Cr</th>
+            <th style="padding:6px 8px;text-align:right;font-size:9px">Balance</th>
+          </tr></thead>
+          <tbody>${ledgerLines.length?ledgerLines.map(l=>{const isSub=l.sub&&l.sub>0;const vchBg=l.vch==='Purchase'?'var(--tbg)':l.vch==='Journal'?'#fef3c7':l.vch==='Grading'?'#fef3c7':l.vch==='Bardana'?'#fff7ed':l.vch==='Labour'?'#f3e8ff':'var(--gbg)';const vchClr=l.vch==='Purchase'?'var(--teal)':l.vch==='Journal'?'#b45309':l.vch==='Grading'?'#92400e':l.vch==='Bardana'?'#c2410c':l.vch==='Labour'?'#7c3aed':'var(--green)';return`<tr style="border-bottom:1px solid var(--border);${isSub?'background:#fafbfc':''}">
+            <td style="padding:5px 8px;font-family:'JetBrains Mono',monospace;white-space:nowrap;font-size:10px">${isSub?'':escH(l.date)}</td>
+            <td style="padding:5px 8px;max-width:200px;white-space:normal;line-height:1.3;${isSub?'color:#64748b;font-size:10px;padding-left:18px':'color:var(--text2)'}">${escH(l.particulars)}</td>
+            <td style="padding:5px 8px"><span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${vchBg};color:${vchClr}">${l.vch}</span></td>
+            <td style="padding:5px 8px;text-align:right;font-family:'Rajdhani',sans-serif;font-weight:600;${isSub?'color:#dc2626':'color:var(--text)'}">${l.dr?'₹'+fmt(l.dr):'—'}</td>
+            <td style="padding:5px 8px;text-align:right;font-family:'Rajdhani',sans-serif;font-weight:600;color:#15803d">${l.cr?'₹'+fmt(l.cr):'—'}</td>
+            <td style="padding:5px 8px;text-align:right;font-family:'Rajdhani',sans-serif;font-weight:700;color:${l.balance>=0?'#166534':'#dc2626'}">₹${fmt(Math.abs(l.balance))} ${l.balance<0?'Cr':l.balance>0?'Dr':''}</td>
+          </tr>`;}).join(''):'<tr><td colspan="6" style="padding:16px;text-align:center;color:var(--text3)">Koi ledger line nahi</td></tr>'}</tbody>
+        </table>
+      </div>
     </div>
     <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
       <thead><tr style="background:#f0f4fc">${['Tarikh','Total','Store','Own','Ghar','Own Amt','Grade','Bardana','Labour','Net Dena','Action'].map(h=>`<th style="padding:6px 9px;text-align:left;color:var(--blue2);border-bottom:2px solid #dae4f8;font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
@@ -2212,35 +2592,40 @@ function showJD(name){
       </tr>`).join('')}</tbody>
     </table></div>
     <div style='margin-top:14px'>
-      <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px'>
-        <div style='font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--blue2)'>💵 Payment Ledger</div>
-        ${currentUser&&currentUser.role!=='viewer'?`<button class='add-pay-btn' onclick="openPayModal('${name}')">+ Payment</button>`:''}
+      <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px'>
+        <div style='font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--blue2)'>💵 Payments &amp; Journal</div>
+        ${currentUser&&hasPerm('payment')?`<button class='add-pay-btn' onclick='openPayModal(${jn})'>+ Payment / Journal</button>`:''}
       </div>
       <div style='background:var(--s2);border:1px solid var(--border);border-radius:7px;overflow:hidden'>
-        ${farmerPays.length?farmerPays.sort((a,b)=>a.date.localeCompare(b.date)).map((p,i)=>{
-          const runBal=netPay-farmerPays.slice(0,i+1).reduce((s,x)=>s+x.amount,0);
+        ${payLines.length?payLines.map(l=>{
+          const pid=l.payId?JSON.stringify(l.payId):'';
+          const canEditPay=hasPerm('payment')||hasApprovedRequest(l.payId,'edit','payment');
+          const canDelPay=hasPerm('payment')||hasApprovedRequest(l.payId,'delete','payment');
+          const ed=currentUser&&l.payId?`<div style='display:flex;gap:4px;margin-top:2px'>
+                ${canEditPay?`<button type="button" onclick='editPayment(${pid},${jn})' style='font-size:10px;padding:2px 6px;background:#e8f0fd;color:#1a5fc8;border:1px solid #1a5fc8;border-radius:3px;cursor:pointer'>Edit</button>`:`<button type="button" onclick='openReqModal(${pid},"edit","payment")' style='font-size:10px;padding:2px 6px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:3px;cursor:pointer'>📩 Edit</button>`}
+                ${canDelPay?`<button type="button" onclick='deletePayment(${pid},${jn})' style='font-size:10px;padding:2px 6px;background:#fee2e2;color:#dc2626;border:1px solid #dc2626;border-radius:3px;cursor:pointer'>Del</button>`:`<button type="button" onclick='openReqModal(${pid},"delete","payment")' style='font-size:10px;padding:2px 6px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:3px;cursor:pointer'>📩 Del</button>`}
+              </div>`:'';
+          const badge=l.vch==='Journal'?'Journal':escH((l.particulars.split(':')[0]||l.vch||'Pay').trim());
           return `<div class='pay-row'>
             <div style='display:flex;flex-direction:column;gap:2px'>
-              <div style='display:flex;align-items:center;gap:6px'>
-                <span class='pay-badge'>₹${fmt(p.amount)}</span>
-                <span style='font-size:10px;background:#e8f0fd;color:#1a5fc8;border-radius:3px;padding:1px 6px;font-weight:600'>${p.mode||'Cash'}</span>
+              <div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap'>
+                ${l.dr?`<span class='pay-badge' style="background:#fff7ed;color:#c2410c;border-color:#fdba74">Dr ₹${fmt(l.dr)}</span>`:''}
+                ${l.cr?`<span class='pay-badge'>Cr ₹${fmt(l.cr)}</span>`:''}
+                <span style='font-size:10px;background:#e8f0fd;color:#1a5fc8;border-radius:3px;padding:1px 6px;font-weight:600'>${badge}</span>
               </div>
-              <div style='font-size:11px;color:var(--text3)'>${p.note||''}</div>
+              <div style='font-size:11px;color:var(--text3)'>${escH(l.particulars)}</div>
             </div>
             <div style='display:flex;flex-direction:column;align-items:flex-end;gap:3px'>
-              <span style='font-size:11px;color:#8a95a8'>${p.date}</span>
-              <span style='font-size:10px;font-family:Rajdhani,sans-serif;font-weight:700;color:${runBal<=0?"#166534":"#dc2626"}'>Baaki: ₹${fmt(Math.abs(runBal))}</span>
-              ${currentUser&&currentUser.role!=='viewer'?`<div style='display:flex;gap:4px;margin-top:2px'>
-                <button onclick="editPayment('${p.id}','${name}')" style='font-size:10px;padding:2px 6px;background:#e8f0fd;color:#1a5fc8;border:1px solid #1a5fc8;border-radius:3px;cursor:pointer'>Edit</button>
-                <button onclick="deletePayment('${p.id}','${name}')" style='font-size:10px;padding:2px 6px;background:#fee2e2;color:#dc2626;border:1px solid #dc2626;border-radius:3px;cursor:pointer'>Del</button>
-              </div>`:''}
+              <span style='font-size:11px;color:#8a95a8'>${l.date}</span>
+              <span style='font-size:10px;font-family:Rajdhani,sans-serif;font-weight:700;color:${l.balance>=0?"#166534":"#dc2626"}'>Baaki: ₹${fmt(Math.abs(l.balance))} ${l.balance<0?"Cr":l.balance>0?"Dr":""}</span>
+              ${ed}
             </div>
           </div>`;
-        }).join(''):'<div style="padding:14px;text-align:center;color:#8a95a8;font-size:12px">Koi payment nahi abhi tak</div>'}
+        }).join(''):'<div style="padding:14px;text-align:center;color:#8a95a8;font-size:12px">Koi payment / journal nahi abhi tak</div>'}
       </div>
       <div class='pay-total'>
-        <div><div style='font-size:11px;color:var(--text3)'>Kul Dena</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:var(--green)'>₹${fmt(netPay)}</div></div>
-        <div><div style='font-size:11px;color:var(--text3)'>Diya</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:#1a7a3c'>₹${fmt(totalPaid)}</div></div>
+        <div><div style='font-size:11px;color:var(--text3)'>Kul Dena (+J Dr)</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:var(--green)'>₹${fmt(bp.totalDebit)}</div></div>
+        <div><div style='font-size:11px;color:var(--text3)'>Credit (Pay+J Cr)</div><div style='font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:#1a7a3c'>₹${fmt(totalPaid)}</div></div>
         <div><div style='font-size:11px;color:var(--text3)'>Baaki</div><div style='font-family:Rajdhani,sans-serif;font-size:18px;font-weight:700;color:${balance<=0?"#166534":"#dc2626"}'>₹${fmt(Math.abs(balance))} ${balance<=0?'<span class="ps-paid">Clear</span>':totalPaid>0?'<span class="ps-partial">Partial</span>':'<span class="ps-pending">Pending</span>'}</div></div>
       </div>
     </div>
@@ -2305,11 +2690,18 @@ function exportViewReportCSV(){
     (sec.rows||[]).forEach(r=>lines.push(r.map(csvEscapeCell).join(',')));
   });
   const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
+  a.href=url;
   a.download=VIEW_REPORT_EXPORT.fileSlug+'_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.style.position='fixed';
+  a.style.left='-9999px';
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(()=>{
+    try{document.body.removeChild(a);}catch(e){}
+    URL.revokeObjectURL(url);
+  },500);
   toast('Yahi wali report CSV download ho gayi!','s');
 }
 function exportViewReportPDF(){
@@ -2318,8 +2710,9 @@ function exportViewReportPDF(){
     return;
   }
   const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const win=window.open('','_blank','width=1100,height=720');
-  let body='<button style="background:#1a3a6b;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;margin-bottom:12px" onclick="window.print()">Print / Save PDF</button>';
+  let body='<div class="ledger-print-noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">'
+    +'<button type="button" style="background:#1a3a6b;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:12px" onclick="window.print()">Print / Save PDF</button>'
+    +'<button type="button" style="background:#e5e7eb;color:#111;border:1px solid #cbd5e1;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:12px" onclick="closeLedgerPrintLayer()">✕ Band karo</button></div>';
   body+='<h1 style="font-size:16px;color:#1a3a6b;margin:0 0 14px">'+esc(VIEW_REPORT_EXPORT.title)+'</h1>';
   VIEW_REPORT_EXPORT.sections.forEach(sec=>{
     if(sec.sectionTitle)body+='<h2 style="font-size:13px;color:#1d4ed8;margin:16px 0 8px;border-bottom:1px solid #e5e7eb;padding-bottom:4px">'+esc(sec.sectionTitle)+'</h2>';
@@ -2333,9 +2726,26 @@ function exportViewReportPDF(){
     });
     body+='</tbody></table>';
   });
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(VIEW_REPORT_EXPORT.title)+'</title><style>body{font-family:Segoe UI,Arial,sans-serif;margin:14px;color:#1a2332}@media print{button{display:none}}</style></head><body>'+body+'</body></html>');
-  win.document.close();
-  toast('PDF window — Print ya Save as PDF','s');
+  const fullDoc='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(VIEW_REPORT_EXPORT.title)+'</title><style>body{font-family:Segoe UI,Arial,sans-serif;margin:14px;color:#1a2332}@media print{button,.ledger-print-noprint{display:none!important}}</style></head><body>'+body+'</body></html>';
+  const win=window.open('','_blank','width=1100,height=720');
+  if(win&&typeof win.document!=='undefined'&&!win.closed){
+    try{
+      win.document.open();
+      win.document.write(fullDoc);
+      win.document.close();
+      toast('PDF window — Print ya Save as PDF','s');
+      return;
+    }catch(e){console.log('Report PDF popup fail',e);}
+  }
+  const layer=document.getElementById('ledger-print-layer');
+  if(!layer){toast('Popup band hai aur print layer nahi — browser setting check karo','e');return;}
+  layer.innerHTML=body;
+  document.body.style.overflow='hidden';
+  layer.classList.add('is-on');
+  if(typeof window.__ledgerAfterPrint==='function')window.removeEventListener('afterprint',window.__ledgerAfterPrint);
+  window.__ledgerAfterPrint=function(){closeLedgerPrintLayer();};
+  window.addEventListener('afterprint',window.__ledgerAfterPrint);
+  toast('Neeche preview — Print / Save as PDF (popup file:// par band ho sakti hai)','i');
 }
 
 function genR(type){
@@ -3334,7 +3744,7 @@ async function checkSession(){
       // Map profile to currentUser format for compatibility
       currentUser={id:profile.id||fbUser.uid,name:profile.name||fbUser.email,username:fbUser.email,email:fbUser.email,role:profile.role||'viewer',permissions:profile.permissions||null};
       hideLoginUI();
-      applyPermissions();addUserBadge();setSt('ch');await loadPayments();await loadGradeClassesFB();loadSheet();
+      applyPermissions();addUserBadge();setSt('ch');await loadPayments();await loadRequestsFromFB();await loadGradeClassesFB();loadSheet();
       toast('Welcome '+currentUser.name+'!','s');
     } else {
       // No user — show login
@@ -3394,9 +3804,9 @@ function applyPermissions(){
   // Users tab
   const usersTab=document.getElementById('tab-users');if(usersTab)usersTab.style.display=hasPerm('users')?'':'none';
   const gclassTab=document.getElementById('tab-gclass');if(gclassTab)gclassTab.style.display=hasPerm('add')?'':'none';
-  // Edit/Delete buttons in table
-  document.querySelectorAll('.ab2.e').forEach(b=>b.style.display=hasPerm('edit')?'':'none');
-  document.querySelectorAll('.ab2.d').forEach(b=>b.style.display=hasPerm('delete')?'':'none');
+  const reqsTab=document.getElementById('tab-reqs');if(reqsTab)reqsTab.style.display=currentUser?'':'none';
+  updateReqBadge();
+  /* Edit/Delete buttons now shown for all logged-in users (request buttons handled in renderT) */
   // Naya User button
   document.querySelectorAll('[onclick*="openUserModal()"]').forEach(b=>b.style.display=hasPerm('users')?'':'none');
   const ptb=document.getElementById('pay-tab-paybtn');if(ptb)ptb.style.display=(currentUser&&hasPerm('payment'))?'inline-flex':'none';
@@ -3471,8 +3881,9 @@ function farmerPaymentSummaries(){
     fm[n].payCount=(fm[n].payCount||0)+1;
   });
   return Object.values(fm).map(f=>{
-    const paid=payments.filter(p=>p.farmer===f.name).reduce((s,p)=>s+(Number(p.amount)||0),0);
-    const bal=f.netPay-paid;
+    const bp=farmerBalanceParts(f.name);
+    const paid=bp.credit;
+    const bal=bp.balance;
     let status='—';
     if(f.netPay<=0&&paid<=0)status='—';
     else if(bal<=0)status='Clear';
@@ -3599,33 +4010,75 @@ async function savePaymentFB(pay,action){
   localStorage.setItem('cs_payments',JSON.stringify(payments));
   // Sheet backup
   if(SHEET_URL&&SHEET_URL!=='YOUR_SHEET_URL_HERE'){
-    const p={action:'payment_'+action,id:pay.id||'',farmer:pay.farmer||'',amount:pay.amount||0,date:pay.date||'',note:pay.note||'',mode:pay.mode||'Cash'};
+    const p={action:'payment_'+action,id:pay.id||'',farmer:pay.farmer||'',amount:pay.amount||0,date:pay.date||'',note:pay.note||'',mode:pay.mode||'Cash',journalPairId:pay.journalPairId||'',journalRole:pay.journalRole||'',counterparty:pay.counterparty||''};
     const img=new Image();
     img.src=SHEET_URL+'?data='+encodeURIComponent(JSON.stringify(p));
   }
 }
 
+function fillPayJournalPartnerSelect(exceptName){
+  const sel=document.getElementById('pay-journal-partner');
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— Chuno —</option>';
+  [...new Set(recs.map(r=>r.farmer))].filter(Boolean).sort().forEach(f=>{
+    if(f===exceptName)return;
+    const o=document.createElement('option');
+    o.value=f;
+    o.textContent=f;
+    sel.appendChild(o);
+  });
+  if(cur&&cur!==exceptName&&[...sel.options].some(o=>o.value===cur))sel.value=cur;
+}
+
+function togglePayJournalUI(){
+  const j=document.getElementById('pay-is-journal');
+  const w=document.getElementById('pay-journal-wrap');
+  const farmer=document.getElementById('pay-farmer').value;
+  if(!j||!w)return;
+  const on=j.checked;
+  w.style.display=on?'block':'none';
+  ['Cash','Online','Cheque','Other'].forEach(m=>{
+    const btn=document.getElementById('pmb-'+m);
+    if(btn){btn.disabled=on;if(on)btn.classList.remove('active');}
+  });
+  if(on){
+    document.getElementById('pay-mode').value='Journal';
+    fillPayJournalPartnerSelect(farmer);
+  }else{
+    setPayMode('Cash');
+  }
+  updPayPreview();
+}
+
 function openPayModal(farmerName){
-  const farmerRecs=recs.filter(r=>r.farmer===farmerName);
-  const netPay=farmerRecs.reduce((s,r)=>s+(r.netPay||0),0);
-  const farmerPays=payments.filter(p=>p.farmer===farmerName);
-  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
-  const balance=netPay-totalPaid;
+  const bp=farmerBalanceParts(farmerName);
+  const balance=bp.balance;
   // Info card
   document.getElementById('pay-farmer').value=farmerName;
   document.getElementById('pay-edit-id').value='';
   document.getElementById('pay-farmer-name').textContent=farmerName;
-  document.getElementById('pay-info-total').textContent='₹'+fmt(netPay);
-  document.getElementById('pay-info-paid').textContent='₹'+fmt(totalPaid);
+  document.getElementById('pay-info-total').textContent='₹'+fmt(bp.totalDebit);
+  document.getElementById('pay-info-paid').textContent='₹'+fmt(bp.credit);
   document.getElementById('pay-info-bal').textContent='₹'+fmt(balance);
   document.getElementById('pay-modal-title').textContent='Payment Add Karo';
   document.getElementById('pay-save-btn').textContent='Save Payment';
+  const jCb=document.getElementById('pay-is-journal');
+  const jPart=document.getElementById('pay-journal-partner');
+  if(jCb){jCb.checked=false;jCb.disabled=false;}
+  if(jPart){jPart.value='';jPart.disabled=false;}
+  document.getElementById('pay-journal-wrap').style.display='none';
+  ['Cash','Online','Cheque','Other'].forEach(m=>{
+    const btn=document.getElementById('pmb-'+m);
+    if(btn)btn.disabled=false;
+  });
   // Reset fields
   document.getElementById('pay-amount').value='';
   document.getElementById('pay-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('pay-note').value='';
   document.getElementById('pay-preview').style.display='none';
   setPayMode('Cash');
+  fillPayJournalPartnerSelect(farmerName);
   // Quick amount buttons
   const qb=document.getElementById('pay-quick-btns');
   const qtAmts=balance>0?[Math.round(balance/4),Math.round(balance/2),Math.round(balance*3/4),balance].filter(x=>x>0):[10000,25000,50000,100000];
@@ -3646,11 +4099,19 @@ function updPayPreview(){
   const farmer=document.getElementById('pay-farmer').value;
   const amount=parseFloat(document.getElementById('pay-amount').value)||0;
   const editId=document.getElementById('pay-edit-id').value;
-  const farmerRecs=recs.filter(r=>r.farmer===farmer);
-  const netPay=farmerRecs.reduce((s,r)=>s+(r.netPay||0),0);
-  const farmerPays=payments.filter(p=>p.farmer===farmer&&p.id!==editId);
-  const totalPaid=farmerPays.reduce((s,p)=>s+p.amount,0);
-  const afterBal=netPay-totalPaid-amount;
+  const pairId=editId?(payments.find(p=>p.id===editId)||{}).journalPairId:'';
+  const skipIds=new Set();
+  if(editId)skipIds.add(editId);
+  if(pairId)payments.filter(p=>p.journalPairId===pairId).forEach(p=>skipIds.add(p.id));
+  const net=recs.filter(r=>r.farmer===farmer).reduce((s,r)=>s+(Number(r.netPay)||0),0);
+  let credit=0,jDebit=0;
+  payments.filter(p=>p.farmer===farmer&&!skipIds.has(p.id)).forEach(p=>{
+    const a=Number(p.amount)||0;
+    if(p.journalRole==='to')jDebit+=a;
+    else credit+=a;
+  });
+  const totalDebit=net+jDebit;
+  const afterBal=totalDebit-credit-amount;
   const prev=document.getElementById('pay-preview');
   const balEl=document.getElementById('pay-after-bal');
   if(amount>0){
@@ -3667,18 +4128,52 @@ async function savePayment(){
   const amount=parseFloat(document.getElementById('pay-amount').value)||0;
   const date=document.getElementById('pay-date').value;
   const note=document.getElementById('pay-note').value.trim();
-  const mode=document.getElementById('pay-mode').value||'Cash';
+  const mode=document.getElementById('pay-is-journal')&&document.getElementById('pay-is-journal').checked?'Journal':(document.getElementById('pay-mode').value||'Cash');
   const editId=document.getElementById('pay-edit-id').value;
+  const partner=(document.getElementById('pay-journal-partner')&&document.getElementById('pay-journal-partner').value)||'';
+  const isJournal=document.getElementById('pay-is-journal')&&document.getElementById('pay-is-journal').checked;
   if(!amount||amount<=0){toast('Sahi amount daalo!','e');return;}
   if(!date){toast('Tarikh daalo!','e');return;}
+  if(isJournal){
+    if(!partner||partner===farmer){toast('Journal ke liye doosra farmer chuno','e');return;}
+  }
   if(editId){
-    // Edit mode
-    const idx=payments.findIndex(p=>p.id===editId);
-    if(idx>-1){payments[idx]={...payments[idx],amount,date,note,mode};}
-    await savePaymentFB(payments[idx],'update');
-    toast('Payment update ho gayi!','s');
+    const existing=payments.find(p=>p.id===editId);
+    if(existing&&existing.journalPairId){
+      const peers=payments.filter(p=>p.journalPairId===existing.journalPairId);
+      const fromP=peers.find(p=>p.journalRole==='from');
+      const toP=peers.find(p=>p.journalRole==='to');
+      if(!fromP||!toP){toast('Journal pair corrupt','e');return;}
+      const u=currentUser?currentUser.username:'';
+      const ts=new Date().toISOString();
+      for(const p of peers){
+        const idx=payments.findIndex(x=>x.id===p.id);
+        if(idx>-1){
+          payments[idx]={...payments[idx],amount,date,note,mode:'Journal',addedBy:payments[idx].addedBy||u,addedAt:ts};
+          await savePaymentFB(payments[idx],'update');
+        }
+      }
+      toast('Journal update ho gayi!','s');
+    }else{
+      if(isJournal){toast('Normal payment ko journal mein badalne ke liye delete karke nayi journal banao','e');return;}
+      const idx=payments.findIndex(p=>p.id===editId);
+      if(idx>-1){payments[idx]={...payments[idx],amount,date,note,mode};}
+      await savePaymentFB(payments[idx],'update');
+      toast('Payment update ho gayi!','s');
+    }
+  } else if(isJournal){
+    const t=Date.now();
+    const pairId='J'+t;
+    const u=currentUser?currentUser.username:'';
+    const ts=new Date().toISOString();
+    const base={amount,date,note,mode:'Journal',journalPairId:pairId,addedBy:u,addedAt:ts};
+    const p1={...base,id:'P'+t+'_jf',farmer,journalRole:'from',counterparty:partner};
+    const p2={...base,id:'P'+t+'_jt',farmer:partner,journalRole:'to',counterparty:farmer};
+    payments.push(p1,p2);
+    await savePaymentFB(p1,'add');
+    await savePaymentFB(p2,'add');
+    toast('Journal dono farmers par save ho gayi!','s');
   } else {
-    // New payment
     const newPay={id:'P'+Date.now(),farmer,amount,date,note,mode,addedBy:currentUser?currentUser.username:'',addedAt:new Date().toISOString()};
     payments.push(newPay);
     await savePaymentFB(newPay,'add');
@@ -3698,18 +4193,53 @@ function editPayment(id,farmerName){
     document.getElementById('pay-amount').value=pay.amount;
     document.getElementById('pay-date').value=pay.date;
     document.getElementById('pay-note').value=pay.note||'';
-    setPayMode(pay.mode||'Cash');
-    document.getElementById('pay-modal-title').textContent='Payment Edit Karo';
-    document.getElementById('pay-save-btn').textContent='Update Payment';
+    const jCb=document.getElementById('pay-is-journal');
+    const jPart=document.getElementById('pay-journal-partner');
+    if(pay.journalPairId&&jCb&&jPart){
+      jCb.checked=true;
+      fillPayJournalPartnerSelect(farmerName);
+      jPart.value=pay.counterparty||'';
+      jCb.disabled=true;
+      jPart.disabled=true;
+      document.getElementById('pay-journal-wrap').style.display='block';
+      ['Cash','Online','Cheque','Other'].forEach(m=>{
+        const btn=document.getElementById('pmb-'+m);
+        if(btn){btn.disabled=true;btn.classList.remove('active');}
+      });
+      document.getElementById('pay-mode').value='Journal';
+    }else{
+      if(jCb){jCb.checked=false;jCb.disabled=false;}
+      if(jPart){jPart.disabled=false;jPart.value='';}
+      document.getElementById('pay-journal-wrap').style.display='none';
+      ['Cash','Online','Cheque','Other'].forEach(m=>{
+        const btn=document.getElementById('pmb-'+m);
+        if(btn)btn.disabled=false;
+      });
+      setPayMode(pay.mode||'Cash');
+    }
+    document.getElementById('pay-modal-title').textContent=pay.journalPairId?'Journal Edit Karo':'Payment Edit Karo';
+    document.getElementById('pay-save-btn').textContent='Update';
     updPayPreview();
   },50);
 }
 
 async function deletePayment(id,farmerName){
   if(!confirm('Payment delete karna chahte hain?'))return;
-  payments=payments.filter(p=>p.id!==id);
-  await savePaymentFB({id},'delete');
-  toast('Payment delete ho gayi','i');
+  const pay=payments.find(p=>p.id===id);
+  if(pay&&pay.journalPairId){
+    const ids=payments.filter(p=>p.journalPairId===pay.journalPairId).map(p=>p.id);
+    payments=payments.filter(p=>p.journalPairId!==pay.journalPairId);
+    for(const pid of ids){
+      await savePaymentFB({id:pid},'delete');
+      markRequestUsed(pid,'delete','payment');
+    }
+    toast('Journal pair delete ho gayi (dono farmers)','i');
+  }else{
+    payments=payments.filter(p=>p.id!==id);
+    await savePaymentFB({id},'delete');
+    markRequestUsed(id,'delete','payment');
+    toast('Payment delete ho gayi','i');
+  }
   onPaymentsChanged();
   showJD(farmerName);
 }
@@ -3736,10 +4266,225 @@ function syncPerms(){
     if(lbl&&el)lbl.classList.toggle('chk',el.checked);
   });
 }
+
+// ===== REQUEST APPROVAL SYSTEM =====
+let approvalRequests=[];
+let reqFilterMode='all';
+
+function loadRequests(){
+  const s=localStorage.getItem('cs_requests');
+  if(s)try{approvalRequests=JSON.parse(s);}catch(e){approvalRequests=[];}
+}
+function saveRequests(){
+  localStorage.setItem('cs_requests',JSON.stringify(approvalRequests));
+  if(typeof FB_DB!=='undefined'&&FB_DB){FB_DB.ref('cs/requests').set(approvalRequests).catch(e=>console.log('Req save err:',e));}
+}
+async function loadRequestsFromFB(){
+  if(typeof FB_DB==='undefined'||!FB_DB)return;
+  try{
+    const snap=await FB_DB.ref('cs/requests').once('value');
+    const val=snap.val();
+    if(val&&Array.isArray(val)){approvalRequests=val;localStorage.setItem('cs_requests',JSON.stringify(approvalRequests));}
+    FB_DB.ref('cs/requests').on('value',snap2=>{
+      const v=snap2.val();
+      approvalRequests=v?((Array.isArray(v)?v:Object.values(v)).filter(Boolean)):[];
+      localStorage.setItem('cs_requests',JSON.stringify(approvalRequests));
+      updateReqBadge();
+    });
+  }catch(e){console.log('Req load err:',e);}
+}
+
+function updateReqBadge(){
+  const badge=document.getElementById('req-badge');
+  if(!badge)return;
+  const pending=approvalRequests.filter(r=>r.status==='pending').length;
+  badge.textContent=pending;
+  badge.style.display=pending>0?'flex':'none';
+}
+
+function hasApprovedRequest(targetId,action,targetType){
+  if(!currentUser)return false;
+  const now=Date.now();
+  return approvalRequests.some(r=>
+    r.targetId===targetId&&
+    r.action===action&&
+    r.targetType===(targetType||'record')&&
+    r.requestedBy===currentUser.username&&
+    r.status==='approved'&&
+    r.approvedAt&&(now-r.approvedAt<24*60*60*1000)
+  );
+}
+
+function openReqModal(targetId,action,targetType){
+  if(!currentUser){toast('Pehle login karo','e');return;}
+  // Check if already pending
+  const existing=approvalRequests.find(r=>r.targetId===targetId&&r.action===action&&r.targetType===targetType&&r.requestedBy===currentUser.username&&r.status==='pending');
+  if(existing){toast('Ye request pehle se pending hai — admin ke paas gayi hai','i');return;}
+  document.getElementById('req-target-id').value=targetId;
+  document.getElementById('req-action-type').value=action;
+  document.getElementById('req-target-type').value=targetType||'record';
+  document.getElementById('req-reason').value='';
+  // Display what they're requesting
+  let desc='';
+  if(targetType==='record'){
+    const rec=recs.find(r=>r.id===targetId);
+    desc=action.charAt(0).toUpperCase()+action.slice(1)+' Record: '+(rec?rec.farmer+' — '+rec.date+' (RC '+(rec.receipt||'')+')':(targetId));
+  }else if(targetType==='payment'){
+    const pay=payments.find(p=>p.id===targetId);
+    desc=action.charAt(0).toUpperCase()+action.slice(1)+' Payment: '+(pay?pay.farmer+' — ₹'+(pay.amount||0)+' ('+pay.date+')':(targetId));
+  }else{
+    desc=action.charAt(0).toUpperCase()+action.slice(1)+' — '+targetId;
+  }
+  document.getElementById('req-action-display').textContent=desc;
+  document.getElementById('req-modal-title').textContent=action==='edit'?'✏ Edit Request':'🗑 Delete Request';
+  document.getElementById('req-modal').classList.add('open');
+}
+
+function submitRequest(){
+  const targetId=document.getElementById('req-target-id').value;
+  const action=document.getElementById('req-action-type').value;
+  const targetType=document.getElementById('req-target-type').value;
+  const reason=document.getElementById('req-reason').value.trim();
+  if(!reason){toast('Wajah (reason) zaroor likho','e');return;}
+  if(!currentUser){toast('Login karo','e');return;}
+  const req={
+    id:'REQ'+Date.now(),
+    targetId,
+    action,
+    targetType:targetType||'record',
+    reason,
+    requestedBy:currentUser.username,
+    requestedByName:currentUser.name,
+    requestedAt:Date.now(),
+    status:'pending',
+    approvedAt:null,
+    approvedBy:null,
+    adminNote:''
+  };
+  approvalRequests.push(req);
+  saveRequests();
+  updateReqBadge();
+  closeM('req-modal');
+  toast('Request admin ko bhej di gayi! ✅','s');
+}
+
+function filterReqs(mode){
+  reqFilterMode=mode;
+  ['all','pending','approved','rejected'].forEach(m=>{
+    const btn=document.getElementById('rf-'+m);
+    if(btn)btn.classList.toggle('on',m===mode);
+  });
+  renderRequests();
+}
+
+function renderRequests(){
+  const list=document.getElementById('reqs-list');
+  if(!list)return;
+  // Expire old approved requests
+  const now=Date.now();
+  approvalRequests.forEach(r=>{
+    if(r.status==='approved'&&r.approvedAt&&(now-r.approvedAt>=24*60*60*1000)){r.status='expired';}
+  });
+  let filtered=approvalRequests.slice().reverse();
+  if(reqFilterMode!=='all')filtered=filtered.filter(r=>r.status===reqFilterMode);
+  if(!filtered.length){
+    list.innerHTML='<div class="empty" style="padding:40px"><div class="ei">📩</div><h3>'+(reqFilterMode==='all'?'Koi request nahi abhi':'Koi '+reqFilterMode+' request nahi')+'</h3></div>';
+    return;
+  }
+  const isAdmin=currentUser&&(currentUser.role==='admin'||hasPerm('users'));
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  list.innerHTML=filtered.map(r=>{
+    const typeCls=r.action==='edit'?'edit-req':r.action==='delete'?'delete-req':r.action==='payment'?'payment-req':'other-req';
+    let targetDesc='';
+    if(r.targetType==='record'){
+      const rec=recs.find(x=>x.id===r.targetId);
+      targetDesc=rec?(rec.farmer+' — '+rec.date+' (RC '+(rec.receipt||'')+')'):r.targetId;
+    }else if(r.targetType==='payment'){
+      const pay=payments.find(p=>p.id===r.targetId);
+      targetDesc=pay?(pay.farmer+' — ₹'+(pay.amount||0)):r.targetId;
+    }else{
+      targetDesc=r.targetId;
+    }
+    const timeAgo=formatTimeAgo(r.requestedAt);
+    let expiry='';
+    if(r.status==='approved'&&r.approvedAt){
+      const left=24*60*60*1000-(now-r.approvedAt);
+      if(left>0){const hrs=Math.floor(left/3600000);const mins=Math.floor((left%3600000)/60000);expiry='<span style="font-size:10px;color:#b45309;font-weight:600">⏰ '+hrs+'h '+mins+'m baaki</span>';}
+    }
+    let actionBtns='';
+    if(isAdmin&&r.status==='pending'){
+      actionBtns=`<div style="display:flex;gap:6px;margin-top:10px">
+        <button class="btn btn-green" onclick="approveRequest('${r.id}')" style="font-size:11px;padding:5px 12px">✅ Approve (24hr)</button>
+        <button class="btn btn-red" onclick="rejectRequest('${r.id}')" style="font-size:11px;padding:5px 12px">❌ Reject</button>
+      </div>`;
+    }
+    return`<div class="req-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">
+        <div>
+          <span class="req-type ${typeCls}">${esc(r.action)}</span>
+          <span class="req-status ${r.status}">${r.status==='pending'?'⏳ Pending':r.status==='approved'?'✅ Approved':r.status==='rejected'?'❌ Rejected':r.status==='expired'?'⏰ Expired':'✔ Used'}</span>
+          ${expiry}
+        </div>
+        <div style="font-size:10px;color:var(--text3)">${timeAgo}</div>
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text)"><strong>${esc(r.targetType)}:</strong> ${esc(targetDesc)}</div>
+      <div style="margin-top:4px;font-size:11px;color:var(--text2)">👤 <strong>${esc(r.requestedByName||r.requestedBy)}</strong></div>
+      <div class="req-reason">📝 ${esc(r.reason)}</div>
+      ${r.adminNote?'<div style="margin-top:6px;font-size:11px;color:var(--blue);background:var(--bluebg);padding:6px 8px;border-radius:4px">🛡 Admin: '+esc(r.adminNote)+'</div>':''}
+      ${actionBtns}
+    </div>`;
+  }).join('');
+}
+
+function approveRequest(reqId){
+  const r=approvalRequests.find(x=>x.id===reqId);
+  if(!r){toast('Request nahi mili','e');return;}
+  r.status='approved';
+  r.approvedAt=Date.now();
+  r.approvedBy=currentUser?currentUser.username:'admin';
+  saveRequests();
+  updateReqBadge();
+  renderRequests();
+  toast('Request APPROVED — user ko 24 ghante milenge '+r.action+' karne ke liye','s');
+}
+
+function rejectRequest(reqId){
+  const note=prompt('Rejection reason (optional):');
+  const r=approvalRequests.find(x=>x.id===reqId);
+  if(!r){toast('Request nahi mili','e');return;}
+  r.status='rejected';
+  r.approvedBy=currentUser?currentUser.username:'admin';
+  if(note)r.adminNote=note;
+  saveRequests();
+  updateReqBadge();
+  renderRequests();
+  toast('Request REJECTED','i');
+}
+
+function formatTimeAgo(ts){
+  const diff=Date.now()-ts;
+  if(diff<60000)return'abhi abhi';
+  if(diff<3600000)return Math.floor(diff/60000)+' min pehle';
+  if(diff<86400000)return Math.floor(diff/3600000)+' ghante pehle';
+  return Math.floor(diff/86400000)+' din pehle';
+}
+
+function markRequestUsed(targetId,action,targetType){
+  approvalRequests.forEach(r=>{
+    if(r.targetId===targetId&&r.action===action&&r.targetType===(targetType||'record')&&r.status==='approved'){
+      r.status='used';
+    }
+  });
+  saveRequests();
+  updateReqBadge();
+}
+
 // ===== INIT =====
 loadUsers();
+loadRequests();
 loadGradeClassesLS();
 checkSession();
 </script>
+<div id="ledger-print-layer" class="ledger-print-layer" aria-hidden="true"></div>
 </body>
 </html>
