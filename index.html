@@ -242,6 +242,7 @@ td{padding:8px 11px;white-space:nowrap;color:var(--text);}
 .req-status.rejected{background:#fee2e2;color:#b91c1c;}
 .req-status.expired{background:#f1f5f9;color:#64748b;}
 .req-status.used{background:#e8f0fd;color:#1a5fc8;}
+.req-status.admin_resolved{background:#f0fdfa;color:#0f766e;}
 .req-reason{background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:8px 10px;font-size:12px;margin-top:8px;line-height:1.4;color:var(--text2);}
 mark{background:rgba(26,95,200,0.1);color:var(--blue2);border-radius:2px;padding:0 2px;font-weight:600;}
 .stl{font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
@@ -1694,6 +1695,18 @@ function saveR(){
   saveL();closeM('modal');
   updAll();applyF();
   saveToSheet(rec,editId?'edit':'add');
+  /* If admin edited from a request, mark it resolved */
+  if(window._adminResolveReqId){
+    const ar=approvalRequests.find(x=>x.id===window._adminResolveReqId);
+    if(ar&&ar.status==='pending'){
+      ar.status='admin_resolved';
+      ar.resolvedBy=currentUser?currentUser.username:'admin';
+      ar.resolvedAt=Date.now();
+      ar.adminNote='Admin ne khud edit kar diya';
+      saveRequests();updateReqBadge();renderRequests();
+    }
+    window._adminResolveReqId=null;
+  }
 }
 
 function delR(id){
@@ -4438,16 +4451,21 @@ function renderRequests(){
     }
     let actionBtns='';
     if(isAdmin&&r.status==='pending'){
-      actionBtns=`<div style="display:flex;gap:6px;margin-top:10px">
-        <button class="btn btn-green" onclick="approveRequest('${r.id}')" style="font-size:11px;padding:5px 12px">✅ Approve (24hr)</button>
-        <button class="btn btn-red" onclick="rejectRequest('${r.id}')" style="font-size:11px;padding:5px 12px">❌ Reject</button>
-      </div>`;
+      /* Admin can always Edit records + Delete any entry directly from request */
+      const showEdit=r.targetType==='record';
+      const showDel=true;
+      actionBtns='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">'
+        +'<button class="btn btn-green" onclick="approveRequest(\''+r.id+'\')" style="font-size:11px;padding:5px 12px">\u2705 Approve (24hr)</button>'
+        +'<button class="btn btn-red" onclick="rejectRequest(\''+r.id+'\')" style="font-size:11px;padding:5px 12px">\u274C Reject</button>'
+        +(showEdit?'<button class="btn" onclick="adminEditFromRequest(\''+r.id+'\')" style="font-size:11px;padding:5px 12px;background:var(--bluebg);color:var(--blue);border:1px solid var(--blue)">\u270F\uFE0F Admin Edit</button>':'')
+        +(showDel?'<button class="btn" onclick="adminDeleteFromRequest(\''+r.id+'\')" style="font-size:11px;padding:5px 12px;background:var(--rbg);color:var(--red);border:1px solid var(--red)">\uD83D\uDDD1\uFE0F Admin Delete</button>':'')
+      +'</div>';
     }
     return`<div class="req-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">
         <div>
           <span class="req-type ${typeCls}">${esc(r.action)}</span>
-          <span class="req-status ${r.status}">${r.status==='pending'?'⏳ Pending':r.status==='approved'?'✅ Approved':r.status==='rejected'?'❌ Rejected':r.status==='expired'?'⏰ Expired':'✔ Used'}</span>
+          <span class="req-status ${r.status}">${r.status==='pending'?'\u23F3 Pending':r.status==='approved'?'\u2705 Approved':r.status==='rejected'?'\u274C Rejected':r.status==='expired'?'\u23F0 Expired':r.status==='admin_resolved'?'\uD83D\uDEE1\uFE0F Admin ne Resolve kiya':'\u2714 Used'}</span>
           ${expiry}
         </div>
         <div style="font-size:10px;color:var(--text3)">${timeAgo}</div>
@@ -4623,6 +4641,67 @@ function viewRequestEntry(targetId,targetType){
     +html
   +'</div>';
   ov.style.display='flex';
+}
+
+/* --- Admin Direct Edit from Request --- */
+function adminEditFromRequest(reqId){
+  const r=approvalRequests.find(x=>x.id===reqId);
+  if(!r){toast('Request nahi mili','e');return;}
+  if(r.targetType!=='record'){toast('Sirf record entries edit ho sakti hain','e');return;}
+  const rec=recs.find(x=>x.id===r.targetId);
+  if(!rec){toast('Record nahi mila — shayad delete ho chuka hai','e');return;}
+  /* Close view overlay if open */
+  const ov=document.getElementById('view-entry-overlay');
+  if(ov)ov.style.display='none';
+  /* Store reqId so saveR can mark it resolved after save */
+  window._adminResolveReqId=reqId;
+  /* Switch to Records tab and open edit modal */
+  goTab('rec');
+  setTimeout(()=>{ openM(r.targetId); },200);
+}
+
+/* --- Admin Direct Delete from Request --- */
+function adminDeleteFromRequest(reqId){
+  const r=approvalRequests.find(x=>x.id===reqId);
+  if(!r){toast('Request nahi mili','e');return;}
+  const adminName=currentUser?currentUser.username:'admin';
+  if(r.targetType==='record'){
+    const rec=recs.find(x=>x.id===r.targetId);
+    if(!rec){toast('Record nahi mila — shayad pehle se delete hai','e');
+      r.status='admin_resolved';r.resolvedBy=adminName;r.resolvedAt=Date.now();r.adminNote='Record pehle se delete tha';
+      saveRequests();updateReqBadge();renderRequests();return;
+    }
+    if(!confirm('Admin Delete: '+rec.farmer+' — RC '+(rec.receipt||'—')+' ('+rec.date+') ko permanently delete karna hai?'))return;
+    recs=recs.filter(x=>x.id!==r.targetId);
+    saveL();updAll();applyF();
+    saveToSheet(rec,'delete');
+    toast('Record delete ho gaya (Admin action)','s');
+  }else if(r.targetType==='payment'){
+    const pay=payments.find(p=>p.id===r.targetId);
+    if(!pay){toast('Payment nahi mili — shayad pehle se delete hai','e');
+      r.status='admin_resolved';r.resolvedBy=adminName;r.resolvedAt=Date.now();r.adminNote='Payment pehle se delete thi';
+      saveRequests();updateReqBadge();renderRequests();return;
+    }
+    if(!confirm('Admin Delete: '+pay.farmer+' — \u20B9'+fmt(pay.amount)+' ('+pay.date+') ko permanently delete karna hai?'))return;
+    if(pay.journalPairId){
+      const pairIds=payments.filter(p=>p.journalPairId===pay.journalPairId).map(p=>p.id);
+      payments=payments.filter(p=>p.journalPairId!==pay.journalPairId);
+      pairIds.forEach(pid=>savePaymentFB({id:pid},'delete'));
+    }else{
+      payments=payments.filter(p=>p.id!==r.targetId);
+      savePaymentFB({id:r.targetId},'delete');
+    }
+    onPaymentsChanged();
+    toast('Payment delete ho gayi (Admin action)','s');
+  }
+  /* Mark request as admin_resolved */
+  r.status='admin_resolved';
+  r.resolvedBy=adminName;
+  r.resolvedAt=Date.now();
+  r.adminNote='Admin ne khud '+r.action+' kar diya';
+  saveRequests();
+  updateReqBadge();
+  renderRequests();
 }
 
 function approveRequest(reqId){
